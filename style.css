@@ -24,6 +24,7 @@ body h2{
 }
 .contact{
     border: 2px rgb(0, 0, 0) dashed; 
+    font-size:24px;
 }
 .contact tr{
     text-align: center;
@@ -56,9 +57,27 @@ body h2{
     border: 3px solid;
     background-color: rgb(239, 239, 239);
     width: 95%;
-    height:400px;
+    text-align: center;
+}
+.techmain img{
+    width: 100%;
 }
 iframe{
     width: 100%;
     height: 80%;
+}
+.stop-btn{
+    border-radius: 50%;
+    width: 100% ;
+    height: 40px;
+}
+#start-btn{
+    width: 120px;
+    height: 60px;
+    
+}
+#bet-coin{
+    width: 120px;
+    height: 60px;
+    
 }
