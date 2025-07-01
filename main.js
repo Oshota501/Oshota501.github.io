@@ -91,3 +91,45 @@ setInterval(function(){
     }
 },140);
 
+let selectType1 = {
+    elms : document.getElementsByName("selectType1") ,
+    color : [
+        "rgba(255, 0, 0, 0.56)",
+        "rgba(238, 255, 0, 0.52)",
+        "rgba(0, 255, 72, 0.5)",
+        "rgba(0, 0, 0, 0.47)",
+        "rgba(0, 255, 229, 0.44)",
+        "rgba(0, 255, 229, 0.44)",
+        "rgba(255, 255, 255, 0.44)"
+
+    ] ,
+    colorrange : 7 ,
+}
+for(let i = 0 ; i < selectType1.elms.length; i++){
+    selectType1.elms[i].addEventListener("click",function(){
+        const c1 = selectType1.color[Math.floor(selectType1.colorrange*Math.random())] ;
+        const c2 = selectType1.color[Math.floor(selectType1.colorrange*Math.random())] ;
+        const c3 = selectType1.color[Math.floor(selectType1.colorrange*Math.random())] ;
+        const c4 = selectType1.color[Math.floor(selectType1.colorrange*Math.random())] ;
+        selectType1.elms[i].style.background = "linear-gradient(45deg,"+c1+","+c2+"),linear-gradient(135deg,"+c3+","+c4+")";
+    });
+}
+
+let bd2 = {
+    elms : document.getElementsByClassName("bd2"),
+    color : ["black","yellow"],
+    typeFlag : [true,true] ,
+}
+setInterval(function(){
+    for(let i = 0 ; i < bd2.elms.length ; i++){
+        if(bd2.typeFlag[i]){
+            bd2.elms[i].style.color = bd2.color[1];
+            bd2.elms[i].style.background = bd2.color[0];
+            bd2.typeFlag[i] = false ;
+        }else{
+            bd2.elms[i].style.color = bd2.color[0];
+            bd2.elms[i].style.background = bd2.color[1];
+            bd2.typeFlag[i] = true ;
+        }
+    }
+},500);
