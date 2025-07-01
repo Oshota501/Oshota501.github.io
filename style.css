@@ -61,15 +61,12 @@ body h2{
 .stop-btn{
     border-radius: 50%;
     width: 100% ;
-    height: 40px;
+    height: 70px;
 }
 #start-btn{
-    width: 120px;
-    height: 60px;
+    font-size:60px;
     
 }
 #bet-coin{
-    width: 120px;
-    height: 60px;
-    
+    font-size:40px;
 }
