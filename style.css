@@ -70,3 +70,11 @@ body h2{
 #bet-coin{
     font-size:40px;
 }
+.bd2{
+    border:1px dashed;
+    border-color: red ;
+    color : yellow ;
+    font-weight : 500 ;
+    font-size:20px;
+    background:black;
+}
