@@ -112,6 +112,7 @@ for(let i = 0 ; i < selectType1.elms.length; i++){
         const c3 = selectType1.color[Math.floor(selectType1.colorrange*Math.random())] ;
         const c4 = selectType1.color[Math.floor(selectType1.colorrange*Math.random())] ;
         selectType1.elms[i].style.background = "linear-gradient(45deg,"+c1+","+c2+"),linear-gradient(135deg,"+c3+","+c4+")";
+        console.log("click");
     });
 }
 
