@@ -100,19 +100,20 @@ let selectType1 = {
         "rgba(0, 0, 0, 0.47)",
         "rgba(0, 255, 229, 0.44)",
         "rgba(0, 255, 229, 0.44)",
-        "rgba(255, 255, 255, 0.44)"
+        "rgba(255, 255, 255, 0.44)",
+        "rgba(0, 46, 185, 0.58)",
+        "rgba(0, 255, 8, 0.44)"
 
     ] ,
-    colorrange : 7 ,
+    colorrange : 9 ,
 }
 for(let i = 0 ; i < selectType1.elms.length; i++){
     selectType1.elms[i].addEventListener("click",function(){
-        const c1 = selectType1.color[Math.floor(selectType1.colorrange*Math.random())] ;
-        const c2 = selectType1.color[Math.floor(selectType1.colorrange*Math.random())] ;
-        const c3 = selectType1.color[Math.floor(selectType1.colorrange*Math.random())] ;
-        const c4 = selectType1.color[Math.floor(selectType1.colorrange*Math.random())] ;
-        selectType1.elms[i].style.background = "linear-gradient(45deg,"+c1+","+c2+"),linear-gradient(135deg,"+c3+","+c4+")";
-        console.log("click");
+        const c = [];
+        for(let j = 0 ; j <  6 ; j++){
+            c.push(selectType1.color[Math.floor(selectType1.colorrange*Math.random())] );
+        }
+        selectType1.elms[i].style.background = "linear-gradient(45deg,"+c[0]+","+c[1]+"),linear-gradient(135deg,"+c[2]+","+c[3]+"),linear-gradient(270deg,"+c[4]+","+c[5]+")";
     });
 }
 
