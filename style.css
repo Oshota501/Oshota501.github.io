@@ -78,14 +78,53 @@ body h2{
     font-size:20px;
     background:black;
 }
-.bd2:hover{
+/* .bd2:hover{
     border:3px dashed;
     border-color: red ;
     color : yellow ;
     font-weight : 500 ;
     font-size:50px;
     background:black;
-}
-.img img:hover{
+} */
+/* .img img:hover{
     width:100px;
-}
+} */
+ #reactSpace{
+    border: 4px groove;
+    border-color:rgb(0, 0, 0);
+ }
+ .copySpace{
+    border:3px dashed ;
+    
+    background:black;
+    color:white;
+    border-color: aqua;
+    
+ }
+ .copySpace div{
+    width: 96%;
+    margin: 0 auto;
+    background-color: black;
+    text-align: left;
+ }
+ .def{
+    color:rgb(130, 205, 255);
+ }
+ .name{
+    color:rgb(0, 153, 255);
+ }
+ .obj{
+    color:rgb(246, 255, 0);
+ }
+ .str{
+    color:orange;
+ }
+ .com{
+    color:#888888;
+ }
+ .iffor{
+    color:rgb(255, 82, 255);
+ }
+ #SorceMain{
+    text-align: left;
+ }

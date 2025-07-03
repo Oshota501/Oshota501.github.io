@@ -258,10 +258,95 @@
                         </div>
 
                     </div>
-                    <div class="techmain" name="selectType1" style="height: 500px;">
-                        <h2 class="bd2">工事中</h2>
-                    </div>
+                    <li>github.ioでWebページを公開しているのでソースコードでも以下に記載しておきます（謎）<br>真面目に作ってないのがバレそうです。
+                        <div id="SorceMain">
+                        
+                        <p>ここまでは手書きで頑張ったのでそろそろreactに頼りたいですね。</p>
+                        <ul>
+                            <li>JavaScript</li>
+                            <li>TypeScript</li>
+                            <li>HTML</li>
+                        </ul>
+                        等を記載しておきます。
+                        <div id="reactSpace">
+                            <ol>
+<li>reactでのカウントボタンです。githubページは<a href="https://github.com/Oshota501/reactTest2">こちら。</a></li>
+
+<div class="copySpace">
+<div>
+    <a class="def">function</a> <a class="name">LikeButton</a>() {<br>
+    &emsp;&emsp;<a class="def">const</a> <a class="name">btnClickState</a> = React.<a class="obj">useState(</a>0<a class="obj">)</a>;<br>
+    &emsp;&emsp;<a class="def">const</a> <a class="name">style1</a> = {<br>
+    &emsp;&emsp;&emsp;&emsp;<a class="name">background</a> : <a class="str">"linear-gradient("</a>+btnClickState[0]+<a class="str">"deg,red,yellow)"</a> ,<br>
+    &emsp;&emsp;&emsp;&emsp;<a class="name">color</a> : <a class="str">"black"</a>,<br>
+    &emsp;&emsp;}<br>
+    &emsp;&emsp;<a class="def">return</a> (<br>
+    &emsp;&emsp;&emsp;&emsp;&lt;<a class="name">div</a> <a class="def">style</a>={style1} &gt;<br>
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&lt;<a class="name">button</a> <a class="def">onClick</a>={s() => <a class="obj">btnClickState[1](</a>btnClickState[0]+1<a class="obj">)</a>} <a class="def">className</a>=<a class="str">"app"</a>&gt;<br>
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;{sbtnClickState[0]}<br>
+    &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&lt;/<a class="name">button</a>&gt;<br>
+    &emsp;&emsp;&emsp;&emsp;&lt;/<a class="name">div</a>&gt;<br>
+    &emsp;&emsp;);<br>
+    }<br><br>
+</div>
+</div>
+
+
+<li>JavaScripで素数配列を効率的に導き出してくれます。（ただし効率重視すぎて範囲を守ってくれません）</li>
+<div class="copySpace">
+    <div>
+<a class="name">Sosu</a> = <a class="def">function</a>(n){<br>
+&emsp;&emsp;<a class="com">//すべての素数</a><br>
+&emsp;&emsp;<a class="def">let</a> <a class="name">arr</a>  = [2,3,5];<br>
+&emsp;&emsp;<a class="iffor">for</a>(<a class="def">let</a> i = 1 ; i &lt; n ; i ++){<br>
+&emsp;&emsp;&emsp;&emsp;<a class="com">//6n±</a><br>
+&emsp;&emsp;&emsp;&emsp;<a class="iffor">if</a>(<a class="obj">Sosu_check</a>(i*30 -23))<a class="obj">arr.push</a>(i*30-23);<br>
+&emsp;&emsp;&emsp;&emsp;<a class="iffor">if</a>(<a class="obj">Sosu_check</a>(i*30 -19))<a class="obj">arr.push</a>(i*30-19);<br>
+&emsp;&emsp;&emsp;&emsp;<a class="iffor">if</a>(<a class="obj">Sosu_check</a>(i*30 -17))<a class="obj">arr.push</a>(i*30-17);<br>
+&emsp;&emsp;&emsp;&emsp;<a class="iffor">if</a>(<a class="obj">Sosu_check</a>(i*30 -13))<a class="obj">arr.push</a>(i*30-13);<br>
+&emsp;&emsp;&emsp;&emsp;<a class="iffor">if</a>(<a class="obj">Sosu_check</a>(i*30 -11))<a class="obj">arr.push</a>(i*30-11);<br>
+&emsp;&emsp;&emsp;&emsp;<a class="iffor">if</a>(<a class="obj">Sosu_check</a>(i*30 -7))<a class="obj">arr.push</a>(i*30-7);<br>
+&emsp;&emsp;&emsp;&emsp;<a class="iffor">if</a>(<a class="obj">Sosu_check</a>(i*30 -1))<a class="obj">arr.push</a>(i*30-1);<br>
+&emsp;&emsp;&emsp;&emsp;<a class="iffor">if</a>(<a class="obj">Sosu_check</a>(i*30 +1))<a class="obj">arr.push</a>(i*30+1);<br>
+&emsp;&emsp;}<br>
+&emsp;&emsp;<a class="def">function</a> <a class="name">Sosu_check(num)</a>{<br>
+&emsp;&emsp;&emsp;&emsp;<a class="com">//素数で割り切れるか確かめる</a><br>
+&emsp;&emsp;&emsp;&emsp;<a class="iffor">for</a>(<a class="def">let</a> j = arr.length ; j =&gt; 0 ; j--){<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<a class="iffor">if</a>(num % arr[j] == 0)<a class="def">return</a> false;<br>
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<a class="iffor">if</a>(num &lt; arr[j]**2 )<a class="def">return</a> true;<br>
+&emsp;&emsp;&emsp;&emsp;}<br>
+&emsp;&emsp;}<br>
+&emsp;&emsp;<a class="def">return</a> arr;<br>
+}<br><br>
+</div>
+</div>
+
+
+<li>開発中</li>
+<div class="copySpace">
+<div>
+    <a class="com">//ここに構文が追加されます</a><br><br>
+</div>
+</div>
+
+
+<li>開発中</li>
+<div class="copySpace">
+<div>
+    <a class="com">//ここに構文が追加されます</a><br><br>
+</div>
+</div>
+
+                            </ol>
+                        </div>
+                    </div></li>
+                    <li>
+                        <div class="techmain" name="selectType1" style="height: 500px;">
+                            <h2 class="bd2">工事中</h2>
+                        </div>
+                    </li>
                 </ol>
+
             </div>
         </div>
         <script src="/main.js">
