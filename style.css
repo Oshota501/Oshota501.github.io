@@ -78,3 +78,14 @@ body h2{
     font-size:20px;
     background:black;
 }
+.bd2:hover{
+    border:3px dashed;
+    border-color: red ;
+    color : yellow ;
+    font-weight : 500 ;
+    font-size:50px;
+    background:black;
+}
+.img img:hover{
+    width:100px;
+}
