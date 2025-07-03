@@ -135,3 +135,10 @@ setInterval(function(){
         }
     }
 },500);
+
+let csElm = document.getElementsById("copySpace");
+let reactTest = {
+    AddButton : function(){
+        
+    }
+}
