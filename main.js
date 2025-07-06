@@ -136,12 +136,12 @@ setInterval(function(){
     }
 },500);
 
-let csElm = document.getElementById("copySpace");
-let reactTest = {
-    AddButton : function(){
+// let csElm = document.getElementById("copySpace");
+// let reactTest = {
+//     AddButton : function(){
         
-    }
-}
+//     }
+// }
 
 const addFtbl = document.getElementById("addFtbl");
 
