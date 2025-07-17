@@ -1,6 +1,6 @@
 # test
 
-```
+```html
 <html>
     <head>
         <meta charset="uft-8"/>
