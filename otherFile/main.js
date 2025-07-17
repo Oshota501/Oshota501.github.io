@@ -143,18 +143,18 @@ setInterval(function(){
 //     }
 // }
 
-const addFtbl = document.getElementById("addFtbl");
+// const addFtbl = document.getElementById("addFtbl");
 
-let addFtblFlag = true ;
-addFtbl.addEventListener("click",function(){
+// let addFtblFlag = true ;
+// addFtbl.addEventListener("click",function(){
 
-    if(addFtblFlag){
-        addFtbl.innerText="追加表示を消す";
-        document.getElementById("AddFt").style.display = "block";
-    }else{
-        addFtbl.innerText="追加で表示する";
-        document.getElementById("AddFt").style.display = "none";
-    }
-    addFtblFlag = ! addFtblFlag;
+//     if(addFtblFlag){
+//         addFtbl.innerText="追加表示を消す";
+//         document.getElementById("AddFt").style.display = "block";
+//     }else{
+//         addFtbl.innerText="追加で表示する";
+//         document.getElementById("AddFt").style.display = "none";
+//     }
+//     addFtblFlag = ! addFtblFlag;
 
-});
+// });
