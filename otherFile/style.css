@@ -4,8 +4,6 @@ body{
     background-color: rgb(16, 16, 58);
     */
 }
-.menueBar{
-}
 body div{
     width: 95%;
     background-color: rgba(255, 255, 255, 0.872);
@@ -137,17 +135,4 @@ body h2{
  #SorceMain{
     text-align: left;
  }
- #AddFt{
-    display : none ;
-}
 
-
-#footer{
-    color:rgba(0, 0, 0, 0.86);
-    background-color:rgba(92, 92, 92, 0.63);
-
-}
-#footer button{
-    background-color:rgba(92, 92, 92, 0);
-    color:black;
-}
