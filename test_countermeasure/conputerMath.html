@@ -1,0 +1,252 @@
+<html>
+    <head>
+        <meta charset="uft-8"/>
+        <title>コンピュータの為の数学</title>
+        <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          macros: {
+            // よく使う記号のショートカット
+            R: '\\mathbb{R}',
+            N: '\\mathbb{N}',
+            Z: '\\mathbb{Z}',
+            C: '\\mathbb{C}',
+            Prime: '\\text{Prime}',
+            powerset: ['\\mathcal{P}(#1)', 1]
+          }
+        },
+        chtml: {
+          displayAlign: 'left' // ブロック数式を左揃えにする
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </head>
+
+    <header>
+        <div class="hName">
+            <p>OshotaのGithub_Page</p>
+        </div>
+        <div class="hBar">
+            <a href="/index.html">
+                <button class="hBox">
+                    <p>Main</p>
+                </button>
+            </a>
+            <a href="/test_countermeasure/allTest.html">
+                <button class="hBox">
+                    <p>テスト一覧</p>
+                </button>
+            </a>
+        </div>
+    </header>
+
+    <body>
+        <h1>
+            コンピュータのための数学
+        </h1>
+          <p>解答は解答用紙に自分で適当に欄を設定して書きなさい。必要なら裏面を使用してもよい。</p>
+  <p>$\N$ は「$0$ か $\N$ の倍数である」ことを意味するものとする。また、$\Prime(n)$ は $n$ が素数であることを意味するものとする。</p>
+
+  <hr>
+
+  <h2>問1</h2>
+  <p>
+    $U = \{0,1,2,3,4,5,6,7,8,9\}$, $A = \{2,4,7,8\}$, $B = \{0,2,3,4,7\}$, $C = \{2,6,8\}$, $D = \{1,2\}$ とする。$U$ に関する $X$ の補集合を $\bar{X}$ と書くとき、以下の (1)〜(10) の集合を求めて $\{a_1, \dots, a_n\}$ のような形か、$\emptyset$ か区間の記法で答えよ。
+  </p>
+
+  <div class="problem-container">
+    (1) $A \cup B$
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $\{0, 2, 3, 4, 7, 8\}$</p></div>
+  </div>
+  <div class="problem-container">
+    (2) $A \cap B$
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $\{2, 4, 7\}$</p></div>
+  </div>
+  <div class="problem-container">
+    (3) $A \oplus B$ （対称差）
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $\{0, 3, 8\}$</p></div>
+  </div>
+  <div class="problem-container">
+    (4) $C \times D$
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $\{(2,1), (2,2), (6,1), (6,2), (8,1), (8,2)\}$</p></div>
+  </div>
+  <div class="problem-container">
+    (5) $2^C$ （$C$のべき集合）
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $\{\emptyset, \{2\}, \{6\}, \{8\}, \{2,6\}, \{2,8\}, \{6,8\}, \{2,6,8\}\}$</p></div>
+  </div>
+  <div class="problem-container">
+    (6) $\overline{(A \cup (B \cap D))}$
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $\{0, 1, 3, 5, 6, 9\}$</p></div>
+  </div>
+  <div class="problem-container">
+    (7) $f: (0, \infty) \to \R$ を $f(x) = \log_2 x$ で定義した時、区間 $(\frac{1}{2}, \infty)$ の値域 $f((\frac{1}{2}, \infty))$
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $(-1, \infty)$</p></div>
+  </div>
+    <div class="problem-container">
+    (8) $g: [0, 2\pi] \to \R$ を $g(x) = \sin x$ で定義した時の $g$ による値域
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $[-1, 1]$</p></div>
+  </div>
+  <div class="problem-container">
+    (9) (8) の $g$ による集合 $\{\frac{1}{2}\}$ の逆像 $g^{-1}(\{\frac{1}{2}\})$
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $\{\frac{\pi}{6}, \frac{5\pi}{6}\}$</p></div>
+  </div>
+  <div class="problem-container">
+    (10) $\{n \in \N \mid \exists k \in C, \exists m \in D, n = k+m \}$
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $\{3, 4, 7, 8, 9\}$ （$U$ の元のみ）</p></div>
+  </div>
+
+  <hr>
+
+  <h2>問2</h2>
+  <p>以下の (1), (2) の意味を答えなさい。また, (3), (4) の文をそれぞれ論理記号を用いて式で表しなさい。</p>
+  <div class="problem-container">
+    (1) $\forall x \in \R (x^2 > 0 \leftrightarrow x \neq 0)$
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>意味:</strong> 「全ての実数 $x$ について、『$x$ の2乗が正である』ことと『$x$ が $0$ ではない』ことは同値である。」</p></div>
+  </div>
+  <div class="problem-container">
+    (2) $\neg \forall n \in \N (\Prime(n) \to n < 0)$
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>意味:</strong> 「『全ての自然数 $n$ について、もし $n$ が素数ならば $n$ は負である』ということは偽である。」（意訳：負である素数ばかりではない）</p></div>
+  </div>
+  <div class="problem-container">
+    (3) $x$ の方程式 $P(x)=0$ は実数解を持たない。
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>論理式:</strong> $\neg \exists x \in \R (P(x)=0)$ または $\forall x \in \R (P(x) \neq 0)$</p></div>
+  </div>
+  <div class="problem-container">
+    (4) 任意の実数の正数 $k$ について、$x$ の方程式 $x^2=k$ はただ一つの正の実数解を持つ。
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>論理式:</strong> $\forall k \in \R (k>0 \to \exists ! x \in \R (x>0 \land x^2=k))$</p></div>
+  </div>
+
+  <hr>
+
+  <h2>問3</h2>
+  <p>4つの関数 $f_1: \R \to \R$, $f_1(x) = x^3+x+1$, $f_2: [-\pi, \pi] \to [-1, 1]$, $f_2(x)=\sin x$, $f_3: (-\infty, 0] \to [0, \infty)$, $f_3(x) = x^2$, $f_4: \R \to \R$, $f_4(x)=|x|$ で定義する。</p>
+  <div class="problem-container">
+    (1) $f_1, \dots, f_4$ のうちで、単調増加関数はどれか。
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $f_1$</p></div>
+  </div>
+  <div class="problem-container">
+    (2) $f_1, \dots, f_4$ のうちで、単調減少関数はどれか。
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $f_3$</p></div>
+  </div>
+  <div class="problem-container">
+    (3) $f_1, \dots, f_4$ のうちで、単射はどれか。
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $f_1, f_3$</p></div>
+  </div>
+  <div class="problem-container">
+    (4) $f_1, \dots, f_4$ のうちで、全射はどれか。
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $f_1, f_2, f_3$</p></div>
+  </div>
+  <div class="problem-container">
+    (5) $f_1, \dots, f_4$ のうちで、全単射はどれか。
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer"><p><strong>答:</strong> $f_1, f_3$</p></div>
+  </div>
+  <div class="problem-container">
+    (6) $f_1, \dots, f_4$ のうちで全単射なものについて、その逆関数のグラフの概形を描きなさい。
+    <button class="toggle-answer">答えを表示</button>
+    <div class="answer">
+      <p><strong>答:</strong></p>
+      <ul>
+        <li><strong>$f_1^{-1}$ のグラフ:</strong>
+          $f_1(x)=x^3+x+1$ は常に増加し、点 $(0,1)$ を通る。その逆関数 $f_1^{-1}(x)$ は、直線 $y=x$ に関して対称移動したグラフとなる。したがって、$f_1^{-1}(x)$ も常に増加し、点 $(1,0)$ を通る。グラフの形は、S字カーブを横に寝かせたような、立方根のグラフに似た形になる。
+        </li>
+        <li><strong>$f_3^{-1}$ のグラフ:</strong>
+          $f_3(x)=x^2$（定義域 $x \le 0$）は、原点を頂点とする放物線の左半分。その逆関数 $f_3^{-1}(x)$ は、直線 $y=x$ に関して対称移動したグラフとなる。これは $y = -\sqrt{x}$（定義域 $x \ge 0$）のグラフであり、原点から始まり、$x$ 軸の下側を右下に向かって伸びていく、横に寝た放物線の下半分である。
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const buttons = document.querySelectorAll('.toggle-answer');
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          const answerDiv = this.nextElementSibling;
+          if (answerDiv.style.display === 'none' || answerDiv.style.display === '') {
+            answerDiv.style.display = 'block';
+            this.textContent = '答えを隠す';
+          } else {
+            answerDiv.style.display = 'none';
+            this.textContent = '答えを表示';
+          }
+        });
+      });
+    });
+  </script>
+
+            <style>
+      body {
+        font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+        line-height: 1.8;
+        margin: 2em;
+        text-align: left;
+      }
+      h1, h2 {
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+        margin-top: 2em;
+      }
+      h3 {
+        border-bottom: 1px dashed #ccc;
+        padding-bottom: 5px;
+        margin-top: 2em;
+      }
+      .problem-container {
+        margin-bottom: 1.5em;
+      }
+      .answer {
+        display: none;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        padding: 0.5em 1.5em;
+        margin-top: 1em;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #a2cfff;
+        color: rgb(0, 0, 0);
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9em;
+        margin-top: 0.5em;
+      }
+      button:hover {
+        background-color: #92adc9;
+      }
+    </style>
+    </body>
+
+    <footer>
+        <link href="/public_style/footer_header.css" rel="stylesheet"/>
+        <div id="footer">
+            <p>
+                Shotaのページ<br>
+                <a href="/otherFile/detail.html">メインページ</a><br>
+                <a href="/index.html">名刺のページ</a><br>
+            </p>
+        </div>
+    </footer>
+</html>

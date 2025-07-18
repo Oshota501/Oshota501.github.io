@@ -1,0 +1,122 @@
+<html>
+    <head>
+        <meta charset="uft-8"/>
+        <title>微分積分</title>
+　    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        chtml: {
+          displayAlign: 'left' // ブロック数式を左揃えにする設定
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </head>
+
+    <header>
+        <div class="hName">
+            <p>OshotaのGithub_Page</p>
+        </div>
+        <div class="hBar">
+            <a href="/index.html">
+                <button class="hBox">
+                    <p>メニュー</p>
+                </button>
+            </a>
+            <a href="/test_countermeasure/allTest.html">
+                <button class="hBox">
+                    <p>テスト一覧</p>
+                </button>
+            </a>
+        </div>
+    </header>
+
+    <body>
+
+  <h1>微分積分1</h1>
+
+  <hr>
+
+  <h2>問1</h2>
+  <p>以下の極限を求めよ。</p>
+  <ol>
+    <li>$$ \lim_{x \to \infty} \sqrt{x}-\sqrt{x-3} $$</li>
+    <li>$$ \lim_{x \to \infty} \sqrt{x}(\sqrt{5x+3} - \sqrt{5x}) $$</li>
+  </ol>
+
+  <hr>
+
+  <h3>例</h3>
+  <p>
+    $$ \lim_{x \to \infty} x^{\frac{1}{x}} $$
+    を求める。\( y = x^{\frac{1}{x}} \) とおくと
+  </p>
+  <p>
+    $$ \log y = \log x^{\frac{1}{x}} = \frac{1}{x} \log x = \frac{\log x}{x} $$
+  </p>
+  <p>
+    \( \log y \) は \( x \to \infty \) のとき \( \frac{\infty}{\infty} \) の不定形だから、ロピタルの定理が使えて
+  </p>
+  <p>
+    $$ \lim_{x \to \infty} \log y = \lim_{x \to \infty} \frac{\log x}{x} = \lim_{x \to \infty} \frac{1}{x} = 0. $$
+    $$ \therefore \lim_{x \to \infty} x^{\frac{1}{x}} = \lim_{x \to \infty} y = e^0 = 1. $$
+  </p>
+
+  <hr>
+
+  <h2>問2</h2>
+  <p>以下の極限を求めよ。</p>
+  <ol>
+    <li>$$ \lim_{x \to 0} (1 + \sin x)^{\frac{1}{x}} $$</li>
+    <li>$$ \lim_{x \to \infty} \left( e^x + 2 \right)^{\frac{1}{x}} $$</li>
+  </ol>
+
+  <hr>
+
+  <h2>問3</h2>
+  <p>以下の関数の導関数を計算せよ。なお \( \sin^{-1} \) と \( \text{Sin}^{-1} \) は同じ、\( \tan^{-1} \) と \( \text{Tan}^{-1} \) は同じ。</p>
+  <ol>
+    <li>\( \sin^{-1}(2x - 1) \quad (0 < x < 1) \)</li>
+    <li>\( \tan^{-1}(2x + 1) \)</li>
+    <li>\( (\sin x)^x \quad (0 < x < \pi) \)</li>
+  </ol>
+
+  <hr>
+
+  <h2>問4</h2>
+  <p>以下の問に答えよ。</p>
+  <ol>
+    <li>平面曲線 \( x = 2t^3 + t + 1, y = t^2 + 2t \) について, \( t=1 \) での接線を求めよ。</li>
+    <li>平面曲線 \( x = t^3 + t, y = t^3 + 2t \) について, \( t=2 \) での接線を求めよ。</li>
+  </ol>
+
+  <hr>
+
+  <h2>問5</h2>
+  <p>
+    \( (x^2 \cos x)^{(n)} \) を求めよ (\( n = 2, 3, \dots \))。\( (\cos x)^{(n)} = \cos(x + \frac{n\pi}{2}) \) を使ってよい。
+  </p>
+
+  <hr>
+
+  <h2>問6</h2>
+  <p>以下の問に答えよ。</p>
+  <ol>
+    <li>\( \cos x \) の 2 次までの漸近展開を求めよ。剰余項は \( o(x^2) \) とせよ。</li>
+    <li>\( \lim_{x \to 0} \frac{\cos x - 1}{x^2} \) の値を漸近展開を利用して求めよ。</li>
+  </ol>
+    </body>
+
+    <footer>
+        <link href="/public_style/footer_header.css" rel="stylesheet"/>
+        <div id="footer">
+            <p>
+                Shotaのページ<br>
+                <a href="/index.html">メインページ</a><br>
+                <a href="/test_countermeasure/allTest.html">テストのページ</a><br>
+            </p>
+        </div>
+    </footer>
+</html>
