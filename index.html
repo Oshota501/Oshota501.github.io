@@ -11,22 +11,23 @@
         <div class="hBar">
             <a href="/index.html">
                 <button class="hBox">
-                    <p>Main</p>
-                </button>
-            </a>
-            <a href="/otherFile/detail.html">
-                <button class="hBox">
-                    <p>詳細</p>
+                    <p>Main page</p>
                 </button>
             </a>
             <a href="/otherFile/index.html">
                 <button class="hBox">
-                    <p>名刺</p>
+                    <p>Introduction</p>
                 </button>
             </a>
             <a href="/mine/html.html">
                 <button class="hBox">
-                    <p>MS
+                    <p>Minesweeper
+                    </p>
+                </button>
+            </a>
+            <a href="/oshoshougi3/index.html">
+                <button class="hBox">
+                    <p>Shogi
                     </p>
                 </button>
             </a>
@@ -34,6 +35,132 @@
     </header>
 
     <body>
+        <div id="main">
+            <h1 class="font1">
+                Oshota's Github_Page
+            </h1>
+            <h2 class="font1">
+                Welcome to Oshota's Github_Page
+            </h2>
+            <p>
+                You can see your favorite web page.<br>
+                On this page, I present my games and self-introduction in as shady a look as possible. Have a nice day!
+            </p>
+            <h2 class="font1">
+                Comment
+            </h2>
+            <p>
+                Everyone, let's go vote! Currently, the voter turnout for national elections in Japan is 50%. A large number of those who don't vote are young people. If the opinions of young people are not reflected in national politics, Japan risks becoming a country dominated by the elderly. Let's work together to build a bright future for Japan! The next House of Councillors election is on July 20th, and early voting begins on July 4th.
+            </p>
+            <h2 class="font1">
+                Overview
+            </h2>
+            <ul>
+                <li>
+                    Everything is freely accessible.
+                </li>
+                <li>
+                    It's completely free.
+                </li>
+                <li>
+                    We store your account information with a deadly mix of security and danger.
+                </li>
+            </ul>
+            <h2 class="font1">
+                A superfluous input field, typical of a phishing scam.
+            </h2>
+            <p>
+                You can relax, we didn't create a backend.<br>
+                <table class="input">
+                    <tr>
+                        <td>First name : </td><td><input class="inpbar"> </td><td>Last name :</td><td> <input class="inpbar"></td>
+                    </tr>
+                    <tr>
+                        <td>Main address : </td><td colspan="3"><input style="width: 100%;" class="inpbar"></td>
+                    </tr>
+                    <tr>
+                        <td>Telephone number : </td><td><input class="inpbar"></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td>Account Name : </td><td><input class="inpbar"></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td>Account Number : </td><td><input class="inpbar"></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td>Post code : </td><td><input class="inpbar"></td><td></td><td></td>
+                    </tr>
+                    <tr>
+                        <td>Address : </td><td colspan="3"><input style="width: 100%;" class="inpbar"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><button style="width: 100%;" class="btn1">Send</button></td>
+                    </tr> 
+                    
+                </table>
+                <p id="log">
+
+                </p>
+
+            </p>
+        </div>
+        <div>
+
+        </div>
+        <style>
+.input{
+    font-family: "Gill Sans"; 
+    color:rgb(253, 255, 199);
+}
+.btn1{
+    color:rgb(253, 255, 199);
+    background-color:rgb(0, 0, 0);
+}
+.btn1:hover{
+    background-color:rgb(253, 255, 199);
+    color:rgb(0, 0, 0);
+}
+.font1{
+    font-family: "Gill Sans";
+}
+#main{
+    width: 100%;
+    background-color: rgb(0, 0, 0);
+    color:rgb(253, 255, 199);
+}
+body{
+    font-family: "Gill Sans"; 
+    background:rgb(1, 0, 63);
+}
+        </style>
+        <script>
+document.getElementsByClassName("btn1")[0].addEventListener("click",function(){
+    let flag = true ;
+    for(let i = 0 ; i < document.getElementsByClassName("inpbar").length ;i++ ){
+        flag = flag && !(document.getElementsByClassName("inpbar")[i].value == "") ;
+    }
+    if(flag){
+        document.getElementsByClassName("btn1")[0].innerText = "Sending now "
+        for(let i = 0 ; i < 20 ; i ++){
+            if(i%4==0)setTimeout(function(){
+                document.getElementsByClassName("btn1")[0].innerText = "Sending now ";
+            },330*i)
+            if(!(i%4==0))setTimeout(function(){
+                document.getElementsByClassName("btn1")[0].innerText += ".";
+            },330*i)
+        }
+        setTimeout(function(){
+            document.getElementsByClassName("btn1")[0].innerText = "Already Sent";
+            document.getElementById("log").innerText = "Submission complete. Please wait a moment for account verification. Estimated time: 200 years.";
+        },330*21)
+    }else{
+        document.getElementsByClassName("btn1")[0].innerText = "Please enter all."
+        setTimeout(function(){
+             document.getElementsByClassName("btn1")[0].innerText = "Send"
+        },1000);
+    }
+});
+        </script>
     </body>
 
     <footer>
@@ -42,7 +169,6 @@
             <p>
                 Shotaのページ<br>
                 <a href="/index.html">メインページ</a><br>
-                <a href="/otherFile/detail.html">詳細ページ</a><br>
                 <a href="/otherFile/index.html">名刺のページ</a><br>
             </p>
         </div>
