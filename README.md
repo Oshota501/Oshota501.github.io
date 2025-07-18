@@ -29,7 +29,6 @@
             <p>
                 Shotaのページ<br>
                 <a href="/otherFile/detail.html">メインページ</a><br>
-                <a href="/otherFile/detail.html">詳細ページ</a><br>
                 <a href="/index.html">名刺のページ</a><br>
             </p>
         </div>
