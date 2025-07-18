@@ -13,6 +13,7 @@
     background-color: white;
 }
 .hBox{
+    border-radius: 4px;
     float: left;
     height: 100%;
     border:1px solid;
