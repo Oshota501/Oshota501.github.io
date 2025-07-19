@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>&#x30c7;&#x30fc;&#x30bf;&#x578b;&#x306b;&#x3064;&#x3044;&#x3066;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+.language-cpp{
+  border: 1px solid rgb(205, 205, 205);
+  background-color: rgb(234, 234, 234);
+  border-radius: 2px;
+}
+
+</style>
+        
+        </head>
+        <header>
+        <div class="hName">
+            <p>OshotaのGithub_Page</p>
+        </div>
+        <div class="hBar">
+            <a href="/index.html">
+                <button class="hBox">
+                    <p>Main</p>
+                </button>
+            </a>
+        </div>
+        </header>
+        <body class="vscode-body vscode-light">
+        <h1>
+          C++について
+        </h1>
+            <h2 id="データ型について">データ型について</h2>
+<p>C++には、データを扱うための様々な「型」が用意されています。主な基本的なデータ型は以下の通りです。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">型</th>
+<th style="text-align:left">説明</th>
+<th style="text-align:left">例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>整数型</strong></td>
+<td style="text-align:left">整数を扱う型です。<code>short</code>, <code>int</code>, <code>long</code>, <code>long long</code> などがあり、扱える値の範囲が異なります。</td>
+<td style="text-align:left"><code>int age = 20;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>浮動小数点数型</strong></td>
+<td style="text-align:left">小数点数を含む数値を扱う型です。<code>float</code>, <code>double</code>, <code>long double</code> があり、精度が異なります。</td>
+<td style="text-align:left"><code>double pi = 3.14159;</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>文字型</strong></td>
+<td style="text-align:left">1文字を扱う型です。</td>
+<td style="text-align:left"><code>char initial = 'A';</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>ブーリアン型</strong></td>
+<td style="text-align:left"><code>true</code> (真) か <code>false</code> (偽) の2つの値だけを持つ型です。</td>
+<td style="text-align:left"><code>bool isFinished = false;</code></td>
+</tr>
+</tbody>
+</table>
+<p>これらの他に、ポインタ型、配列型、構造体、共用体など、より複雑なデータ構造を作るための型も存在します。</p>
+<hr>
+<h2 id="if文for文switch文try文について">if文・for文・switch文・try文について</h2>
+<p>はい、これらの基本的な制御構文は、<strong>Javaとほぼ同じように使えます</strong>。C言語の系統を引く多くの言語で共通の文法になっています。</p>
+<ul>
+<li>
+<p><strong><code>if</code>文と<code>for</code>文</strong>:
+ご提示の通り、<code>if (条件式) { ... }</code> や <code>for (初期化; 条件式; 更新) { ... }</code> の形式はC++でも全く同じです。</p>
+<pre><code class="language-cpp"><span class="hljs-comment">// if文</span>
+<span class="hljs-type">int</span> score = <span class="hljs-number">85</span>;
+<span class="hljs-keyword">if</span> (score &gt;= <span class="hljs-number">80</span>) {
+    std::cout &lt;&lt; <span class="hljs-string">&quot;合格です！&quot;</span> &lt;&lt; std::endl;
+}
+
+<span class="hljs-comment">// for文</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) {
+    std::cout &lt;&lt; i &lt;&lt; std::endl;
+}
+</code></pre>
+</li>
+<li>
+<p><strong><code>switch</code>文</strong>:
+これもJavaとほぼ同じですが、提示された例の <code>std::&lt;&lt;</code> は <code>std::cout &lt;&lt;</code> の間違いですね。また、<code>default</code> のスペルも修正しました。</p>
+<pre><code class="language-cpp"><span class="hljs-type">int</span> rank = <span class="hljs-number">1</span>;
+<span class="hljs-keyword">switch</span> (rank) {
+    <span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+        std::cout &lt;&lt; <span class="hljs-string">&quot;ゴールドメダル&quot;</span> &lt;&lt; std::endl;
+        <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+        std::cout &lt;&lt; <span class="hljs-string">&quot;シルバーメダル&quot;</span> &lt;&lt; std::endl;
+        <span class="hljs-keyword">break</span>;
+    <span class="hljs-keyword">default</span>:
+        std::cout &lt;&lt; <span class="hljs-string">&quot;入賞&quot;</span> &lt;&lt; std::endl;
+        <span class="hljs-keyword">break</span>;
+}
+</code></pre>
+</li>
+<li>
+<p><strong><code>try-catch</code>文</strong>:
+例外処理のための <code>try-catch</code> ブロックもJavaと同様に存在します。</p>
+<pre><code class="language-cpp"><span class="hljs-keyword">try</span> {
+    <span class="hljs-comment">// 例外が発生する可能性のある処理</span>
+    <span class="hljs-keyword">throw</span> std::<span class="hljs-built_in">runtime_error</span>(<span class="hljs-string">&quot;エラーが発生しました&quot;</span>);
+} <span class="hljs-built_in">catch</span> (<span class="hljs-type">const</span> std::exception&amp; e) {
+    std::cerr &lt;&lt; <span class="hljs-string">&quot;例外をキャッチしました: &quot;</span> &lt;&lt; e.<span class="hljs-built_in">what</span>() &lt;&lt; std::endl;
+}
+</code></pre>
+</li>
+</ul>
+<hr>
+<h2 id="オブジェクト指向について">オブジェクト指向について</h2>
+<p>C++は強力なオブジェクト指向プログラミング機能を持っています。</p>
+<ul>
+<li>
+<p><strong>class定義</strong>:
+はい、<strong><code>class</code> を使って独自のデータ型を定義するのは、C++プログラミングの基本であり、強く推奨されます</strong>。カプセル化、継承、ポリモーフィズムといったオブジェクト指向の恩恵を最大限に活用できます。</p>
+<pre><code class="language-cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Player</span> {
+<span class="hljs-keyword">public</span>: <span class="hljs-comment">// publicは外部からアクセス可能</span>
+    std::string name;
+    <span class="hljs-type">int</span> level;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">introduce</span><span class="hljs-params">()</span> </span>{
+        std::cout &lt;&lt; <span class="hljs-string">&quot;名前: &quot;</span> &lt;&lt; <span class="hljs-keyword">this</span>-&gt;name &lt;&lt; <span class="hljs-string">&quot;, レベル: &quot;</span> &lt;&lt; <span class="hljs-keyword">this</span>-&gt;level &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+</li>
+<li>
+<p><strong>データの格納、継承、参照</strong>:</p>
+<ul>
+<li><strong>データ格納</strong>: オブジェクトのメンバ変数には、ドット演算子 (<code>.</code>) やアロー演算子 (<code>-&gt;</code>) を使ってアクセス・代入します。</li>
+<li><strong>継承</strong>: <code>class SubClass : public SuperClass</code> のように、<code>:</code> を使ってクラスを継承します。</li>
+<li><strong>データの参照</strong>: 変数名の前に <code>&amp;</code> をつけることで、そのデータへの「参照」を作成できます。これはJavaの参照型と似ていますが、より低レベルな操作が可能です。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>new</code>演算子と<code>this</code>演算子</strong>:</p>
+<ul>
+<li><strong><code>new</code></strong>: はい、あります。<code>new</code> はヒープ領域に動的にオブジェクトを生成（メモリを確保）するために使います。Javaと異なり、<code>new</code> で確保したメモリは、不要になったら <strong><code>delete</code> を使って手動で解放しなければなりません</strong>。これを忘れるとメモリリークの原因になります。</li>
+<li><strong><code>this</code></strong>: はい、あります。クラスのメンバ関数内で、その関数を呼び出しているオブジェクト自身を指すポインタとして <code>this</code> を使います。</li>
+</ul>
+<!-- end list -->
+<pre><code class="language-cpp"><span class="hljs-comment">// オブジェクトの生成と操作</span>
+Player player1; <span class="hljs-comment">// スタック領域に生成</span>
+player1.name = <span class="hljs-string">&quot;Hero&quot;</span>;
+player1.level = <span class="hljs-number">10</span>;
+player1.<span class="hljs-built_in">introduce</span>();
+
+<span class="hljs-comment">// newを使った動的生成</span>
+Player* player2 = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Player</span>(); <span class="hljs-comment">// ヒープ領域に生成 (ポインタで扱う)</span>
+player2-&gt;name = <span class="hljs-string">&quot;Wizard&quot;</span>;       <span class="hljs-comment">// ポインタの場合はアロー演算子 -&gt; を使う</span>
+player2-&gt;level = <span class="hljs-number">12</span>;
+player2-&gt;<span class="hljs-built_in">introduce</span>();
+
+<span class="hljs-keyword">delete</span> player2; <span class="hljs-comment">// 手動でメモリを解放！</span>
+</code></pre>
+</li>
+</ul>
+<hr>
+<h2 id="配列リストについて">配列・リストについて</h2>
+<p>C++では、C言語スタイルの固定長配列に加え、標準テンプレートライブラリ (STL) が提供する非常に高機能なコンテナ（動的配列やリストなど）を使うのが一般的です。</p>
+<ul>
+<li>
+<p><strong><code>append</code>, <code>push</code>等の関数</strong>:
+はい、あります。動的配列の役割を果たす <strong><code>std::vector</code></strong> というコンテナに、要素を末尾に追加する <strong><code>push_back()</code></strong> というメンバ関数があります。これはJavaの <code>ArrayList</code> の <code>add</code> や Python の <code>list</code> の <code>append</code> に相当します。</p>
+</li>
+<li>
+<p><strong><code>shift</code>, <code>remove</code>等の関数</strong>:</p>
+<ul>
+<li><strong>要素の削除</strong>: <code>std::vector</code> や <code>std::list</code> には <strong><code>erase()</code></strong> というメンバ関数があり、特定の位置の要素を削除できます。先頭の要素を削除すれば、<code>shift</code> と同様の操作になります。</li>
+<li><strong>値による削除</strong>: <code>remove</code> に直接対応するメンバ関数はありませんが、<code>std::remove</code> というアルゴリズム関数と <code>erase</code> を組み合わせて、特定の値を持つすべての要素を削除する「Erase-removeイディオム」という手法がよく使われます。</li>
+</ul>
+</li>
+<li>
+<p><strong>オブジェクトの配列</strong>:
+はい、もちろん作れます。<code>std::vector</code> を使えば、自作したクラスのオブジェクトを格納する動的配列を簡単に作成できます。</p>
+</li>
+</ul>
+<!-- end list -->
+<pre><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string&gt;</span></span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Character</span> {
+<span class="hljs-keyword">public</span>:
+    std::string name;
+};
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>{
+    <span class="hljs-comment">// オブジェクトの動的配列 (vector)</span>
+    std::vector&lt;Character&gt; party;
+
+    <span class="hljs-comment">// push_backで要素を追加 (appendやpushに相当)</span>
+    Character hero;
+    hero.name = <span class="hljs-string">&quot;勇者&quot;</span>;
+    party.<span class="hljs-built_in">push_back</span>(hero);
+
+    Character mage;
+    mage.name = <span class="hljs-string">&quot;魔法使い&quot;</span>;
+    party.<span class="hljs-built_in">push_back</span>(mage);
+
+    <span class="hljs-comment">// 要素にアクセス</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp; member : party) {
+        std::cout &lt;&lt; member.name &lt;&lt; std::endl;
+    }
+
+    <span class="hljs-comment">// 先頭の要素を削除 (shiftに相当)</span>
+    <span class="hljs-keyword">if</span> (!party.<span class="hljs-built_in">empty</span>()) {
+        party.<span class="hljs-built_in">erase</span>(party.<span class="hljs-built_in">begin</span>());
+    }
+
+    std::cout &lt;&lt; <span class="hljs-string">&quot;--- パーティー編成後 ---&quot;</span> &lt;&lt; std::endl;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp; member : party) {
+        std::cout &lt;&lt; member.name &lt;&lt; std::endl;
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</code></pre>
+<h3 id="未定義を表す予約語概念">未定義を表す予約語・概念</h3>
+<p>結論から言うと、JavaScriptの<code>undefined</code>のような、<strong>あらゆる状況で「未定義」を意味する単一の予約語はC++にはありません</strong>。しかし、状況に応じて「無効」や「存在しない」ことを示すいくつかの重要なキーワードや概念があります。</p>
+<ol>
+<li>
+<p><strong><code>nullptr</code> (C++11以降)</strong>
+ポインタが何も指していない「ヌル状態」を示すためのキーワードです。以前は<code>NULL</code>というマクロ（実体は単なる<code>0</code>）が使われていましたが、<code>nullptr</code>は型安全であるため、現代のC++ではこちらを使うのが標準です。</p>
+<pre><code class="language-cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">processData</span><span class="hljs-params">(<span class="hljs-type">int</span>* ptr)</span> </span>{
+    <span class="hljs-keyword">if</span> (ptr == <span class="hljs-literal">nullptr</span>) {
+        std::cout &lt;&lt; <span class="hljs-string">&quot;ポインタは無効です。&quot;</span> &lt;&lt; std::endl;
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-comment">// ptrを使った処理</span>
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong><code>std::optional</code>と<code>std::nullopt</code> (C++17以降)</strong>
+値が「存在する場合」と「存在しない場合」の両方を表現できる、より安全でモダンな方法です。関数の戻り値で、有効な値を返せない場合などに非常に便利です。値が存在しない状態は<code>std::nullopt</code>で表現します。</p>
+<pre><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;optional&gt;</span></span>
+
+<span class="hljs-function">std::optional&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">findNumber</span><span class="hljs-params">(<span class="hljs-type">int</span> id)</span> </span>{
+    <span class="hljs-keyword">if</span> (id == <span class="hljs-number">1</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-number">42</span>; <span class="hljs-comment">// 値が存在する</span>
+    }
+    <span class="hljs-keyword">return</span> std::<span class="hljs-literal">nullopt</span>; <span class="hljs-comment">// 値が存在しない</span>
+}
+</code></pre>
+</li>
+<li>
+<p><strong>未定義動作 (Undefined Behavior)</strong>
+これはキーワードではなく<strong>概念</strong>です。プログラムのルールを破った（例: 配列の範囲外にアクセスする、ヌルポインタを指す先を読み書きしようとする）場合に発生します。未定義動作が起きると、プログラムはクラッシュするかもしれないし、一見正しく動き続けるかもしれません。何が起こるか全く保証されないため、プログラマはこれを全力で避ける必要があります。</p>
+</li>
+</ol>
+<hr>
+<h3 id="cに特徴的な言語仕様">C++に特徴的な言語仕様</h3>
+<p>C++には、他の言語（特にJavaやC言語）と比較して非常に特徴的な機能や設計思想がいくつかあります。</p>
+<ol>
+<li>
+<p><strong>RAII (Resource Acquisition Is Initialization)</strong>
+<strong>C++を最も特徴づける重要な設計思想です</strong>。これは「リソースの確保は、オブジェクトの初期化（コンストラクタ）時に行い、リソースの解放はオブジェクトの破棄（デストラクタ）時に行う」というものです。これにより、メモリ、ファイル、ネットワーク接続、ミューテックスなどのリソース管理が<strong>自動化</strong>され、メモリリークやリソースの解放忘れを劇的に減らせます。<code>std::vector</code>やスマートポインタはRAIIの代表例です。</p>
+</li>
+<li>
+<p><strong>デストラクタ (<code>~ClassName()</code>)</strong>
+RAIIを実現するための核となる機能です。オブジェクトがスコープを抜ける、または<code>delete</code>されるときに<strong>自動的に呼び出される</strong>特殊なメンバ関数です。Javaのガベージコレクションとは異なり、いつ解放されるかが明確に決まっているため、リソース管理を厳密に行えます。</p>
+<pre><code class="language-cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">FileManager</span> {
+<span class="hljs-keyword">private</span>:
+    FILE* pFile;
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-built_in">FileManager</span>(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* filename) {
+        <span class="hljs-comment">// コンストラクタでリソース（ファイル）を確保</span>
+        pFile = <span class="hljs-built_in">fopen</span>(filename, <span class="hljs-string">&quot;w&quot;</span>);
+        std::cout &lt;&lt; <span class="hljs-string">&quot;ファイルを開きました。&quot;</span> &lt;&lt; std::endl;
+    }
+    ~<span class="hljs-built_in">FileManager</span>() { <span class="hljs-comment">// デストラクタ</span>
+        <span class="hljs-comment">// デストラクタでリソースを自動的に解放</span>
+        <span class="hljs-keyword">if</span> (pFile) {
+            <span class="hljs-built_in">fclose</span>(pFile);
+        }
+        std::cout &lt;&lt; <span class="hljs-string">&quot;ファイルを閉じました。&quot;</span> &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+</li>
+<li>
+<p><strong>スマートポインタ (<code>std::unique_ptr</code>, <code>std::shared_ptr</code>)</strong>
+RAIIをポインタに応用したものです。<code>new</code>で確保したメモリを、<strong>自動的に<code>delete</code>してくれる</strong>賢いポインタです。<code>std::unique_ptr</code>は所有権を一つに限定し、<code>std::shared_ptr</code>は複数のポインタで所有権を共有できます。これらを使うことで、手動での<code>delete</code>が不要になり、メモリリークの心配がほぼなくなります。</p>
+</li>
+<li>
+<p><strong>テンプレートメタプログラミング</strong>
+C++のテンプレートは、Javaのジェネリクスよりもはるかに強力です。型を引数に取るだけでなく、<strong>コンパイル時に計算を行い、コードを生成する</strong>ことができます。これにより、実行時のオーバーヘッドなしに非常に効率的で柔軟なコードを書くことが可能です。標準ライブラリ(STL)の<code>vector</code>や<code>map</code>などもすべてテンプレートでできています。</p>
+</li>
+<li>
+<p><strong>演算子オーバーロード</strong>
+<code>+</code>, <code>-</code>, <code>*</code>, <code>&lt;&lt;</code>, <code>[]</code>などの既存の演算子を、自作のクラス（例えば、ベクトルや複素数クラス）に対して再定義できる機能です。これにより、直感的で読みやすいコードを書くことができます。</p>
+<pre><code class="language-cpp">Vector2D pos1 = {<span class="hljs-number">1.0</span>, <span class="hljs-number">2.0</span>};
+Vector2D pos2 = {<span class="hljs-number">3.0</span>, <span class="hljs-number">4.0</span>};
+Vector2D result = pos1 + pos2; <span class="hljs-comment">// +演算子をオーバーロードすることで、こんな直感的な記述が可能</span>
+</code></pre>
+</li>
+<li>
+<p><strong><code>const</code>の多用 (<code>const</code> correct-ness)</strong>
+C++では<code>const</code>キーワードが非常に重要です。変数の値を不変にするだけでなく、**「この関数はメンバ変数を変更しません」「この引数は関数内で変更されません」**といった契約をコードで明示するために使われます。<code>const</code>を正しく使うことで、コンパイラが間違いを検出してくれ、より安全で堅牢なプログラムになります。</p>
+</li>
+</ol>
+
+            
+            
+        </body>
+      <footer>
+        <link href="/public_style/footer_header.css" rel="stylesheet"/>
+        <div id="footer">
+            <p>
+                Shotaのページ<br>
+                <a href="/otherFile/detail.html">メインページ</a><br>
+                <a href="/index.html">名刺のページ</a><br>
+            </p>
+        </div>
+    </footer>
+        </html>
