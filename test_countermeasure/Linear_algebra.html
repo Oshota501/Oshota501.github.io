@@ -2,6 +2,7 @@
     <head>
         <meta charset="uft-8"/>
         <title>線形代数学</title>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </head>
 
     <header>
@@ -23,9 +24,226 @@
     </header>
 
     <body>
-        <h1>
-            線形代数I
-        </h1>
+        <div class="main">
+            <h1>
+                線形代数I
+            </h1>
+            <p>
+                Reactに頼らないという謎の方針で作成した線形代数のページです。<br>
+                ここでは、行列の計算や行列式の計算を行います。<br>
+                なお、行列の計算はJavaScriptで実装しています。<br>
+                そのため、行列の計算はブラウザ上で行われます。<br>
+                そのため、ブラウザのJavaScriptの実装に依存します。<br>
+                そのため、ブラウザによっては、動作が異なる場合があります。<br>
+                そのため、動作しない場合があります。<br>      
+            </p>
+            <div class="team1">
+                <h2>det(A) Aは2*2行列式 メーカー</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>1</th>
+                            <th>2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input class="det22" type="number"></td>
+                            <td><input class="det22" type="number"></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><input class="det22" type="number"></td>
+                            <td><input class="det22" type="number"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><button onclick="det22()">生成</button></td>
+                        </tr>
+
+                    </tbody>
+                
+                </table>
+                <p id="det22ans">
+                    行列式の値は
+
+                </p>
+                <script>
+                    let det22input = document.getElementsByClassName("det22");
+                    const det22 = function () {
+                        let a = parseFloat(det22input[0].value);
+                        let b = parseFloat(det22input[1].value);
+                        let c = parseFloat(det22input[2].value);
+                        let d = parseFloat(det22input[3].value);
+                        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
+                            document.getElementById("det22ans").innerText = "すべての値を入力してください。";
+                            return;
+                        }
+                        let det = a * d - b * c;
+                        document.getElementById("det22ans").innerText = "行列式の値は " + det + " です。";
+                    }
+                </script>
+            </div>
+            <div class="team1">
+                <h2>2*2固有値 メーカー</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>1</th>
+                            <th>2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input class="eigenvalue22" type="number"></td>
+                            <td><input class="eigenvalue22" type="number"></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><input class="eigenvalue22" type="number"></td>
+                            <td><input class="eigenvalue22" type="number"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><button onclick="eigenvalue22()">生成</button></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <p id="eigenvalue22ans"></p>
+                <script>
+                    let eigenvalue22input = document.getElementsByClassName("eigenvalue22");
+                    const eigenvalue22 = function () {
+                        let a = parseFloat(eigenvalue22input[0].value);
+                        let b = parseFloat(eigenvalue22input[1].value);
+                        let c = parseFloat(eigenvalue22input[2].value);
+                        let d = parseFloat(eigenvalue22input[3].value);
+                        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
+                            document.getElementById("eigenvalue22ans").innerText = "すべての値を入力してください。";
+                            return;
+                        }
+                        //２次方程式の判別式を用いている。(さすがgithub copilot))
+                        let trace = a + d;
+                        let det = a * d - b * c;
+                        let discriminant = trace * trace - 4 * det;
+                        if (discriminant < 0) {
+                            document.getElementById("eigenvalue22ans").innerText = "固有値は実数ではありません。";
+                            return;
+                        }
+                        let eigenvalue1 = (trace + Math.sqrt(discriminant)) / 2;
+                        let eigenvalue2 = (trace - Math.sqrt(discriminant)) / 2;
+                        document.getElementById("eigenvalue22ans").innerText = "固有値は " + eigenvalue1 + " と " + eigenvalue2 + " です。";
+                    }
+                </script>
+            </div>
+            <div class="team1">
+                <h2>2*2固有ベクトルメーカー</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>1</th>
+                            <th>2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><input class="eigenvalueB22" type="number"></td>
+                            <td><input class="eigenvalueB22" type="number"></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><input class="eigenvalueB22" type="number"></td>
+                            <td><input class="eigenvalueB22" type="number"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td><button onclick="eigenvalueB22()">生成</button></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <p id="eigenvalueB22ans"></p>
+            <script>
+                let eigenvalueB22input = document.getElementsByClassName("eigenvalueB22");
+                const eigenvalueB22 = function () {
+                    let a = parseFloat(eigenvalueB22input[0].value);
+                    let b = parseFloat(eigenvalueB22input[1].value);
+                    let c = parseFloat(eigenvalueB22input[2].value);
+                    let d = parseFloat(eigenvalueB22input[3].value);
+                    if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
+                        document.getElementById("eigenvalueB22ans").innerText = "すべての値を入力してください。";
+                        return;
+                    }
+                    //固有値を求める
+                    let trace = a + d;
+                    let det = a * d - b * c;
+                    let discriminant = trace * trace - 4 * det;
+                    if (discriminant < 0) {
+                        document.getElementById("eigenvalueB22ans").innerText = "固有値は実数ではありません。";
+                        return;
+                    }
+                    let eigenvalue1 = (trace + Math.sqrt(discriminant)) / 2;
+                    let eigenvalue2 = (trace - Math.sqrt(discriminant)) / 2;
+
+                    //固有ベクトルを求める
+                    //固有値1のとき
+                    let x1 = b;
+                    let y1 = eigenvalue1 - a;
+                    //固有値2のとき
+                    let x2 = b;
+                    let y2 = eigenvalue2 - a;
+
+                    document.getElementById("eigenvalueB22ans").innerText =
+                        "固有値" + eigenvalue1 + "のとき、固有ベクトルは(" + x1 + "," + y1 + ")です。\n" +
+                        "固有値" + eigenvalue2 + "のとき、固有ベクトルは(" + x2 + "," + y2 + ")です。";
+                }
+            </script>
+
+        </div>
+        
+         <style>
+body{
+    background-color: rgb(255, 255, 231);
+}
+.main h1{
+    border:6px ridge orange;
+    background-color: rgb(255, 223, 195);
+    color: rgb(93, 244, 255);
+    -webkit-text-stroke: 1px black;
+}
+.main h1:hover{
+    border:6px ridge orange;
+    background-color: rgb(210, 255, 195);
+    color: rgb(93, 244, 255);
+    -webkit-text-stroke: 20px black;
+}
+.main {
+    width: 80%;
+    background-color: white;
+    border:1px solid;
+    color:black;
+    margin: 0px auto;
+    text-align: left ;
+    border-radius: 10px;;
+}
+.team1 {
+    border:1px solid;
+    border-radius: 4px;
+}
+.team1 input{
+    font-size: 30px;
+    width:80px;
+}
+         </style>
     </body>
 
     <footer>
