@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>ログインページ</title>
+        <meta charset="utf-8"/>
+    </head>
+    <body>
+        <div id="menue">
+            <h1 class="www">ログインページ</h1>
+        </div>
+        <style>
+body{
+    background: linear-gradient(45deg,rgba(200, 200, 200, 0.289),rgba(195, 162, 0, 0.289),rgba(200, 200, 200, 0.289),rgba(195, 162, 0, 0.289),rgba(200, 200, 200, 0.289),rgba(195, 162, 0, 0.289),rgba(200, 200, 200, 0.289),rgba(195, 162, 0, 0.289))
+    ,linear-gradient(135deg,rgba(200, 200, 200, 0.289),rgba(195, 162, 0, 0.289),rgba(200, 200, 200, 0.289),rgba(195, 162, 0, 0.289),rgba(200, 200, 200, 0.289),rgba(195, 162, 0, 0.289),rgba(200, 200, 200, 0.289),rgba(195, 162, 0, 0.289));
+    color:white;
+    text-align: center;
+}
+        </style>
+        <script>
+let elms = document.getElementsByClassName("www");
+color1 = {
+    c : ["rgb(245,255,0)","rgb(245,0,0)"],
+    n : 0 ,
+}
+setInterval(function(){
+    color1.n ++ ;
+    if(color1.n >= color1.c.length ){
+        color1.n = 0 ;
+    }
+    for(let i = 0 ; i < elms.length ; i++){
+        elms[i].style.color = color1.c[color1.n];
+    }
+},100);
+        </script>
+    </body>
+</html>
