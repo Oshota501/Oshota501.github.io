@@ -6,6 +6,10 @@
     <body>
         <div id="menue">
             <h1 class="www">ログインページ</h1>
+            <ul>
+                <li class="www">当社は安全にあなたの情報をお守りいたします。お任せください。</li>
+                <li></li>
+            </ul>
         </div>
         <style>
 body{
@@ -19,15 +23,18 @@ body{
 let elms = document.getElementsByClassName("www");
 color1 = {
     c : ["rgb(245,255,0)","rgb(245,0,0)"],
-    n : 0 ,
+    n : false ,
 }
 setInterval(function(){
-    color1.n ++ ;
-    if(color1.n >= color1.c.length ){
-        color1.n = 0 ;
-    }
+    color1.n = !color1.n ;
     for(let i = 0 ; i < elms.length ; i++){
-        elms[i].style.color = color1.c[color1.n];
+        if(color1.n){
+            elms[i].style.color = color1.c[1];
+            elms[i].style.background = color1.c[0];
+        }else{
+            elms[i].style.color = color1.c[0];
+            elms[i].style.background = color1.c[1];
+        }
     }
 },100);
         </script>
