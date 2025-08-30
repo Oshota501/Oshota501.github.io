@@ -1,0 +1,188 @@
+body{
+    font-family: serif;
+    background-color: black;
+}
+@keyframes select_pass1{
+    from{
+        background-color: rgb(0, 0, 0);
+        transform: scale(1.00) translateY(0px);;
+        
+    }
+    to{
+        background-color: rgb(44, 44, 44);
+        transform: scale(1.06) translateY(0px);
+        box-shadow: 
+            0 0 15px 5px rgb(44, 44, 44) 
+        ;
+        border-top:rgb(199, 0, 249);
+    }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (min-width: 768px){
+    #main{
+        padding: 42px 0px;
+        position: static;
+        display: flex;
+    }
+    .main_page{
+        width: 100%;
+        border-top:1px solid rgb(146, 146, 146);
+        padding: 0px 2px;
+        color: white;
+    }
+    .side_menue{
+        width: 20rem;
+        border-top:1px solid rgb(146, 146, 146);
+        padding: 2px 2px;
+    }
+    .menue_page {
+        background-color: rgba(0, 0, 0, 0.853);
+        position: fixed;
+        padding: 2px 2px;
+        border-top:1px solid rgb(146, 146, 146);
+        width: 100%;
+        display: flex;
+    }
+}
+@media (max-width: 768px){
+    #main{
+        padding: 56px 0px;
+        position: static;
+        display: block;
+    }
+    .main_page{
+        width: 100%;
+        border-top:1px solid rgb(146, 146, 146);
+        padding: 0px 2px;
+        color: white;
+    }
+    .side_menue{
+        width: 100%;
+        border-top:1px solid rgb(146, 146, 146);
+        padding: 2px 2px;
+    }
+    .menue_page {
+        background-color: rgba(0, 0, 0, 0.853);
+        position: fixed;
+        padding: 2px 2px;
+        border-top:1px solid rgb(146, 146, 146);
+        width: 100%;
+        overflow-x: auto;
+        display: flex;
+    }
+}
+
+.main_page_nomal_format{
+    margin-left: 0.8rem ;
+    font-size: 1rem;
+}
+.main_page_nomal_format h1{
+    font-size: 2rem;
+}
+.main_page_nomal_format h2{
+    font-size: 1.5rem;
+}
+
+.space_6px{
+    width: 6px;
+}
+.menue_in_main{
+    display: flex;
+    height: 35px;
+}
+.pass_a{
+    text-decoration: none;
+}
+.pass_1{
+    font-family: serif;
+    border-top:1px solid rgb(146, 146, 146);
+    background-color: rgb(0, 0, 0);
+    width:130px;
+    height: 35px;
+    text-align: center;
+}
+.pass_1:hover{
+    animation: select_pass1 0.3s forwards;
+}
+.pass_1_under_bar{
+    color: white;
+    box-shadow:
+        0 0 15px 5px rgb(44, 44, 44)
+    ;
+    background-color: rgb(44, 44, 44);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.1s ease, visibility 0.3s;
+}
+.pass_1:hover .pass_1_under_bar{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(2px);
+}
+.pass_1 h2{
+    font-weight: 100;
+    color: white;
+    font-size:22px;
+    margin: 0;
+    text-decoration: none;
+}
+.pass_a div{
+    font-size: 15px;
+    color:white;
+}
+.pass_a div:hover{
+    background-color: rgb(75, 75, 75);
+    color:rgb(146, 146, 146);
+}
+.profile_sidebar{
+    color: white;
+    font-family: unset;
+    text-align: center;
+}
+.profile_cat_anko{
+    width: 20rem;
+    height: 20rem;
+    margin: 0px auto;
+}
+.profile_cat_anko img{
+    width: 100%;
+    height: 100%;
+    border-radius: 33%;
+}
+.shadow_head1{
+    margin-top: 1rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.6rem 2rem;
+    font-family: unset;
+    font-weight: 900;
+    color:white;
+    background-color: transparent;
+    box-shadow: 
+        0 0 15px 5px rgb(44, 44, 44),
+        0 0 5px 5px rgb(83, 83, 83)
+    ;
+    border-radius: 1rem;
+}
+
+.footer{
+    font-size: 13px;
+    color:rgb(76, 76, 76);
+    text-align: center;
+}
+.footer a{
+    text-decoration: none;
+    color:rgb(76, 76, 76);
+}
