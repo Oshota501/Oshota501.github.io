@@ -67,20 +67,17 @@ body hr{
     .main_page{
         width: 100%;
         border-top:1px solid rgb(146, 146, 146);
-        padding: 0px 0.2rem;
         color: white;
     }
     .side_menue{
         width: 100%;
         border-top:1px solid rgb(146, 146, 146);
-        padding: 0.2rem 0.2rem;
     }
     .menue_page {
         background-color: rgba(0, 0, 0, 0.853);
         padding: 0.2rem 0.2rem;
         border-top:1px solid rgb(146, 146, 146);
         width: 100%;
-        overflow-x: auto;
         display: flex;
     }
 }
