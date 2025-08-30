@@ -1,6 +1,7 @@
 body{
     font-family: serif;
     background-color: black;
+    overflow-x: hidden;
 }
 @keyframes select_pass1{
     from{
@@ -30,7 +31,6 @@ body{
 }
 @media (min-width: 768px){
     #main{
-        padding: 3rem 0px;
         position: static;
         display: flex;
     }
@@ -46,7 +46,6 @@ body{
     }
     .menue_page {
         background-color: rgba(0, 0, 0, 0.853);
-        position: fixed;
         padding: 0.3rem 0.3rem ;
         border-top:1px solid rgb(146, 146, 146);
         width: 100%;
@@ -54,6 +53,7 @@ body{
     }
 }
 @media (max-width: 768px){
+
     #main{
         position: static;
         display: block;
@@ -71,7 +71,6 @@ body{
     }
     .menue_page {
         background-color: rgba(0, 0, 0, 0.853);
-        position: fixed;
         padding: 0.2rem 0.2rem;
         border-top:1px solid rgb(146, 146, 146);
         width: 100%;
@@ -102,6 +101,7 @@ body{
     text-decoration: none;
 }
 .pass_1{
+    margin-right: 0.3rem;
     font-family: serif;
     border-top:1px solid rgb(146, 146, 146);
     background-color: rgb(0, 0, 0);
@@ -179,7 +179,11 @@ body{
     ;
     border-radius: 1rem;
 }
-
+.side_menue a{
+    color:rgb(176, 176, 176);
+    text-decoration: none;
+    font-size: 1.2rem;
+}
 .footer{
     font-size: 0.7rem;
     color:rgb(76, 76, 76);

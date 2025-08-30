@@ -1,18 +1,4 @@
-// 読み込むファイルへのパス
-// 表示させたいHTML要素を取得
-const tes = [
-    {
-        elm : document.getElementsByClassName('menue_page')[0],
-        url : '/public/menue.html' ,
-    },{
-        elm : document.getElementsByClassName('footer')[0] ,
-        url : '/public/footer.html' ,
-    },{
-        elm : document.getElementsByClassName('side_menue')[0] ,
-        url : '/public/profile.html' ,
-    }
-]
-
+//tesにpushして使ってね
 // fetchを使ってファイルを読み込む
 function page_template_import(change_elm){
     const filePath = change_elm.url ;
@@ -37,8 +23,33 @@ function page_template_import(change_elm){
             targetElement.innerHTML = 'ファイルの読み込みに失敗しました。';
         });
 }
-
-tes.forEach((e,index)=>{
-    console.log(`${index}: Req ${e}`)
-    page_template_import(e)
-})
+function event_definition(){
+    const elms = document.getElementsByClassName("pass_1");
+    console.log(elms.length)
+    for(let i = 0 ; i< elms.length ; i++){
+        elms[i] = addEventListener("click",function(e){
+            onclick_menue_bar(i)
+        });
+    }
+    const onclick_menue_bar = function(n){
+        const elm = elms[n];
+        const elm_child = Array.from(elm.children);
+        elm_child.forEach((elm2, index2) => {
+            if (index2 > 0) {
+                if (elm2.style.visibility == "visible") {
+                    elm2.style.visibility = "hidden";
+                } else {
+                    elm2.style.visibility = "visible";
+                }
+            }
+        });
+    }
+}
+//main
+window.onload=function(){
+    tes.forEach((e,index)=>{
+        console.log(`${index}: Req ${e}`)
+        page_template_import(e)
+    })
+    event_definition()
+};

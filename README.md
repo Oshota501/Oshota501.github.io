@@ -31,8 +31,22 @@
             <!-- この要素ないには書かないでください。 -->
         </div>
 
-        <script src="/index.js"></script>
-        <link href="/public_style.css" rel="stylesheet"/>
+        <script>
+const tes = [
+    {
+        elm : document.getElementsByClassName('menue_page')[0],
+        url : '/public/menue.html' ,
+    },{
+        elm : document.getElementsByClassName('footer')[0] ,
+        url : '/public/footer.html' ,
+    },{
+        elm : document.getElementsByClassName('side_menue')[0] ,
+        url : '/public/profile.html' ,
+    }
+]
+        </script>
+        <script src="/public/index.js"></script>
+        <link href="/public/public_style.css" rel="stylesheet"/>
     </body>
 </html>
 ```
