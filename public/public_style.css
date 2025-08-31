@@ -196,3 +196,22 @@ body hr{
     text-decoration: none;
     color:rgb(76, 76, 76);
 }
+.btn_shadow_bw {
+    padding: 0.3rem 2rem;
+    background-color: black;
+    color :white;
+  border: none;
+  border-radius: 1rem;
+  font-size: 1.5rem;
+  box-shadow: 0 0 1rem 0.5rem rgb(44, 44, 44);
+  
+  transition: 
+    box-shadow 0.5s ease-out,
+    transform 0.5s ease-out
+  ; /* 0.5秒かけて変化させる */
+}
+
+.btn_shadow_bw:hover {
+  transform:scale(1.1);
+  box-shadow: none; /* hover時にシャドウを消す */
+}
