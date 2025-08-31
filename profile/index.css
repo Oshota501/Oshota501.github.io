@@ -44,3 +44,26 @@ pre code.hljs {
     font-size: 1rem;
     text-align: center;
 }
+
+.table_name_plate td{
+    padding: 0.1rem 0.8rem ;
+}
+
+.rotate_and_push{
+    display: block;
+    animation: rotate_a_init linear;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+}
+@keyframes rotate_a_init{
+    0%{
+        transform: translateY(5rem);
+        opacity: 0;
+    }
+    30%{
+        opacity: 1;
+    }
+    100%{
+        opacity: 0.9;
+    }
+}
