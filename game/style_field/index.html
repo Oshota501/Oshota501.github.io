@@ -22,18 +22,22 @@
 
                         <br>
                         <hr>
-                        スマホ用でないことに注意してください。
+                        スマホ用でないことに注意してください。<br>
+                        
                     </div>
                     <!-- ゲームモードを選択 -->
                     <div class="main" style="display: none;">
+                        <div class="topMenue_return_button" onclick="returnBackMenue(0)">戻る</div>
                         <h1>難易度選択</h1>
                         <div class="game_select" onclick="gameSelector('easy')">かんたん</div>
                         <div class="game_select" onclick="gameSelector('nomal')">ふつう</div>
                         <div class="game_select" onclick="gameSelector('hard')">むづかしい</div>
                         <div class="game_select" onclick="gameSelector('hard2')">おに</div>
+                        
                     </div>
                     <!-- ゲーム画面１ -->
                     <div class="main" style="display: none;">
+                        <div class="topMenue_return_button" onclick="returnBackMenue(1)">戻る</div>
                         <div class="game_screen_cards">
 
                         </div>
@@ -41,8 +45,17 @@
                             
                         </div>
                         <div class="game_screen_objAdd">
-                            
+                            <!-- カード購入画面 -->
+                            <div class="buy_card">
+                                <div class="buy_card_shop">カード</div>
+                                <div class="buy_card_cost">価格</div>
+                            </div>
+                            <!-- 戦盤面 -->
+                            <div class="game_field">
+                                
+                            </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
