@@ -215,3 +215,7 @@ body hr{
   transform:scale(1.1);
   box-shadow: none; /* hover時にシャドウを消す */
 }
+.heigt_space{
+    margin: 5rem;
+
+}
