@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title></title>
+    </head>
+    <body>
+        <div class="card-list">
+            <div class="head-main">
+                <h1>読書録一覧</h1>
+            </div>
+            <hr>
+            <div class="card-list-all">
+                <div class="card">
+                    <div class="title">
+                        <span class="main">奥の細道</span>
+                        <span class="variety">和歌集</span>
+                        <span class="name">松尾 芭蕉</span>
+                        
+                    </div><hr>
+                    <div class="explain">
+                        <span class="text">よくわからんが旅行記アンド和歌集</span>
+                        <div class="date">完読日 2025年4月1日</div>
+                        <div class="date">最終更新日 2025年9月18日</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="title">
+                        <span class="main">やさしいpython</span>
+                        <span class="variety">技術書</span>
+                        <span class="name">高橋 麻奈</span>
+                        
+                    </div><hr>
+                    <div class="explain">
+                        <span class="text">マジで丁寧なpython説明書</span>
+                        <div class="date">完読日 2025年4月11日</div>
+                        <div class="date">最終更新日 2025年9月18日</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="title">
+                        <span class="main">六法全書</span>
+                        <span class="variety">専門書</span>
+                        <span class="name">日本国</span>
+                        
+                    </div><hr>
+                    <div class="explain">
+                        <span class="text">読みきれません。</span>
+                        <div class="date">完読日 -</div>
+                        <div class="date">最終更新日 2025年9月18日</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="title">
+                        <span class="main">葬送のフリーレン</span>
+                        <span class="variety">漫画</span>
+                        <span class="name">山田 鐘人  アベツカサ</span>
+                        
+                    </div><hr>
+                    <div class="explain">
+                        <span class="text">魔王討伐後の勇者一行の物語</span>
+                        <div class="date">完読日 2025年9月15日</div>
+                        <div class="date">最終更新日 2025年9月15日</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+const elms = document.getElementsByClassName("variety");
+for(let i = 0 ; i < elms.length ; i++){
+    const text = elms[i].innerText ;
+    switch (text) {
+    case "技術書":
+        elms[i].style.background = "rgb(255,220,220)";
+        break;
+    case "小説":
+        elms[i].style.background = "rgb(255,255,220)";
+        break;
+    case "専門書":
+        elms[i].style.background = "rgb(255,220,255)";
+        break;
+    case "漫画":
+        elms[i].style.background = "rgb(220,220,255)";
+        break;
+    case "和歌集":
+        elms[i].style.background = "rgb(220,255,220)";
+        break;
+    default :
+        elms[i].style.background = "rgb(220,220,220)";
+        break;
+        
+    }
+}
+        </script>
+        <style>
+.card-list{
+    color:black;
+    background-color: white;
+    width: 768px;
+    margin: 0px auto;
+}
+.head-main{
+    text-align: center;
+    color:black;
+    border:1px solid;
+    margin: 1rem;
+}
+.card-list-all{
+    margin: 0.5rem;
+}
+.card{
+    margin-bottom: 0.5rem;
+    border:1px solid;
+    background:white;
+    transition: 0.4s;
+}
+.card:hover{
+    background:rgb(239, 239, 239);
+}
+.title{
+    padding-top: 0.4rem;
+}
+    .main{
+        padding-left: 1rem;
+        font-size: 1.3rem;
+    }
+    .variety{
+        margin-left: 1rem;
+        border:1px solid;
+        box-shadow: inset;
+        padding: 0.1rem;
+        border-radius: 0.3rem;
+    }
+    .name{
+        margin-left: 1rem;
+        font-size: 0.8rem;
+        color: rgb(122, 122, 122);
+    }
+.explain{
+    padding-left: 1rem;
+    padding-bottom: 0.4rem;
+}
+    .text{
+        font-size: 1rem;
+    }
+    .date{
+        text-align: right;
+        margin-right: 1.5rem;
+        color:rgb(95, 95, 95);
+        font-size: 0.8rem;
+    }
+        </style>
+    </body>
+</html>
