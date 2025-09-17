@@ -11,7 +11,7 @@
             </div>
             <hr>
             <div class="card-list-all">
-                <div class="card">
+                <div class="card" onclick="cardOnClick(`奥の細道の概要`)">
                     <div class="title">
                         <span class="main">奥の細道</span>
                         <span class="variety">和歌集</span>
@@ -24,7 +24,7 @@
                         <div class="date">最終更新日 2025年9月18日</div>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card" onclick="cardOnClick(`やさしいpythonの概要`)">
                     <div class="title">
                         <span class="main">やさしいpython</span>
                         <span class="variety">技術書</span>
@@ -37,7 +37,7 @@
                         <div class="date">最終更新日 2025年9月18日</div>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card" onclick="cardOnClick(`六法全書の概要`)">
                     <div class="title">
                         <span class="main">六法全書</span>
                         <span class="variety">専門書</span>
@@ -50,7 +50,7 @@
                         <div class="date">最終更新日 2025年9月18日</div>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card" onclick="cardOnClick(`葬送のフリーレンの概要`)">
                     <div class="title">
                         <span class="main">葬送のフリーレン</span>
                         <span class="variety">漫画</span>
@@ -91,6 +91,9 @@ for(let i = 0 ; i < elms.length ; i++){
         
     }
 }
+const cardOnClick = function(title) {
+    alert(`${title}\n本来は別ページに遷移\nあああああああああああああああああああああああああああああああああああああああああああああああああああああああああ説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明説明`)
+}
         </script>
         <style>
 .card-list{
@@ -104,6 +107,7 @@ for(let i = 0 ; i < elms.length ; i++){
     color:black;
     border:1px solid;
     margin: 1rem;
+    background-color: #f6f8fa;
 }
 .card-list-all{
     margin: 0.5rem;
