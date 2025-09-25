@@ -14,6 +14,13 @@ body{
     background-color: gray;
     
 }
+.start_menue{
+    font-size:2rem;
+}
+.start_menue button{
+    font-size:2rem;
+    margin: 0.5rem;
+}
 #pointer-key {
     font-size: 2rem;
     color:rgb(224, 224, 224);
