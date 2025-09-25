@@ -15,6 +15,7 @@
                 - 20日以内に借金を返さなければ地下労働<br>
                 - スロット以外の稼ぎを得てはいけない<br>
                 - Enterキーを押して契約書にサイン<br>
+                - qキーを押して戻る<br>
                 <br>
                 ---------------------------------------<br>
                 契約書に署名<span id="pointer-key">|</span>
@@ -35,6 +36,9 @@ window.addEventListener("keypress",function(e){
     if(e.key == "Enter"){
         console.log("enter")
         open("/game/oshoSlot.v1/top/game")
+    }
+    if(e.key == "q"){
+        open("/game/oshoSlot.v1/")
     }
 })
     
