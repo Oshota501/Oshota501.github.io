@@ -1,14 +1,19 @@
 .main{
     
     background-color: rgb(23, 29, 25);
-    padding: 1rem;
     margin: 1rem;
     font-family: "DotGothic16", sans-serif;
     font-weight: 400;
     font-style: normal;
     color:rgb(224, 224, 224);
     font-size: 2rem;
+    text-align: center;
 }
 body{
     background-color: black;
+}
+#app{
+    padding: 2rem;
+    border: 4px outset;
+    border-color: black;
 }
