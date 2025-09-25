@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>slot v1</title>
+        <link href="../../pub/style.css" rel="stylesheet"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="main">
+            <div class="start_menue">
+                <br>
+                - 20日以内に借金を返さなければ地下労働<br>
+                - スロット以外の稼ぎを得てはいけない<br>
+                - Enterキーを押して契約書にサイン<br>
+                <br>
+                ---------------------------------------<br>
+                契約書に署名<span id="pointer-key">|</span>
+            </div>
+        </div>
+        <script>
+const elm = document.getElementById("pointer-key");
+let flag = false ;
+setInterval(function(){
+    flag = !flag
+    if(flag){
+        elm.style.display = "inline"
+    }else{
+        elm.style.display = "none"
+    }
+},350)
+window.addEventListener("keypress",function(e){
+    if(e.key == "Enter"){
+        console.log("enter")
+        open("/game/oshoSlot.v1/top/game")
+    }
+})
+    
+        </script>
+    </body>
+
+</html>
