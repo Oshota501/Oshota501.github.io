@@ -137,9 +137,21 @@ class SlotScreen extends PIXI.Graphics {
             })
         }
     }
+    //作成中
+    //view_obj 配列をシフトして0番目にgetGameObj();ものを加える処理を書いてください。
+    // sprite.destroy() を忘れずに
+    // 同スプライトを使っている変数の参照を削除（配列から削除するだけで十分と思われる）
     setNextViewObj = function(){
         const elm = this.getGameObj();
     }
+    //作成中
+    // ticker add しているので回転するエフェクトをここに書き加えるだけ
+    //     amountTime += delta;                    
+    // // delta(app.ticker.deltaTime) : 前のフレームから今のフレームまでの経過時間を正規化した値？
+    // // amountTime += app.ticker.deltaMS;    
+    // // app.ticker.deltaMS  : 前のフレームから今のフレームまでの経過時間(ms)
+    // view_obj[i].
+    
     freem = function(){
 
     }
