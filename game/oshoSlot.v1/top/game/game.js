@@ -20,9 +20,8 @@ class SlotGameScreen extends PIXI.Container{
                 i
             )   
             this.screen.push(slotScreen);
-            this.screen.push(slotScreen);
-            this.addChild(slotScreen); // 2. 生成したスロットをコンテナに追加
 
+            this.addChild(slotScreen); // 2. 生成したスロットをコンテナに追加
         }
     }
 }
@@ -37,7 +36,87 @@ class SlotScreen extends PIXI.Graphics {
             height : 0.0
         }
     }
-    
+    speed = 0 // float
+    game = {
+        obj : [{
+            name : "apple" ,
+            id : 0 ,
+            weight_b : 0 , // 確率の重み
+            weight_t : 10 ,
+            texture : PIXI.Texture.from("../img/apple.png"),
+            score : function(bet){
+                return bet * 2
+            } , 
+        },{
+            name : "bell" ,
+            id : 1 ,
+            weight_b : 10 , // 確率の重み
+            weight_t : 15 ,
+            texture : PIXI.Texture.from("../img/bell.png"),
+            score : function(bet){
+                return bet * 3
+            } , 
+        }],
+        sum_weight : 15
+    }
+    setGameObj = function(objs){
+        this.game.obj = []
+        this.game.sum_weight = 0
+        objs.forEach(elm => {
+            this.game.obj.push ({
+                name : elm.name ,
+                id : elm.id ,
+                weight_b : this.game.sum_weight ,
+                weight_t : this.game.sum_weight + elm.weight ,
+                texture : elm.texture ,
+                score : elm.score 
+            })
+            this.game.sum_weight += elm.weight
+        });
+    }
+    changeGameObj = function (id,obj) {
+        found = false ;
+        this.game.sum_weight = 0 ;
+        for(let i = 0 ; i < this.game.obj.length ; i ++){
+            const elm = this.game.obj[i] ;
+            if (found ){
+                elm.weight_b = this.game.sum_weight ;
+                elm.weight_t = this.game.sum_weight + obj.weight ;
+            }else {
+                 if(elm.id == id){
+                    found = true ;
+                    elm = {
+                        name : obj.name ,
+                        id : obj.id ,
+                        weight_b : this.game.sum_weight ,
+                        weight_t : this.game.sum_weight + obj.weight ,
+                        texture : obj.texture ,
+                        score : obj.score  
+                    }
+                }
+            }
+            this.game.sum_weight += elm.weight ;
+        }
+        console.error(`SlotScreen.changeGameObj : not found id ${id}`)
+        return
+    }
+    getGameObj = function(){
+        const rand = Math.floor(Math.random()*this.game.sum_weight)
+        for (let i = 0 ; i < this.game.obj.length ; i ++){
+            const elm = this.game.obj[i]
+            if(elm.weight_b <= rand && elm.weight_t > rand ){
+                return  {
+                    name : elm.name ,
+                    id : elm.id ,
+                    texture : elm.texture ,
+                    score : elm.score 
+                }
+            }   
+        }
+        console.error("SlotScreen.getGameObj : not found ")
+        return
+    }
+    view_obj = []
     constructor(width,height,i){
         super()
         this.size.per.width = width / 100
@@ -58,6 +137,21 @@ class SlotScreen extends PIXI.Graphics {
         this.pivot.y = Math.floor(this.height/2)
         this.x = i*this.width + Math.floor(this.width/2)
         this.y = Math.floor(this.height/2)
+
+        for(let i = 0 ; i < 5 ; i ++){
+            const elm = this.getGameObj();
+            const sprite = new PIXI.Sprite(elm.texture) ;
+            sprite.x = this.size.per.width *10
+            sprite.y = this.size.per.height *32*i - this.size.per.height*16
+            this.addChild ( sprite )
+            this.view_obj.push ({
+                data : {
+                    name : elm.name ,
+                    id : elm.id ,
+                } ,
+                sprite : sprite
+            })
+        }
     }
 }
 
@@ -73,7 +167,7 @@ class Slot {
     //---------------------------------------------------------------------
     slot_object = []
     //---------------------------------------------------------------------
-    setSlotObject = function(
+    addSlotObject = function(
         name ,// String
         probability, // Float
         PATH_TO_IMAGE, // String
@@ -101,7 +195,7 @@ class Slot {
                 name : name ,
                 id : obj_id ,
                 weight : probability , // 確率の重み
-                texture : new PIXI.Sprite(new PIXI.Texture.from(PATH_TO_IMAGE)),
+                texture : PIXI.Texture.from(PATH_TO_IMAGE),
                 score : score ,
             })
     }
@@ -139,7 +233,7 @@ class Slot {
         
         for (let i = 0 ; i < useData.length ; i ++) {
             const elm = useData [i] ;
-            this.setSlotObject (
+            this.addSlotObject (
                 elm.name,
                 elm.probability, // Float
                 elm.PATH_TO_IMAGE, // String
