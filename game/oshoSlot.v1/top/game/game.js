@@ -11,13 +11,14 @@ class SlotGameScreen extends PIXI.Container{
     setHeight = function(h){
         this.width = Math.floor(h) ;
     }
-    constructor(){
+    constructor(app){
         super()
         for(let i = 0 ; i < 5 ; i ++){
             const slotScreen = new SlotScreen(
                 this.width ,
                 this.height ,
-                i
+                i,
+                app
             )   
             this.screen.push(slotScreen);
 
@@ -26,6 +27,7 @@ class SlotGameScreen extends PIXI.Container{
     }
 }
 class SlotScreen extends PIXI.Graphics {
+    app
     size = {
         per : {
             width : 0.0 ,
@@ -117,7 +119,31 @@ class SlotScreen extends PIXI.Graphics {
         return
     }
     view_obj = []
-    constructor(width,height,i){
+    setingViewObj = function(){
+        for(let i = 0 ; i < 5; i ++){
+            const elm = this.getGameObj();
+            const sprite = new PIXI.Sprite(elm.texture) ;
+            sprite.x = 0
+            sprite.y = this.size.per.height *32*i - this.size.per.height *32
+            elm.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+            sprite.scale.set(6, 6)
+            this.addChild ( sprite )
+            this.view_obj.push ({
+                data : {
+                    name : elm.name ,
+                    id : elm.id ,
+                } ,
+                sprite : sprite
+            })
+        }
+    }
+    setNextViewObj = function(){
+        const elm = this.getGameObj();
+    }
+    freem = function(){
+
+    }
+    constructor(width,height,i,app){
         super()
         this.size.per.width = width / 100
         this.size.per.height = height / 100
@@ -138,25 +164,15 @@ class SlotScreen extends PIXI.Graphics {
         this.x = i*this.width + Math.floor(this.width/2)
         this.y = Math.floor(this.height/2)
 
-        for(let i = 0 ; i < 5 ; i ++){
-            const elm = this.getGameObj();
-            const sprite = new PIXI.Sprite(elm.texture) ;
-            sprite.x = this.size.per.width *10
-            sprite.y = this.size.per.height *32*i - this.size.per.height*16
-            this.addChild ( sprite )
-            this.view_obj.push ({
-                data : {
-                    name : elm.name ,
-                    id : elm.id ,
-                } ,
-                sprite : sprite
-            })
-        }
+        this.setingViewObj()
+
+        this.app = app
+        this.app.ticker.add(this.freem);
     }
 }
 
 class Slot {
-    screen = new SlotGameScreen() //スクリーンobj
+    screen //スクリーンobj
     app //pixi obj
 
     //=====================================================================
@@ -224,7 +240,7 @@ class Slot {
         this.app = app
 
         //---------------------------------------------------------------------
-
+        this.screen = new SlotGameScreen(app)
         this.screen.setWidth(w/5) ;
         this.screen.setHeight(h) ;
         app.stage.addChild(this.screen)
@@ -240,7 +256,8 @@ class Slot {
                 elm.obj_id, // Int
             )
         }
-    }
+        
+    } 
 }
 
 
