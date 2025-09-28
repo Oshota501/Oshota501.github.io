@@ -179,14 +179,15 @@ class SlotScreen extends PIXI.Graphics {
         const tic = this.app.ticker.deltaMS;
         for(let i = 0 ; i < 5 ; i ++) {
             const elm = this.view_obj[i] ;
+            
             elm.sprite.y += (this.speed/1000 )*tic ;
-            if(elm.sprite.y >= this.size.per.height*97){
-                this.setNextViewObj()
-                if(this.isWaitStop){
-                    this.isWaitStop = false ;
-                    this.speed = 0 ;
-                    this.isStarted = false ;
-                }
+        }
+        if(this.view_obj[0].sprite.y >= this.size.per.height*97){
+            this.setNextViewObj()
+            if(this.isWaitStop){
+                this.isWaitStop = false ;
+                this.speed = 0 ;
+                this.isStarted = false ;
             }
         }
     }
@@ -222,7 +223,7 @@ class SlotScreen extends PIXI.Graphics {
     // stop start を作ったので対応するボタンを作ってください。
     // コンストラクタでnewしなくても多分大丈夫
     stopButton 
-    
+
     constructor(width,height,i,app,objs){
         super()
         this.setGameObj(objs)
@@ -240,7 +241,7 @@ class SlotScreen extends PIXI.Graphics {
             0,
             this.size.per.height,
             width,
-            this.size.per.height*95); // (x, y, width, height)
+            this.size.per.height*96); // (x, y, width, height)
         viewportMask.endFill();
         this.addChild(viewportMask); // マスク自体もステージに表示する必要がある
         this.mask = viewportMask
