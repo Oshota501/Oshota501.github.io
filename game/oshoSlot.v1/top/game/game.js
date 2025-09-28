@@ -11,18 +11,21 @@ class SlotGameScreen extends PIXI.Container{
     setHeight = function(h){
         this.width = Math.floor(h) ;
     }
-    constructor(app){
+    constructor(app,objs){
         super()
         for(let i = 0 ; i < 5 ; i ++){
             const slotScreen = new SlotScreen(
                 this.width ,
                 this.height ,
                 i,
-                app
+                app,
+                objs
             )   
             this.screen.push(slotScreen);
 
             this.addChild(slotScreen); // 2. 生成したスロットをコンテナに追加
+
+            
         }
     }
 }
@@ -38,27 +41,27 @@ class SlotScreen extends PIXI.Graphics {
             height : 0.0
         }
     }
-    speed = 0 // float
     game = {
-        obj : [{
-            name : "apple" ,
-            id : 0 ,
-            weight_b : 0 , // 確率の重み
-            weight_t : 10 ,
-            texture : PIXI.Texture.from("../img/apple.png"),
-            score : function(bet){
-                return bet * 2
-            } , 
-        },{
-            name : "bell" ,
-            id : 1 ,
-            weight_b : 10 , // 確率の重み
-            weight_t : 15 ,
-            texture : PIXI.Texture.from("../img/bell.png"),
-            score : function(bet){
-                return bet * 3
-            } , 
-        }],
+        // obj : [{
+        //     name : "apple" ,
+        //     id : 0 ,
+        //     weight_b : 0 , // 確率の重み
+        //     weight_t : 10 ,
+        //     texture : PIXI.Texture.from("../img/apple.png"),
+        //     score : function(bet){
+        //         return bet * 2
+        //     } , 
+        // },{
+        //     name : "bell" ,
+        //     id : 1 ,
+        //     weight_b : 10 , // 確率の重み
+        //     weight_t : 15 ,
+        //     texture : PIXI.Texture.from("../img/bell.png"),
+        //     score : function(bet){
+        //         return bet * 3
+        //     } , 
+        // }],
+        obj : [] ,
         sum_weight : 15
     }
     setGameObj = function(objs){
@@ -118,13 +121,14 @@ class SlotScreen extends PIXI.Graphics {
         console.error("SlotScreen.getGameObj : not found ")
         return
     }
+    // 長さ 5 の配列 setingViewObj を参照
     view_obj = []
     setingViewObj = function(){
         for(let i = 0 ; i < 5; i ++){
             const elm = this.getGameObj();
             const sprite = new PIXI.Sprite(elm.texture) ;
             sprite.x = 0
-            sprite.y = this.size.per.height *32*i - this.size.per.height *32
+            sprite.y = this.size.per.height *32*(4-i) - this.size.per.height *31
             elm.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
             sprite.scale.set(6, 6)
             this.addChild ( sprite )
@@ -137,47 +141,117 @@ class SlotScreen extends PIXI.Graphics {
             })
         }
     }
-    //作成中
-    //view_obj 配列をシフトして0番目にgetGameObj();ものを加える処理を書いてください。
-    // sprite.destroy() を忘れずに
-    // 同スプライトを使っている変数の参照を削除（配列から削除するだけで十分と思われる）
-    setNextViewObj = function(){
-        const elm = this.getGameObj();
-    }
-    //作成中
-    // ticker add しているので回転するエフェクトをここに書き加えるだけ
-    //     amountTime += delta;                    
-    // // delta(app.ticker.deltaTime) : 前のフレームから今のフレームまでの経過時間を正規化した値？
-    // // amountTime += app.ticker.deltaMS;    
-    // // app.ticker.deltaMS  : 前のフレームから今のフレームまでの経過時間(ms)
-    // view_obj[i].
-    
-    freem = function(){
+    setNextViewObj = function() {
+        // Remove the top sprite
+        const removedObj = this.view_obj.shift();
+        if (removedObj && removedObj.sprite) {
+            removedObj.sprite.destroy();
+        }
 
+        // Create a new sprite to add to the bottom
+        const elm = this.getGameObj();
+        const newSprite = new PIXI.Sprite(elm.texture);
+        newSprite.x = 0;
+        // y will be set in the loop below
+        elm.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+        newSprite.scale.set(6, 6);
+        this.addChild(newSprite);
+
+        // Add the new sprite to the array
+        this.view_obj.push({
+            data: {
+                name: elm.name,
+                id: elm.id,
+            },
+            sprite: newSprite
+        });
+
+        // Reposition all sprites in the reel
+        for (let i = 0; i < this.view_obj.length; i++) {
+            this.view_obj[i].sprite.y = this.size.per.height * 32 * (this.view_obj.length-i-1) - this.size.per.height * 63;
+        }
+    };
+    // app.ticker.deltaMS  : 前のフレームから今のフレームまでの経過時間(ms)
+    // view_obj[i].
+    //1000ms毎px
+    speed = 0 // float
+    freem = () => {
+        const tic = this.app.ticker.deltaMS;
+        for(let i = 0 ; i < 5 ; i ++) {
+            const elm = this.view_obj[i] ;
+            elm.sprite.y += (this.speed/1000 )*tic ;
+            if(elm.sprite.y >= this.size.per.height*97){
+                this.setNextViewObj()
+                if(this.isWaitStop){
+                    this.isWaitStop = false ;
+                    this.speed = 0 ;
+                    this.isStarted = false ;
+                }
+            }
+        }
     }
-    constructor(width,height,i,app){
+    isWaitStop = false 
+    isStarted = false
+    stop = () => {
+        if(!this.isStarted) return ;
+
+        let counter = 0
+        const id = setInterval(() => {
+            counter ++ ;
+            this.speed = 100 * (20-counter) ;
+            if(counter >= 19){
+                //this.speed = 0 ;
+                this.isWaitStop = true
+                clearInterval(id)
+            }
+        }, 70);
+    }
+    start = () => {
+        if(this.isStarted) return ;
+        let counter = 0
+        const id = setInterval(() => {
+            counter ++ ;
+            this.speed = 100 * counter ;
+            if(counter >= 20){
+                clearInterval(id)
+                this.isStarted = true ;
+            }
+        }, 70);
+    }
+    // 明日の自分へ
+    // stop start を作ったので対応するボタンを作ってください。
+    // コンストラクタでnewしなくても多分大丈夫
+    stopButton 
+    
+    constructor(width,height,i,app,objs){
         super()
+        this.setGameObj(objs)
         this.size.per.width = width / 100
         this.size.per.height = height / 100
         this.size.per.nol = width
         this.size.per.nol = height
-        this.beginFill(0x171D19)
-            .drawRect(0, 0, width, height) // 引数のwidth, heightで描画
-            .endFill();
         this.beginFill(0x19201B)
-            .drawRect(
-                this.size.per.width*10,
-                this.size.per.width*10,
-                this.size.per.width*90,
-                this.size.per.height*90)
+            .drawRect(this.size.per.width*2 , 0, this.size.per.width*98, height) // 引数のwidth, heightで描画
             .endFill();
+
+        const viewportMask = new PIXI.Graphics();
+        viewportMask.beginFill(0x19201B); // マスクの色は何でも良いが、描画は必要
+        viewportMask.drawRect(
+            0,
+            this.size.per.height,
+            width,
+            this.size.per.height*95); // (x, y, width, height)
+        viewportMask.endFill();
+        this.addChild(viewportMask); // マスク自体もステージに表示する必要がある
+        this.mask = viewportMask
+
         this.pivot.x = Math.floor(this.width/2)
         this.pivot.y = Math.floor(this.height/2)
         this.x = i*this.width + Math.floor(this.width/2)
         this.y = Math.floor(this.height/2)
 
         this.setingViewObj()
-
+        
         this.app = app
         this.app.ticker.add(this.freem);
     }
@@ -233,7 +307,6 @@ class Slot {
     }
     //---------------------------------------------------------------------
 
-
     constructor(w,h,useData){
         //---------------------------------------------------------------------
         // Pixiアプリケーション生成
@@ -252,12 +325,6 @@ class Slot {
         this.app = app
 
         //---------------------------------------------------------------------
-        this.screen = new SlotGameScreen(app)
-        this.screen.setWidth(w/5) ;
-        this.screen.setHeight(h) ;
-        app.stage.addChild(this.screen)
-
-        //---------------------------------------------------------------------
         
         for (let i = 0 ; i < useData.length ; i ++) {
             const elm = useData [i] ;
@@ -268,6 +335,14 @@ class Slot {
                 elm.obj_id, // Int
             )
         }
+        //---------------------------------------------------------------------
+
+        this.screen = new SlotGameScreen(app,this.slot_object)
+        this.screen.setWidth(w/5) ;
+        this.screen.setHeight(h) ;
+        app.stage.addChild(this.screen)
+
+        //---------------------------------------------------------------------
         
     } 
 }
@@ -315,6 +390,30 @@ const slot = new Slot(840,285,[
         probability : 6, // Float
         PATH_TO_IMAGE : "../img/seven.png", // String
         obj_id : 4 , // Int
+        score : function(bet){
+            return 100 * bet  
+        } // Function
+    },{
+        name : "cpp" ,
+        probability : 6, // Float
+        PATH_TO_IMAGE : "../img/cpp.png", // String
+        obj_id : 5 , // Int
+        score : function(bet){
+            return 100 * bet  
+        } // Function
+    },{
+        name : "java" ,
+        probability : 6, // Float
+        PATH_TO_IMAGE : "../img/java.png", // String
+        obj_id : 6 , // Int
+        score : function(bet){
+            return 100 * bet  
+        } // Function
+    },{
+        name : "py" ,
+        probability : 6, // Float
+        PATH_TO_IMAGE : "../img/py.png", // String
+        obj_id : 7 , // Int
         score : function(bet){
             return 100 * bet  
         } // Function
