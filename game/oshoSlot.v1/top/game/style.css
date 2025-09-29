@@ -1,0 +1,35 @@
+.debug{
+    color:white;
+}
+.data{
+    position: absolute;
+    top:650px;
+    left: 40px;
+    display: flex;
+    background-color: white;
+}
+.data div{
+    position: static;
+}
+.tab{
+    display: flex;
+    width: 20rem;
+    background-color: rgb(216, 216, 216);
+}
+.tab div{
+    padding: 0.3rem;
+}
+#closeBtn_bank{
+    background-color: rgb(255, 87, 87);
+    margin: 0.2rem;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+}
+#closeBtn_bank:hover{
+    background-color: #ff2d2d;
+}
+.menue{
+    padding: 0.3rem;
+    border: 2px solid rgb(216, 216, 216);
+}
