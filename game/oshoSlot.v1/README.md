@@ -15,3 +15,7 @@
 - [ ] ゲーム性の追加
     - [ ] ベット要素
     - [x] stop要素
+```js
+slot.screen.screen.forEach(elm=>{elm.start()})
+setTimeout(function(){slot.screen.screen.forEach((elm,index)=>{setTimeout(()=>{elm.stop()},200*index)})},2000);
+```
