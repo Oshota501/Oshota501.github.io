@@ -1,6 +1,3 @@
-.debug{
-    color:white;
-}
 .data{
     position: absolute;
     top:650px;
@@ -11,9 +8,14 @@
 .data div{
     position: static;
 }
+.data button{
+    font-family: "DotGothic16", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
 .tab{
     display: flex;
-    width: 20rem;
+    /* width: 20rem; */
     background-color: rgb(216, 216, 216);
 }
 .tab div{
@@ -30,9 +32,46 @@
     background-color: #ff2d2d;
 }
 .menue{
+    overflow-wrap: break-word;
     padding: 0.3rem;
     border: 2px solid rgb(216, 216, 216);
 }
+.taskbar {
+    padding-top: 0.6rem;
+    padding-left: 0.6rem;
+    width: 100%;
+    height: 3rem;
+    background-color: rgb(215, 215, 215);
+}
+.taskbar span{
+    background-color: rgb(255, 255, 255);
+    padding: 0.5rem;
+    font-size: 1.5rem;
+    height: 3rem;
+    border-radius: 0.3rem;
+}
+.taskbar span:hover{
+    background-color: rgb(223, 239, 253);
+}
 body{
     user-select: none;
+    font-family: "DotGothic16", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+#coin-bank{
+    top:640;
+    left: 20px;
+}
+#game-setting{
+    top:670px;
+    left: 50px;
+}
+#game-win-GUI{
+    top:700px;
+    left: 80px;
+}
+#slot-help{
+    width: 30rem;
 }

@@ -61,17 +61,22 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // 2. dropリスナーをdocumentに一度だけ設定
     document.addEventListener("drop", (ev) => {
-        ev.preventDefault();
+    ev.preventDefault();
         try {
-            // "dragstart"で保存されたJSONデータを取得して解析
             const data = JSON.parse(ev.dataTransfer.getData("application/json"));
             
-            // データとIDが存在すれば処理を実行
             if (data && data.id) {
                 const draggedElement = document.getElementById(data.id);
-                // マウス座標とオフセットから最終的な位置を計算してスタイルを適用
-                draggedElement.style.left = (ev.clientX - data.offsetX) + "px";
-                draggedElement.style.top = (ev.clientY - data.offsetY) + "px";
+                
+                // ★★★ ここからが修正部分 ★★★
+
+                // マウスのビューポート座標に現在のスクロール量を加算
+                const newLeft = ev.clientX - data.offsetX + window.scrollX;
+                const newTop = ev.clientY - data.offsetY + window.scrollY;
+
+                // 計算したページ全体の座標を適用
+                draggedElement.style.left = newLeft + "px";
+                draggedElement.style.top = newTop + "px";
             }
         } catch (e) {
             console.error("ドロップ処理に失敗しました:", e);
