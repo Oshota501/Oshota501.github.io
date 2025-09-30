@@ -729,7 +729,6 @@ class Slot {
         for(let i = 0 ; i < score.length ; i ++){
             if(score[i] <= 0 ) continue ;
             const p = position[i] ;
-            slot.debug.log.add(0,`${score.length}列 ${type[i]} ${type2[i]} ${position[i][0].data.name}: ${score[i]}<br>`)
         }
         this.start_button.onIsButton()
     }
