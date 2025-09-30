@@ -19,17 +19,20 @@
 .tab div{
     padding: 0.3rem;
 }
-#closeBtn_bank{
+.closeBtn{
     background-color: rgb(255, 87, 87);
     margin: 0.2rem;
     width: 1rem;
     height: 1rem;
     border-radius: 50%;
 }
-#closeBtn_bank:hover{
+.closeBtn:hover{
     background-color: #ff2d2d;
 }
 .menue{
     padding: 0.3rem;
     border: 2px solid rgb(216, 216, 216);
+}
+body{
+    user-select: none;
 }
