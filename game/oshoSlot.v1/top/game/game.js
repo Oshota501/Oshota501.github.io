@@ -1,14 +1,79 @@
-//デバックよう
-class DebugLog {
-    elms
-    set = (index,text)=>{
-        this.elms[index].innerHTML = text ;
+//=====================================================================
+// コイン
+//=====================================================================
+class SlotCoin extends PIXI.Sprite {
+    coin
+    size 
+    setGraphics = (howmach) => {
+        const getImg = function (m){
+            return `../img/${m}.png` ;
+        }
+        this.texture = PIXI.Texture.from(getImg(howmach));
+        this.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
     }
-    add = (index,text)=>{
-        this.elms[index].innerHTML += text ;
+    onPointerDown = () => {
+        this.on('pointermove', this.move);
     }
-    constructor(className){
-        this.elms = document.getElementsByClassName(className);
+
+    onPointerUp = () => {
+        this.off('pointermove', this.move);
+        this.isFall = true
+    }
+    move = (e) => {
+        let position = e.data.getLocalPosition(slot.app.stage);
+        this.x = position.x;
+        this.y = position.y;
+    }
+    isFall = true
+    velocityY = 0
+    freem = () => {
+        if (this.isFall) {
+            // 1. 経過時間を秒単位で取得
+            const deltaTime = slot.app.ticker.deltaMS / 1000;
+            // 2. 重力加速度 (ピクセル/秒^2)
+            const GRAVITY = 980.665;
+
+            // 3. 速度を更新
+            this.velocityY += GRAVITY * deltaTime;
+            // 4. 位置を更新
+            this.y += this.velocityY * deltaTime;
+            // 地面に到達したか判定
+            if (this.y >= slot.height-this.size/2) {
+                this.y = slot.height-this.size/2; // 地面にめり込まないように調整
+                this.isFall = false;   // 落下を停止
+                this.velocityY = 0 
+            }
+        }
+    }
+    constructor(size,x,y){
+        super()
+        slot.app.ticker.add(this.freem);
+        this.x = x ;
+        this.y = y
+        this.coin = size ;
+        this.setGraphics(size);
+        this.interactive = true;
+        this.buttonMode = true;
+        this.anchor.set(0.5, 0.5)
+        // 押し下げ、離す、外側で離す、の3つのイベントを監視
+        this.on('pointerdown', this.onPointerDown)
+            .on('pointerup', this.onPointerUp)
+            .on('pointerupoutside', this.onPointerUp); // これを追加
+
+        switch (size){
+        case 1 :
+            this.scale.set(4, 4);
+            this.size = 4 * 16 ;
+            break ;
+        case 5 :
+            this.scale.set(5, 5);
+            this.size = 5 * 16 ;
+            break ;
+        case 10 :
+            this.scale.set(6, 6);
+            this.size = 6 * 16 ;
+            break ;
+        }
     }
 }
 
@@ -664,7 +729,6 @@ class Slot {
         for(let i = 0 ; i < score.length ; i ++){
             if(score[i] <= 0 ) continue ;
             const p = position[i] ;
-            slot.debug.log.add(0,`${score.length}列 ${type[i]} ${type2[i]} ${position[i][0].data.name}: ${score[i]}<br>`)
         }
         this.start_button.onIsButton()
     }
@@ -674,6 +738,78 @@ class Slot {
     betCoin = 0 ;
     start_button ;
     //---------------------------------------------------------------------
+    // コイン関係
+    //---------------------------------------------------------------------
+    setCoin = (value) => {
+        while(value >= 10){
+            value -= 10 ;
+            this.coinBox.addChild(new SlotCoin(
+                10,
+                Math.random()*(this.width-100)+50,
+                Math.random()*200,
+            ));
+        }
+        while(value >= 5){
+            value -= 5 ;
+            this.coinBox.addChild(new SlotCoin(
+                5,
+                Math.random()*(this.width-100)+50,
+                Math.random()*200,
+            ));
+        }
+        while(value >= 1){
+            value -= 1 ;
+            this.coinBox.addChild(new SlotCoin(
+                1,
+                Math.random()*(this.width-100)+50,
+                Math.random()*200,
+            ));
+        }
+        
+    }
+    removeCoin = (value) => {
+        const removeOneCoin = (coinValue) => {
+            for (let i = this.coinBox.children.length - 1; i >= 0; i--) {
+                const coin = this.coinBox.children[i];
+                if (coin.coin === coinValue) {
+                    this.coinBox.removeChild(coin);
+                    coin.destroy();
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        while (value >= 10) {
+            if (removeOneCoin(10)) {
+                value -= 10;
+            } else {
+                break;
+            }
+        }
+        while (value >= 5) {
+            if (removeOneCoin(5)) {
+                value -= 5;
+            } else {
+                break;
+            }
+        }
+        while (value >= 1) {
+            if (removeOneCoin(1)) {
+                value -= 1;
+            } else {
+                break;
+            }
+        }
+    }
+    sumCoin = () => {
+        let coinCounter = 0
+        for(let i = 0 ; i < slot.coinBox.children.length ; i ++){
+            const elm = slot.coinBox.children[i] ;
+            coinCounter += elm.coin ;
+        }
+        return coinCounter
+    }
     constructor(w,h,useData){
         //super()
         this.width = w
@@ -712,17 +848,15 @@ class Slot {
         this.screen.addChild(this.start_button)
         this.main_container.addChild(this.start_button )
         //---------------------------------------------------------------------
-        this.app.stage.addChild(this.main_container)
+        // Coin box
         //---------------------------------------------------------------------
+        this.coinBox = new PIXI.Container() ;
+        this.main_container.addChild(this.coinBox)
+        //---------------------------------------------------------------------
+        this.app.stage.addChild(this.main_container)
+
         
     } 
-    debug = {
-        test : ()=>{
-            this.screen.screen[0].fortune[1] = 1000 ;
-            this.betCoin = 1 ;
-        },
-        log : new DebugLog("port1"),
-    }
 }
 
 

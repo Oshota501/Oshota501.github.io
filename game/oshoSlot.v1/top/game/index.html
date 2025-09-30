@@ -19,27 +19,104 @@
         <div class="main">
             <main id="app"></main>
         </div>
-        <div class="data" id="bank">
+        <div class="data" id="coin-bank" style="display:none;">
             <div>
                 <div class="tab">
-                    <div id="closeBtn_bank"></div><div>BANK.com</div>
+                    <div class="closeBtn"></div><div>BANK.com</div>
                 </div>
                 <div class="menue">
-                    こんにちは<br>
-                    所持金：0
+                    <span style="padding: 0.2rem 2rem 0.2rem 2rem;background-color: rgb(224, 224, 224);">銀行</span><br>
+                    所持金：<span id="bank-all-coin">10</span><br>
+                    銀鉱残高：<span id="bank-coin">10</span><br>
+                    <hr>
+                    <button style="padding: 0.2rem 2rem 0.2rem 2rem;" onclick="bank.mode(true)" >預け入れ</button><br>
+                    <input type="range" max="500" min="1" id="bank-in-coin" value="10"/><span id="bank-value-in">10</span><br>
+                    <hr>
+                    <button style="padding: 0.2rem 2rem 0.2rem 2rem;" onclick="bank.mode(false)" >引き出し</button><br>
+                    <input type="range" max="500" min="1" id="bank-out-coin" value="10"/><span id="bank-value-out">10</span><br>
                 </div>
             </div>
         </div>
-        <div class="debug" style="display:none;">
-            <div class="port1">d:</div>
-            <div class="port1">d:</div>
-            <div class="port1">d:</div>
-            <div class="port1">d:</div>
-            <div class="port1">d:</div>
-            <div class="port1">d:</div>
+        <div class="data" id="game-setting" style="display:none;">
+            <div>
+                <div class="tab">
+                    <div class="closeBtn"></div><div>Setting</div>
+                </div>
+                <div class="menue">
+                    こんにちは<br>
+                </div>
+            </div>
+        </div>
+        <div class="data" id="game-win-GUI" style="display:none;">
+            <div>
+                <div class="tab">
+                    <div class="closeBtn"></div><div>Win !!</div>
+                </div>
+                <div class="menue">
+                    こんにちは<br>
+                </div>
+            </div>
+        </div>
+        <div class="data" id="shop" style="display:none;">
+            <div>
+                <div class="tab">
+                    <div class="closeBtn"></div><div>Win !!</div>
+                </div>
+                <div class="menue">
+                    こんにちは<br>
+                </div>
+            </div>
+        </div>
+        <div class="data" id="item" style="display:none;">
+            <div>
+                <div class="tab">
+                    <div class="closeBtn"></div><div>Win !!</div>
+                </div>
+                <div class="menue">
+                    こんにちは<br>
+                </div>
+            </div>
+        </div>
+        <div class="data" id="score" style="display:none;">
+            <div>
+                <div class="tab">
+                    <div class="closeBtn"></div><div>Win !!</div>
+                </div>
+                <div class="menue">
+                    こんにちは<br>
+                </div>
+            </div>
+        </div>
+        <div class="data" id="slot-help" style="display:block;">
+            <div>
+                <div class="tab">
+                    <div class="closeBtn"></div><div>Welcome to Slot</div>
+                </div>
+                <div class="menue">
+                    <span style="padding: 0.2rem 2rem 0.2rem 2rem;background-color: rgb(224, 224, 224);">初めに</span><br>
+                    この説明は下のタスクバーからいつでも呼び出せます。閉じるときは右上の赤いボタンを押してください。邪魔なときはドラック&ドロップで移動してください。<br>
+                    <hr>
+                    <span style="padding: 0.2rem 2rem 0.2rem 2rem;background-color: rgb(224, 224, 224);">基本</span>
+                    <ol>
+                        <li>所持金は bank アプリから確認できます。</li>
+                        <li>勝ちの早見表は score アプリから確認できます。</li>
+                        <li>所持品は item アプリから確認できます。</li>
+                        <li>ショップではアイテムを購入できます。</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="taskbar">
+            <span onclick="taskbar('coin-bank')">BANK</span>
+            <span onclick="taskbar('shop')">SHOP</span>
+            <span onclick="taskbar('item')">ITEM</span>
+            <span onclick="taskbar('score')">SCORE</span>
+            <span onclick="taskbar('slot-help')">HELP</span>
+            <span onclick="taskbar('game-setting')">SETTING</span>
         </div>
         <script src="./game.js"></script>
         <script src="./mode.js"></script>
+        <script src="./gui.js"></script>
     </body>
 
 </html>
