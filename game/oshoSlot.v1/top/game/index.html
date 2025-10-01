@@ -3,8 +3,6 @@
     <head>
         <meta charset="utf-8"/>
         <title>slot v1</title>
-
-        <link href="../../pub/maingame.css" rel="stylesheet"/>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
@@ -16,9 +14,19 @@
         <script type="text/javascript" src="./PixiPlugin.min.js"></script>
     </head>
     <body>
+        <div class="taskbar">
+            <span onclick="taskbar('coin-bank')">BANK</span>
+            <span onclick="taskbar('shop')">SHOP</span>
+            <span onclick="taskbar('item')">ITEM</span>
+            <span onclick="taskbar('score')">SCORE</span>
+            <span onclick="taskbar('slot-help')">HELP</span>
+            <span onclick="taskbar('game-setting')">SETTING</span>
+            <span onclick="taskbar('game-bet')">SETTING</span>
+        </div>
         <div class="main">
             <main id="app"></main>
         </div>
+        
         <div class="data" id="coin-bank" style="display:none;">
             <div>
                 <div class="tab">
@@ -87,6 +95,16 @@
                 </div>
             </div>
         </div>
+        <div class="data" id="game-bet" style="display:none;">
+            <div>
+                <div class="tab">
+                    <div class="closeBtn"></div><div>Win !!</div>
+                </div>
+                <div class="menue">
+                    こんにちは<br>
+                </div>
+            </div>
+        </div>
         <div class="data" id="slot-help" style="display:block;">
             <div>
                 <div class="tab">
@@ -105,14 +123,7 @@
                     </ol>
                 </div>
             </div>
-        </div>
-        <div class="taskbar">
-            <span onclick="taskbar('coin-bank')">BANK</span>
-            <span onclick="taskbar('shop')">SHOP</span>
-            <span onclick="taskbar('item')">ITEM</span>
-            <span onclick="taskbar('score')">SCORE</span>
-            <span onclick="taskbar('slot-help')">HELP</span>
-            <span onclick="taskbar('game-setting')">SETTING</span>
+
         </div>
         <script src="./game.js"></script>
         <script src="./mode.js"></script>
