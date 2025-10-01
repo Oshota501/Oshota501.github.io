@@ -767,6 +767,8 @@ class Slot {
         }
         
     }
+    // 一円玉と十円玉しかない時5円を消すと挙動がバグるのでよう修正
+    // ロジックそのものを見直すべき
     removeCoin = (value) => {
         const removeOneCoin = (coinValue) => {
             for (let i = this.coinBox.children.length - 1; i >= 0; i--) {
