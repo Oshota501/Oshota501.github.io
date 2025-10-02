@@ -10,17 +10,21 @@ class DataBank  {
     in_money = document.getElementById("bank-in-coin") 
     value_out = document.getElementById("bank-value-out") 
     value_in = document.getElementById("bank-value-in") 
+    exSelector = document.getElementsByClassName("bank-exchange ")
     updata = () => {
         this.bank_coin .innerText = this .coin ;
         this.coin_all .innerText = slot.sumCoin() ;
     }
     mode = (flag) => {
         if(flag){
-            slot.removeCoin(this.in_money.value)
+            
+            slot.removeCoins(this.in_money.value)
         }else{
             slot.setCoin(this.out_money.value) ;
         }
     } 
+    exchange = () =>{
+    }
     constructor(){
         this.bank_coin = 0
         this.out_money.addEventListener("input",()=>{
@@ -32,5 +36,5 @@ class DataBank  {
         })
     }
 }
-const bank = new DataBank();
+
 

@@ -21,7 +21,7 @@
             <span onclick="taskbar('score')">SCORE</span>
             <span onclick="taskbar('slot-help')">HELP</span>
             <span onclick="taskbar('game-setting')">SETTING</span>
-            <span onclick="taskbar('game-bet')">SETTING</span>
+            <span onclick="taskbar('game-bet')">INFO</span>
         </div>
         <div class="main">
             <main id="app"></main>
@@ -42,6 +42,15 @@
                     <hr>
                     <button style="padding: 0.2rem 2rem 0.2rem 2rem;" onclick="bank.mode(false)" >引き出し</button><br>
                     <input type="range" max="500" min="1" id="bank-out-coin" value="10"/><span id="bank-value-out">10</span><br>
+                    <hr>
+                    <button style="padding: 0.2rem 2rem 0.2rem 2rem;" onclick="bank.exchange()" >両替</button><br>
+                    <select type="range" max="500" min="1" id="bank-exchange" value="1">
+                        <option value="10_1*10">⑩ -> ①x10</option>
+                        <option value="10_5*2">⑩ -> ⑤x2</option>
+                        <option value="10_5+1*5">⑩ -> ⑤x1 + ①x5</option>
+                        <option value="1_1*10">①x10 -> ⑩</option>
+                        <option value="5*2_10">⑤x2 -> ⑩</option>
+                    </select><br>
                 </div>
             </div>
         </div>
@@ -125,9 +134,13 @@
             </div>
 
         </div>
+        <script src="./coin.js"></script>
+        <script src="./screen.js"></script>
         <script src="./game.js"></script>
         <script src="./mode.js"></script>
         <script src="./gui.js"></script>
+        <script src="./main.js"></script>
     </body>
+
 
 </html>
