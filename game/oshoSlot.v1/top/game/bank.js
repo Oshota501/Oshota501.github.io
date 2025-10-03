@@ -15,8 +15,10 @@ class DataBank  {
     mode = (flag) => {
         if(flag){
             const a = Number(this.in_money.value)
-            slot.removeCoins(a)
-            this.coin += a ;
+            if(slot.getCoinSum().sum >= a){
+                slot.removeCoins(a)
+                this.coin += a ;
+            }
         }else{
             const a = Number(this.out_money.value);
             if(this.coin >= a){
