@@ -334,15 +334,6 @@ class Slot {
         }
         
     }
-    excahngeCoin = {
-        e_10_1 : () => {
-            if(this.removeCoin(10)){
-                this.setCoin(4)
-                this.setCoin(4)
-                this.setCoin(2)
-            }
-        } ,
-    }
     removeCoins = (value) => {
         let count = 0 ;
         let p = this.getCoinSum ().sum - value ;

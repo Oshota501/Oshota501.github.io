@@ -77,5 +77,3 @@ const slot = new Slot(840,900,[
     }
 ]) ;
 
-
-const bank = new DataBank();

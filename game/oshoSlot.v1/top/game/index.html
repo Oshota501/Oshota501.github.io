@@ -34,21 +34,21 @@
                 </div>
                 <div class="menue">
                     <span style="padding: 0.2rem 2rem 0.2rem 2rem;background-color: rgb(224, 224, 224);">銀行</span><br>
-                    所持金：<span id="bank-all-coin">10</span><br>
+                    所持金：<span id="bank-all-coin">0</span><br>
                     銀鉱残高：<span id="bank-coin">10</span><br>
                     <hr>
                     <button style="padding: 0.2rem 2rem 0.2rem 2rem;" onclick="bank.mode(true)" >預け入れ</button><br>
-                    <input type="range" max="500" min="1" id="bank-in-coin" value="10"/><span id="bank-value-in">10</span><br>
+                    <input type="range" max="100" min="1" id="bank-in-coin" value="10"/><span id="bank-value-in">10</span><br>
                     <hr>
                     <button style="padding: 0.2rem 2rem 0.2rem 2rem;" onclick="bank.mode(false)" >引き出し</button><br>
-                    <input type="range" max="500" min="1" id="bank-out-coin" value="10"/><span id="bank-value-out">10</span><br>
+                    <input type="range" max="100" min="1" id="bank-out-coin" value="10"/><span id="bank-value-out">10</span><br>
                     <hr>
                     <button style="padding: 0.2rem 2rem 0.2rem 2rem;" onclick="bank.exchange()" >両替</button><br>
                     <select type="range" max="500" min="1" id="bank-exchange" value="1">
                         <option value="10_1*10">⑩ -> ①x10</option>
                         <option value="10_5*2">⑩ -> ⑤x2</option>
                         <option value="10_5+1*5">⑩ -> ⑤x1 + ①x5</option>
-                        <option value="1_1*10">①x10 -> ⑩</option>
+                        <option value="1*10_10">①x10 -> ⑩</option>
                         <option value="5*2_10">⑤x2 -> ⑩</option>
                     </select><br>
                 </div>
@@ -138,7 +138,8 @@
         <script src="./screen.js"></script>
         <script src="./game.js"></script>
         <script src="./mode.js"></script>
-        <script src="./gui.js"></script>
+        <script src="./bank.js"></script>
+        <script src="./taskbar.js"></script>
         <script src="./main.js"></script>
     </body>
 
