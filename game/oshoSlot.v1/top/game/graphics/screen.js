@@ -71,6 +71,16 @@ class SlotScreen extends PIXI.Graphics {
     }
     zero_fortune = []
     fortune = []
+    /*
+    {
+        add : 2 ,
+        name : "apple" ,
+        fixed : false ,
+        turn : 2 ,
+    }
+    */
+   // スタート時に読み込まれて、turnが0以下のものは除外されます。
+    fortune_opt = []
     setGameObj = function(objs){
         this.game.obj = []
         this.game.sum_weight = 0
@@ -90,26 +100,55 @@ class SlotScreen extends PIXI.Graphics {
         });
         this.fortune = this.zero_fortune.concat()
     }
-    // nameも対応
-    changeObjsProbability = ( id , value ) => {
+    setFortuneOption(name,turn,fixid,add){
+        for(let i = 0 ; i < this.game.obj.length ; i ++){
+            if(this.game.obj[i].name == name){
+                this.fortune_opt.push({
+                    name : name ,
+                    turn : turn ,
+                    fixid : fixid ,
+                    add : add ,
+                })
+            }
+        }
+    }
+    fortuneOptionApplicable () {
+        const addFortune = (name,add,fixed)=>{
+            for(let i = 0 ; i < this.game.obj.length ; i ++){
+                if(this.game.obj[i].name == name){
+                    if(this.fortune[i]+add >= 0){
+                        if(fixed){
+                            this.fortune[i] = add ;
+                        }else{
+                            this.fortune[i] += add ;
+                        }
+                        
+                    }else{
+                        this.fortune[i] = 0 ;
+                    }
+                }
+            }
+        }
+        this.fortune = this.zero_fortune.concat() ;
+        let rv = [] ;
+        for(let i = 0 ; i < this.fortune_opt.length ; i ++){
+            const elm = this.fortune_opt[i] ;
+            if(elm.turn > 0){
+                elm.turn -- ;
+                addFortune(elm.name,elm.add,elm.fixed)
+            }else{
+                rv.push (i)
+            }
+        }
+        for(let i = 0 ; i < rv.length ; i ++){
+            this.fortune_opt.splice(rv[0],1)
+        }
+        
+    }
+    
+    changeObjsProbability = ( value ) => {
         let arr = [] ;
-        if(typeof id == "number" && typeof value == "number"){
-            for(let i = 0 ; i < this.game.obj.length ; i++){
-                const elm = this.game.obj[i] ;
-                arr.push (elm.weight_t-elm.weight_b)
-                if(elm.id == id ){
-                    arr[i] = value ;
-                }
-            }
-        }else if(typeof id == "string" && typeof value == "number"){
-            for(let i = 0 ; i < this.game.obj.length ; i++){
-                const elm = this.game.obj[i] ;
-                arr.push (elm.weight_t-elm.weight_b)
-                if(elm.name == id ){
-                    arr[i] = value ;
-                }
-            }
-        }else if(typeof value == "object"){
+        if(typeof value == "object"){
             arr = value ;
         }else{
             return
@@ -124,7 +163,7 @@ class SlotScreen extends PIXI.Graphics {
         this.game.sum_weight = counter ;
     }
     getGameObj = ()=>{
-        this.changeObjsProbability(null,this.fortune) ;
+        this.changeObjsProbability(this.fortune) ;
         const rand = Math.floor(Math.random()*this.game.sum_weight)
         for (let i = 0 ; i < this.game.obj.length ; i ++){
             const elm = this.game.obj[i]
@@ -235,6 +274,7 @@ class SlotScreen extends PIXI.Graphics {
     start = () => {
         this.colorButton (true)
         if(this.isStarted) return ;
+        this.fortuneOptionApplicable()
         let counter = 0
         const id = setInterval(() => {
             counter ++ ;
@@ -344,10 +384,21 @@ class SlotStartButton extends PIXI.Graphics {
         this.buttonMode = true;
         this.on('pointertap',()=>{
             if(this.isButton){
-               slot.start()
+                this.isButton = false
+                this.colorButton(false)
+                if(slot.betCoin > 0 ){
+                    slot.start()
+                    
+                }else{
+                    setTimeout(()=>{
+                        this.isButton = true
+                        this.colorButton(true)
+                    },700)
+                    err.makeError("コインがベットされていません。<br>No coins staked")
+                }
+
             }
-            this.isButton = false
-            this.colorButton(false)
+            
         });
         this.colorButton(true)
     }
