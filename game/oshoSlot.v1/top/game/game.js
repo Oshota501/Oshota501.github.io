@@ -142,21 +142,27 @@ class Slot {
         let winScore = []
         let t1s = []
         let t2s = []
-        function createWin (s,t1,t2){
+        let winPositions = [] // 勝利座標を格納する配列を追加
+        
+        function createWin (s,t1,t2,positions){
             winScore.push (s)
             t1s.push(t1)
             t2s.push(t2)
+            winPositions.push(positions) // 座標情報を追加
         }
+        
         // たて
         for(let x = 0 ; x < 5 ; x ++){
             const c = this.crossWin(m[x]) ;
             const t = this.tagWin(m[x]) ;
+            const positions = [{x: x, y: 0}, {x: x, y: 1}, {x: x, y: 2}]; // 縦の座標
             if(c.reslut){
-                createWin(this.sameScore(c.name,c.len),"same","vr")
+                createWin(this.sameScore(c.name,c.len),"same","vr", positions)
             }else if(t.result){
-                createWin(this.tagScore(t.name,t.len),"tag","vr")
+                createWin(this.tagScore(t.name,t.len),"tag","vr", positions)
             }
         }
+        
         // よこ
         for(let y = 0 ; y < 3 ; y ++){
             const arr = [
@@ -167,16 +173,25 @@ class Slot {
                 [m[1][y],m[2][y],m[3][y]],
                 [m[2][y],m[3][y],m[4][y]],
             ]
-            arr.forEach(elm=>{
+            const positionSets = [
+                [{x: 0, y: y}, {x: 1, y: y}, {x: 2, y: y}, {x: 3, y: y}, {x: 4, y: y}],
+                [{x: 0, y: y}, {x: 1, y: y}, {x: 2, y: y}, {x: 3, y: y}],
+                [{x: 1, y: y}, {x: 2, y: y}, {x: 3, y: y}, {x: 4, y: y}],
+                [{x: 0, y: y}, {x: 1, y: y}, {x: 2, y: y}],
+                [{x: 1, y: y}, {x: 2, y: y}, {x: 3, y: y}],
+                [{x: 2, y: y}, {x: 3, y: y}, {x: 4, y: y}],
+            ]
+            arr.forEach((elm, index) => {
                 const c = this.crossWin(elm)
                 const t = this.tagWin(elm)
                 if(c.reslut){
-                    createWin(this.sameScore(c.name,c.len),"same","bs")
+                    createWin(this.sameScore(c.name,c.len),"same","bs", positionSets[index])
                 }else if(t.result){
-                    createWin(this.tagScore(t.name,t.len),"tag","bs")
+                    createWin(this.tagScore(t.name,t.len),"tag","bs", positionSets[index])
                 }
             })
         }
+        
         // 斜め
         const arr2 = [
             [m[0][0],m[1][1],m[2][2]],
@@ -186,15 +201,24 @@ class Slot {
             [m[1][2],m[2][1],m[3][0]],
             [m[2][2],m[3][1],m[4][0]],
         ]
-        arr2.forEach(elm=>{
+        const diagonalPositions = [
+            [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2}],
+            [{x: 1, y: 0}, {x: 2, y: 1}, {x: 3, y: 2}],
+            [{x: 2, y: 0}, {x: 3, y: 1}, {x: 4, y: 2}],
+            [{x: 0, y: 2}, {x: 1, y: 1}, {x: 2, y: 0}],
+            [{x: 1, y: 2}, {x: 2, y: 1}, {x: 3, y: 0}],
+            [{x: 2, y: 2}, {x: 3, y: 1}, {x: 4, y: 0}],
+        ]
+        arr2.forEach((elm, index) => {
             const c = this.crossWin(elm)
             const t = this.tagWin(elm)
             if(c.reslut){
-                createWin(this.sameScore(c.name,c.len),"same","cr")
+                createWin(this.sameScore(c.name,c.len),"same","cr", diagonalPositions[index])
             }else if(t.result){
-                createWin(this.tagScore(t.name,t.len),"tag","cr")
+                createWin(this.tagScore(t.name,t.len),"tag","cr", diagonalPositions[index])
             }
         })
+        
         // 特殊
         const arr3 = [
             [],
@@ -204,28 +228,39 @@ class Slot {
             [m[3][0],m[3][1],m[3][2],m[1][0],m[1][1],m[1][2],m[2][0],m[2][1],m[2][2]],
             [m[3][0],m[3][1],m[3][2],m[4][0],m[4][1],m[4][2],m[2][0],m[2][1],m[2][2]],
         ]
+        const specialPositions = [
+            [], // 全体用の配列（後で設定）
+            [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:3,y:0},{x:4,y:0},{x:1,y:1},{x:2,y:1},{x:3,y:1},{x:2,y:2}],
+            [{x:0,y:2},{x:1,y:2},{x:2,y:2},{x:3,y:2},{x:4,y:2},{x:1,y:1},{x:2,y:1},{x:3,y:1},{x:2,y:0}],
+            [{x:0,y:0},{x:0,y:1},{x:0,y:2},{x:1,y:0},{x:1,y:1},{x:1,y:2},{x:2,y:0},{x:2,y:1},{x:2,y:2}],
+            [{x:3,y:0},{x:3,y:1},{x:3,y:2},{x:1,y:0},{x:1,y:1},{x:1,y:2},{x:2,y:0},{x:2,y:1},{x:2,y:2}],
+            [{x:3,y:0},{x:3,y:1},{x:3,y:2},{x:4,y:0},{x:4,y:1},{x:4,y:2},{x:2,y:0},{x:2,y:1},{x:2,y:2}],
+        ]
+        
+        // 全体の座標を設定
         for(let x = 0 ; x < 5 ; x ++){
             for(let y = 0 ; y < 3 ; y ++){
                 arr3[0].push(m[x][y])
+                specialPositions[0].push({x: x, y: y})
             }
         }
-        arr3.forEach(elm=>{
+        
+        arr3.forEach((elm, index) => {
             const c = this.crossWin(elm)
             const t = this.tagWin(elm)
             if(c.reslut){
-                createWin(this.sameScore(c.name,c.len),"same","sp")
+                createWin(this.sameScore(c.name,c.len),"same","sp", specialPositions[index])
             }else if(t.result){
-                createWin(this.tagScore(t.name,t.len),"tag","sp")
+                createWin(this.tagScore(t.name,t.len),"tag","sp", specialPositions[index])
             }
         })
 
         //初期化とエフェクト
-        this.win(winScore,t1s,t2s)
+        this.win(winScore,t1s,t2s,winPositions) // winPositionsを渡す
 
         this.betCoin = 0 ;
     }
-
-    crossWin = (arr) => {
+        crossWin = (arr) => {
         const name = arr[0].data.name ;
         for(let i = 1 ; i < arr.length ; i ++){
             const elm = arr[i]
@@ -287,14 +322,22 @@ class Slot {
             len : arr.length 
         } ;
     }
+
     //---------------------------------------------------------------------
-    //当たり処理
+    // 当たり処理
     //---------------------------------------------------------------------
-    win = (score,type,type2) => {
-        for(let i = 0 ; i < score.length ; i ++){
-            console.log(score[i],type[i],type2[i])
-        }
-        this.start_button.onIsButton()
+    win_effect
+    win = (score,type,type2,positions) => {
+        this.win_effect.createEffect(positions)
+        score.forEach((e,index)=>{
+            setTimeout(()=>{
+                this.setCoin(e)
+            },1500*index -500 )
+        })
+
+        setTimeout(()=>{
+            this.start_button.onIsButton()
+        },1500*score.length);
     }
     //---------------------------------------------------------------------
     // スタートボタン
@@ -311,7 +354,7 @@ class Slot {
             this.coinBox.addChild(new SlotCoin(
                 10,
                 Math.random()*(this.width-100)+50,
-                Math.random()*200,
+                -Math.random()*2000-200,
             ));
         }
         while(value >= 5){
@@ -319,7 +362,7 @@ class Slot {
             this.coinBox.addChild(new SlotCoin(
                 5,
                 Math.random()*(this.width-100)+50,
-                Math.random()*200,
+                -Math.random()*2000-200,
             ));
         }
         while(value >= 1){
@@ -327,7 +370,7 @@ class Slot {
             this.coinBox.addChild(new SlotCoin(
                 1,
                 Math.random()*(this.width-100)+50,
-                Math.random()*200,
+                -Math.random()*2000-200,
             ));
         }
         
@@ -459,6 +502,9 @@ class Slot {
         this.screen.setWidth(w/5) ;
         this.screen.setHeight(h/2) ;
         this.main_container.addChild(this.screen)
+
+        this.win_effect = new WinEffect(w,h/2)
+        this.main_container.addChild(this.win_effect)
         //---------------------------------------------------------------------
         // new SlotStartButton()
         //---------------------------------------------------------------------
