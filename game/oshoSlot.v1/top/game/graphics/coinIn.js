@@ -7,6 +7,7 @@ class Coin_In extends PIXI.Graphics {
             this.width+this.x >= cx && this.height+this.y >= cy    
         ){
             slot.betCoin += value
+            info.addLogs(`You invested ${value} yen`)
             return true
         }
         return false

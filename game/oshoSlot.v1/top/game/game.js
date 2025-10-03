@@ -328,8 +328,10 @@ class Slot {
     //---------------------------------------------------------------------
     win_effect
     win = (score,type,type2,positions) => {
+        
         this.win_effect.createEffect(positions)
         score.forEach((e,index)=>{
+            info.addLogs(`~ % ${type[index]} ${type2[index]} : you can get ${score[index]} coin`)
             setTimeout(()=>{
                 this.setCoin(e)
             },1500*index -500 )
@@ -344,6 +346,15 @@ class Slot {
     //---------------------------------------------------------------------
     betCoin = 0 ;
     start_button ;
+    //---------------------------------------------------------------------
+    // 確率系
+    //---------------------------------------------------------------------
+    changeFortune (name,turn,fixed,add) {
+        for(let i = 0 ; i < 5 ; i ++ ){
+            const s = this.screen.screen[i] ;
+            s.setFortuneOption(name,turn,fixed,add);
+        }   
+    }
     //---------------------------------------------------------------------
     // コイン関係
     //---------------------------------------------------------------------
