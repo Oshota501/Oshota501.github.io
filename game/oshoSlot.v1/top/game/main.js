@@ -77,3 +77,11 @@ const slot = new Slot(840,900,[
     }
 ]) ;
 
+// 初手の所持金
+slot.setCoin(19)
+slot.setCoin(1)
+
+bank.coin = 0
+
+// shopの内容物一覧と出現確率
+

@@ -9,9 +9,9 @@
         <link href="./style.css" rel="stylesheet">
 
         <!-- //pixi js -->
-        <script type="text/javascript" src="./pixi.min.js"></script>
-        <script type="text/javascript" src="./TweenMax.min.js"></script>
-        <script type="text/javascript" src="./PixiPlugin.min.js"></script>
+        <script type="text/javascript" src="./pixiJS/pixi.min.js"></script>
+        <script type="text/javascript" src="./pixiJS/PixiPlugin.min.js"></script>
+        <script type="text/javascript" src="./pixiJS/TweenMax.min.js"></script>
     </head>
     <body>
         <div class="taskbar">
@@ -26,7 +26,17 @@
         <div class="main">
             <main id="app"></main>
         </div>
-        
+        <div class="data" id="game-error" style="display:none;">
+            <div>
+                <div class="tab">
+                    <div class="closeBtn"></div><div>errow</div>
+                </div>
+                <div class="menue">
+                    error <br>
+                    <span id="error-log"></span>
+                </div>
+            </div>
+        </div>
         <div class="data" id="coin-bank" style="display:none;">
             <div>
                 <div class="tab">
@@ -34,14 +44,14 @@
                 </div>
                 <div class="menue">
                     <span style="padding: 0.2rem 2rem 0.2rem 2rem;background-color: rgb(224, 224, 224);">銀行</span><br>
-                    所持金：<span id="bank-all-coin">0</span><br>
-                    銀行預金：<span id="bank-coin">10</span><br>
+                    所持金：<span id="bank-all-coin">20</span><br>
+                    銀行預金：<span id="bank-coin">0</span><br>
                     <hr>
                     <button style="padding: 0.2rem 2rem 0.2rem 2rem;" onclick="bank.mode(true)" >預け入れ</button><br>
-                    <input type="range" max="100" min="1" id="bank-in-coin" value="10"/><span id="bank-value-in">10</span><br>
+                    <input style="width: 10rem;" type="range" max="100" min="1" id="bank-in-coin" value="10"/><span id="bank-value-in">10</span><br>
                     <hr>
                     <button style="padding: 0.2rem 2rem 0.2rem 2rem;" onclick="bank.mode(false)" >引き出し</button><br>
-                    <input type="range" max="100" min="1" id="bank-out-coin" value="10"/><span id="bank-value-out">10</span><br>
+                    <input style="width: 10rem;" type="range" max="100" min="1" id="bank-out-coin" value="10"/><span id="bank-value-out">10</span><br>
                     <hr>
                     <button style="padding: 0.2rem 2rem 0.2rem 2rem;" onclick="bank.exchange()" >両替</button><br>
                     <select type="range" max="500" min="1" id="bank-exchange" value="1">
@@ -64,20 +74,10 @@
                 </div>
             </div>
         </div>
-        <div class="data" id="game-win-GUI" style="display:none;">
-            <div>
-                <div class="tab">
-                    <div class="closeBtn"></div><div>Win !!</div>
-                </div>
-                <div class="menue">
-                    こんにちは<br>
-                </div>
-            </div>
-        </div>
         <div class="data" id="shop" style="display:none;">
             <div>
                 <div class="tab">
-                    <div class="closeBtn"></div><div>Win !!</div>
+                    <div class="closeBtn"></div><div>Amason</div>
                 </div>
                 <div class="menue">
                     こんにちは<br>
@@ -87,7 +87,7 @@
         <div class="data" id="item" style="display:none;">
             <div>
                 <div class="tab">
-                    <div class="closeBtn"></div><div>Win !!</div>
+                    <div class="closeBtn"></div><div>Items</div>
                 </div>
                 <div class="menue">
                     こんにちは<br>
@@ -97,20 +97,29 @@
         <div class="data" id="score" style="display:none;">
             <div>
                 <div class="tab">
-                    <div class="closeBtn"></div><div>Win !!</div>
+                    <div class="closeBtn"></div><div>scores</div>
                 </div>
                 <div class="menue">
                     こんにちは<br>
                 </div>
             </div>
         </div>
-        <div class="data" id="game-bet" style="display:none;">
+        <div class="data" id="game-bet" style="display:none;border-radius: 0.5rem;width: 15rem;">
             <div>
                 <div class="tab">
-                    <div class="closeBtn"></div><div>Win !!</div>
+                    <div class="closeBtn"></div><div>Terminal</div>
                 </div>
-                <div class="menue">
-                    こんにちは<br>
+                <div class="menue" style="background-color:black;color:rgb(255, 255, 255);font-size: 0.8rem;">
+                    <div class="info-log">~ %</div>
+                    <div class="info-log">~ %</div>
+                    <div class="info-log">~ %</div>
+                    <div class="info-log">~ %</div>
+                    <div class="info-log">~ %</div>
+                    <div class="info-log">~ %</div>
+                    <div class="info-log">~ %</div>
+                    <div class="info-log">~ %</div>
+                    <div class="info-log">~ %</div>
+                    <div class="info-log">~ %</div>
                 </div>
             </div>
         </div>
@@ -134,15 +143,19 @@
             </div>
 
         </div>
-        <script src="./gObj.js"></script>
-        <script src="./coin.js"></script>
-        <script src="./screen.js"></script>
-        <script src="./coinIn.js"></script>
-        <script src="./winEffect.js"></script>
+        <script src="./graphics/gObj.js"></script>
+        <script src="./graphics/coin.js"></script>
+        <script src="./graphics/screen.js"></script>
+        <script src="./graphics/coinIn.js"></script>
+        <script src="./graphics/winEffect.js"></script>
         <script src="./game.js"></script>
-        <script src="./mode.js"></script>
-        <script src="./bank.js"></script>
-        <script src="./taskbar.js"></script>
+        <script src="./guis/mode.js"></script>
+        <script src="./guis/bank.js"></script>
+        <script src="./guis/infomation.js"></script>
+        <script src="./guis/errow.js"></script>
+        <script src="./guis/shop.js"></script>
+        <script src="./guis/item.js"></script>
+        <script src="./guis/taskbar.js"></script>
         <script src="./main.js"></script>
     </body>
 

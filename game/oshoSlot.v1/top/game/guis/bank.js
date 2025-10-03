@@ -1,5 +1,5 @@
 class DataBank  {
-    coin = 10
+    coin = 0
     
     out_money = document.getElementById("bank-out-coin") 
     in_money = document.getElementById("bank-in-coin") 
