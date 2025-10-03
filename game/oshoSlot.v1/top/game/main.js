@@ -16,7 +16,7 @@ const slot = new Slot(840,900,[
         probability : 20, // Float
         PATH_TO_IMAGE : "../img/apple.png", // String
         obj_id : 1 , // Int
-        tag : ["fruits"] ,
+        tag : [] ,
         score : function(bet,size){
             return 3 * bet  * (size-2)
         } // Function
@@ -25,7 +25,7 @@ const slot = new Slot(840,900,[
         probability : 20, // Float
         PATH_TO_IMAGE : "../img/lemon.png", // String
         obj_id : 2 , // Int
-        tag : ["fruits"] ,
+        tag : [] ,
         score : function(bet,size){
             return 2 * bet  * (size-2)
         } // Function

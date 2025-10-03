@@ -140,12 +140,10 @@ class Slot {
     allDetection = []
     winDetection = (m) => {
         let winScore = []
-        let winPos = []
         let t1s = []
         let t2s = []
-        function createWin (s,p,t1,t2){
+        function createWin (s,t1,t2){
             winScore.push (s)
-            winPos.push(p)
             t1s.push(t1)
             t2s.push(t2)
         }
@@ -154,9 +152,9 @@ class Slot {
             const c = this.crossWin(m[x]) ;
             const t = this.tagWin(m[x]) ;
             if(c.reslut){
-                createWin(this.sameScore(c.name,c.len),m[x],"same","vr")
+                createWin(this.sameScore(c.name,c.len),"same","vr")
             }else if(t.result){
-                createWin(this.tagScore(t.name,t.len),m[x],"tag","vr")
+                createWin(this.tagScore(t.name,t.len),"tag","vr")
             }
         }
         // よこ
@@ -173,9 +171,9 @@ class Slot {
                 const c = this.crossWin(elm)
                 const t = this.tagWin(elm)
                 if(c.reslut){
-                    createWin(this.sameScore(c.name,c.len),elm,"same","bs")
+                    createWin(this.sameScore(c.name,c.len),"same","bs")
                 }else if(t.result){
-                    createWin(this.tagScore(t.name,t.len),elm,"tag","bs")
+                    createWin(this.tagScore(t.name,t.len),"tag","bs")
                 }
             })
         }
@@ -192,9 +190,9 @@ class Slot {
             const c = this.crossWin(elm)
             const t = this.tagWin(elm)
             if(c.reslut){
-                createWin(this.sameScore(c.name,c.len),elm,"same","cr")
+                createWin(this.sameScore(c.name,c.len),"same","cr")
             }else if(t.result){
-                createWin(this.tagScore(t.name,t.len),elm,"tag","cr")
+                createWin(this.tagScore(t.name,t.len),"tag","cr")
             }
         })
         // 特殊
@@ -215,14 +213,14 @@ class Slot {
             const c = this.crossWin(elm)
             const t = this.tagWin(elm)
             if(c.reslut){
-                createWin(this.sameScore(c.name,c.len),elm,"same","sp")
+                createWin(this.sameScore(c.name,c.len),"same","sp")
             }else if(t.result){
-                createWin(this.tagScore(t.name,t.len),elm,"tag","sp")
+                createWin(this.tagScore(t.name,t.len),"tag","sp")
             }
         })
 
         //初期化とエフェクト
-        this.win(winScore,winPos,t1s,t2s)
+        this.win(winScore,t1s,t2s)
 
         this.betCoin = 0 ;
     }
@@ -292,10 +290,9 @@ class Slot {
     //---------------------------------------------------------------------
     //当たり処理
     //---------------------------------------------------------------------
-    win = (score,position,type,type2) => {
+    win = (score,type,type2) => {
         for(let i = 0 ; i < score.length ; i ++){
-            if(score[i] <= 0 ) continue ;
-            const p = position[i] ;
+            console.log(score[i],type[i],type2[i])
         }
         this.start_button.onIsButton()
     }
@@ -307,6 +304,7 @@ class Slot {
     //---------------------------------------------------------------------
     // コイン関係
     //---------------------------------------------------------------------
+    coin_in = new Coin_In();
     setCoin = (value) => {
         while(value >= 10){
             value -= 10 ;
@@ -470,6 +468,7 @@ class Slot {
         //---------------------------------------------------------------------
         // Coin box
         //---------------------------------------------------------------------
+        this.main_container.addChild(this.coin_in)
         this.coinBox = new PIXI.Container() ;
         this.main_container.addChild(this.coinBox)
         //---------------------------------------------------------------------
