@@ -80,9 +80,26 @@ class DataShop {
         `
         this.elm.innerHTML = str
     }
+    // ------------------------------------------------------------
+    // 購入処理をここに書く
+    // ------------------------------------------------------------
     buy(i){
-        this.isBought[i] = true ;
+        if(slot.removeCoins(this.shopItems[i].price)){
+            this.isBought[i] = true ;
+            // name turn fixed add
+            for(let j = 0 ; j < this.shopItems[i].opt.length ; j ++){
+                slot.changeFortune(
+                    this.shopItems[i].opt[j].name,
+                    this.shopItems[i].opt[j].turn,
+                    this.shopItems[i].opt[j].fixed,
+                    this.shopItems[i].opt[j].add
+                )
+            }
+        }else{
+            err.makeError("所持金が足りません。")
+        }
         this.updata()
+        score.updata()
     }
     newShop(){
         if(slot.removeCoins(this.new_shop_cost)){
@@ -94,6 +111,8 @@ class DataShop {
                 this.getItem(),
             ]
             this.updata()
+        }else{
+            err.makeError("所持金が足りません。")
         }
         
     }
