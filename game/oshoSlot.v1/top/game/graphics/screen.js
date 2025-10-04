@@ -138,6 +138,7 @@ class SlotScreen extends PIXI.Graphics {
                 addFortune(elm.name,elm.add,elm.fixed)
             }else{
                 rv.push (i)
+                slot.viewFortune(elm.name,-elm.add )
             }
         }
         for(let i = 0 ; i < rv.length ; i ++){

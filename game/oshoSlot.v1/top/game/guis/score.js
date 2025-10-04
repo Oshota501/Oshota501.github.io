@@ -1,5 +1,6 @@
 class DataScore {
     body = document.getElementById("score-all")
+    
     updata (){
         const ret = Math.floor(slot.slot_object.length/4);
         const s = (function(){
@@ -35,6 +36,7 @@ class DataScore {
                     </td>`
                 }
             }
+            // 確率演算が正しくないのでちゅうい
             str += '</tr>';
         }
         
