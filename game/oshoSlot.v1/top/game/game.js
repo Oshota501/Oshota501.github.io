@@ -24,7 +24,9 @@ class Slot {
                     elm.probability, // Float
                     elm.PATH_TO_IMAGE, // String
                     elm.obj_id, // Int
-                    elm.tag
+                    elm.tag ,
+                    undefined ,
+                    elm.win_p
                 )
             }else{
                 this.addSlotObject (
@@ -33,7 +35,8 @@ class Slot {
                     elm.PATH_TO_IMAGE, // String
                     elm.obj_id, // Int
                     elm.tag ,
-                    elm.score 
+                    elm.score  ,
+                    elm.win_p
                 )
             }
         }
@@ -45,6 +48,7 @@ class Slot {
         obj_id, // Int
         tag , // string[]
         score ,  // Function
+        win_p ,
     ){
             if (
                 typeof probability !== 'number' ||
@@ -66,8 +70,10 @@ class Slot {
                 id : obj_id ,
                 weight : probability , // 確率の重み
                 texture : PIXI.Texture.from(PATH_TO_IMAGE),
+                img : PATH_TO_IMAGE ,
                 score : score ,
-                tag : tag 
+                tag : tag ,
+                win_p : win_p
             })
     }
     //---------------------------------------------------------------------
