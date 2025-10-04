@@ -63,6 +63,10 @@
 .taskbar span:hover{
     background-color: rgb(223, 239, 253);
 }
+.style-title{
+    padding: 0.2rem 2rem 0.2rem 2rem;
+    background-color: rgb(224, 224, 224);
+}
 body{
     background-color: black;
     user-select: none;
