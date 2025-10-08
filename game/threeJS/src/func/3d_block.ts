@@ -35,7 +35,7 @@ export class Block extends THREE.Mesh {
     }
 
     // p is logical grid coords (not geometry size). size is used both for geometry and grid scale.
-    constructor(p: THREE.Vector3, size: number) {
+    constructor(p: THREE.Vector3,size: number) {
         // create geometry sized to one grid cell
         const g = new THREE.BoxGeometry(size, size, size);
         const m = new THREE.MeshStandardMaterial({ color: 0xFFFF00 });
