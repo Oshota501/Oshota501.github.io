@@ -19,3 +19,7 @@
 slot.screen.screen.forEach(elm=>{elm.start()})
 setTimeout(function(){slot.screen.screen.forEach((elm,index)=>{setTimeout(()=>{elm.stop()},200*index)})},2000);
 ```
+```js
+sum=(arr)=>{let s=0;arr.forEach(elm=>{s+=elm});return s}
+console.log(slot.screen.screen[0].fortune[1]/sum(slot.screen.screen[0].fortune))
+```

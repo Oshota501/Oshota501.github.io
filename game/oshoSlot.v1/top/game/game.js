@@ -358,8 +358,19 @@ class Slot {
     changeFortune (name,turn,fixed,add) {
         for(let i = 0 ; i < 5 ; i ++ ){
             const s = this.screen.screen[i] ;
+            this.viewFortune(name,add)
             s.setFortuneOption(name,turn,fixed,add);
         }   
+    }
+    // マイナスになることを想定していないことに注意
+    viewFortune (name,add){
+        for(let i = 0 ;i < this.slot_object.length ; i ++ ){
+            const elm = this.slot_object[i]
+            if(elm.name == name){
+                elm.weight += add ;
+            }
+        }
+        score.updata()
     }
     //---------------------------------------------------------------------
     // コイン関係
