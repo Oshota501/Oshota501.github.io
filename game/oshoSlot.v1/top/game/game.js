@@ -1,86 +1,54 @@
-//=====================================================================
-// 描画
-//=====================================================================
-class SlotGameScreen extends PIXI.Container{
-    screen = [];
-    width = 168 ;
-    setWidth = function(w){
-        this.width = Math.floor(w) ;
-    }
-    height = 450 ;
-    setHeight = function(h){
-        this.width = Math.floor(h) ;
-    }
-    constructor(){
-        super()
-        for(let i = 0 ; i < 5 ; i ++){
-            const slotScreen = new SlotScreen(
-                this.width ,
-                this.height ,
-                i
-            )   
-            this.screen.push(slotScreen);
-            this.screen.push(slotScreen);
-            this.addChild(slotScreen); // 2. 生成したスロットをコンテナに追加
-
-        }
-    }
-}
-class SlotScreen extends PIXI.Graphics {
-    size = {
-        per : {
-            width : 0.0 ,
-            height : 0.0
-        } ,
-        nol : {
-            width : 0.0 ,
-            height : 0.0
-        }
-    }
-    
-    constructor(width,height,i){
-        super()
-        this.size.per.width = width / 100
-        this.size.per.height = height / 100
-        this.size.per.nol = width
-        this.size.per.nol = height
-        this.beginFill(0x171D19)
-            .drawRect(0, 0, width, height) // 引数のwidth, heightで描画
-            .endFill();
-        this.beginFill(0x19201B)
-            .drawRect(
-                this.size.per.width*10,
-                this.size.per.width*10,
-                this.size.per.width*90,
-                this.size.per.height*90)
-            .endFill();
-        this.pivot.x = Math.floor(this.width/2)
-        this.pivot.y = Math.floor(this.height/2)
-        this.x = i*this.width + Math.floor(this.width/2)
-        this.y = Math.floor(this.height/2)
-    }
-}
-
 class Slot {
-    screen = new SlotGameScreen() //スクリーンobj
+    screen //スクリーンobj
     app //pixi obj
-
+    main_container = new PIXI.Container()
     //=====================================================================
     // ゲームの環境変数
     //=====================================================================
+    //---------------------------------------------------------------------
+    // ポジション系 モバイル版等の制御もここでやりたい
+    //---------------------------------------------------------------------
+    width = 840
+    height = 900
     //---------------------------------------------------------------------
     // ゲームで使う画像データ等の処理用配列と設定関数
     //---------------------------------------------------------------------
     slot_object = []
     //---------------------------------------------------------------------
-    setSlotObject = function(
+    setSlotObject = function (objs){
+        for (let i = 0 ; i < objs.length ; i ++) {
+            const elm = objs [i] ;
+            if( elm.score == undefined){
+                this.addSlotObject (
+                    elm.name,
+                    elm.probability, // Float
+                    elm.PATH_TO_IMAGE, // String
+                    elm.obj_id, // Int
+                    elm.tag ,
+                    undefined ,
+                    elm.win_p
+                )
+            }else{
+                this.addSlotObject (
+                    elm.name,
+                    elm.probability, // Float
+                    elm.PATH_TO_IMAGE, // String
+                    elm.obj_id, // Int
+                    elm.tag ,
+                    elm.score  ,
+                    elm.win_p
+                )
+            }
+        }
+    }
+    addSlotObject = function(
         name ,// String
         probability, // Float
         PATH_TO_IMAGE, // String
         obj_id, // Int
-        score = function(bet,date){
-            return date.bell * bet  
-        } // Function
+        tag , // string[]
+        score ,  // Function
+        win_p ,
     ){
             if (
                 typeof probability !== 'number' ||
@@ -101,8 +69,11 @@ class Slot {
                 name : name ,
                 id : obj_id ,
                 weight : probability , // 確率の重み
-                texture : new PIXI.Sprite(new PIXI.Texture.from(PATH_TO_IMAGE)),
+                texture : PIXI.Texture.from(PATH_TO_IMAGE),
+                img : PATH_TO_IMAGE ,
                 score : score ,
+                tag : tag ,
+                win_p : win_p
             })
     }
     //---------------------------------------------------------------------
@@ -110,15 +81,434 @@ class Slot {
         this.slot_object = this.slot_object.filter(elm => elm.id !== obj_id);
     }
     //---------------------------------------------------------------------
+    start = function(){
+        slot.screen.screen.forEach(elm=>{elm.start()})
+        //setTimeout(function(){slot.screen.screen.forEach((elm,index)=>{setTimeout(()=>{elm.stop()},1000*index)})},2000);
+    }
+    //---------------------------------------------------------------------
+    // スロットが回り終わったことを検知します。
+    //---------------------------------------------------------------------
+    checkFinish = () => {
+        const sc = this.screen.screen ;
+        let isFinish = true ;
+        let scoreData = [] ;
+        sc.forEach((elm)=>{
+            if(elm.isStarted){
+                isFinish = false ;
+            }
+        })
+        if(!isFinish)return ;
 
+        sc.forEach((elm)=>{
+            scoreData.push([
+                elm.view_obj [0] ,
+                elm.view_obj [1] ,
+                elm.view_obj [2] 
+            ])
+        })
+        this.winDetection(scoreData);
+    }
+    //---------------------------------------------------------------------
+    // ここは無理やり勝ちを検出します。
+    //---------------------------------------------------------------------
+    tagVr = [
+        {
+            name : "fruits" ,
+            score : (win_score)=>{
+                return win_score-1 ;
+            } ,
+        },{
+            name : "programing" ,
+            score : (win_score)=>{
+                return win_score ;
+            } ,
+        }
+    ]
+    tagScore = (name,len) => {
+        for(let i = 0 ; i < this.tagVr.length ; i ++){
+            const elm = this.tagVr[i] ;
+            if(elm.name == name){
+                return elm.score (this.sameScore(name,len))
+            }
+        }
+        console.log("非対応のタグが付いたオブジェクトが存在しています。")
+        return 0
+    }
+    sameScore = (name,len) => {
+        for(let i = 0 ; i < this.slot_object.length ; i ++){
+            const elm = this.slot_object[i] ;
+            if(elm.name == name){
+                return elm.score (this.betCoin,len)
+            }
+        }
+        return 1
+    }
+    allDetection = []
+    winDetection = (m) => {
+        let winScore = []
+        let t1s = []
+        let t2s = []
+        let winPositions = [] // 勝利座標を格納する配列を追加
+        
+        function createWin (s,t1,t2,positions){
+            winScore.push (s)
+            t1s.push(t1)
+            t2s.push(t2)
+            winPositions.push(positions) // 座標情報を追加
+        }
+        
+        // たて
+        for(let x = 0 ; x < 5 ; x ++){
+            const c = this.crossWin(m[x]) ;
+            const t = this.tagWin(m[x]) ;
+            const positions = [{x: x, y: 0}, {x: x, y: 1}, {x: x, y: 2}]; // 縦の座標
+            if(c.reslut){
+                createWin(this.sameScore(c.name,c.len),"same","vr", positions)
+            }else if(t.result){
+                createWin(this.tagScore(t.name,t.len),"tag","vr", positions)
+            }
+        }
+        
+        // よこ
+        for(let y = 0 ; y < 3 ; y ++){
+            const arr = [
+                [m[0][y],m[1][y],m[2][y],m[3][y],m[4][y]],
+                [m[0][y],m[1][y],m[2][y],m[3][y]],
+                [m[1][y],m[2][y],m[3][y],m[4][y]],
+                [m[0][y],m[1][y],m[2][y]],
+                [m[1][y],m[2][y],m[3][y]],
+                [m[2][y],m[3][y],m[4][y]],
+            ]
+            const positionSets = [
+                [{x: 0, y: y}, {x: 1, y: y}, {x: 2, y: y}, {x: 3, y: y}, {x: 4, y: y}],
+                [{x: 0, y: y}, {x: 1, y: y}, {x: 2, y: y}, {x: 3, y: y}],
+                [{x: 1, y: y}, {x: 2, y: y}, {x: 3, y: y}, {x: 4, y: y}],
+                [{x: 0, y: y}, {x: 1, y: y}, {x: 2, y: y}],
+                [{x: 1, y: y}, {x: 2, y: y}, {x: 3, y: y}],
+                [{x: 2, y: y}, {x: 3, y: y}, {x: 4, y: y}],
+            ]
+            arr.forEach((elm, index) => {
+                const c = this.crossWin(elm)
+                const t = this.tagWin(elm)
+                if(c.reslut){
+                    createWin(this.sameScore(c.name,c.len),"same","bs", positionSets[index])
+                }else if(t.result){
+                    createWin(this.tagScore(t.name,t.len),"tag","bs", positionSets[index])
+                }
+            })
+        }
+        
+        // 斜め
+        const arr2 = [
+            [m[0][0],m[1][1],m[2][2]],
+            [m[1][0],m[2][1],m[3][2]],
+            [m[2][0],m[3][1],m[4][2]],
+            [m[0][2],m[1][1],m[2][0]],
+            [m[1][2],m[2][1],m[3][0]],
+            [m[2][2],m[3][1],m[4][0]],
+        ]
+        const diagonalPositions = [
+            [{x: 0, y: 0}, {x: 1, y: 1}, {x: 2, y: 2}],
+            [{x: 1, y: 0}, {x: 2, y: 1}, {x: 3, y: 2}],
+            [{x: 2, y: 0}, {x: 3, y: 1}, {x: 4, y: 2}],
+            [{x: 0, y: 2}, {x: 1, y: 1}, {x: 2, y: 0}],
+            [{x: 1, y: 2}, {x: 2, y: 1}, {x: 3, y: 0}],
+            [{x: 2, y: 2}, {x: 3, y: 1}, {x: 4, y: 0}],
+        ]
+        arr2.forEach((elm, index) => {
+            const c = this.crossWin(elm)
+            const t = this.tagWin(elm)
+            if(c.reslut){
+                createWin(this.sameScore(c.name,c.len),"same","cr", diagonalPositions[index])
+            }else if(t.result){
+                createWin(this.tagScore(t.name,t.len),"tag","cr", diagonalPositions[index])
+            }
+        })
+        
+        // 特殊
+        const arr3 = [
+            [],
+            [m[0][0],m[1][0],m[2][0],m[3][0],m[4][0],m[1][1],m[2][1],m[3][1],m[2][2]],
+            [m[0][2],m[1][2],m[2][2],m[3][2],m[4][2],m[1][1],m[2][1],m[3][1],m[2][0]],
+            [m[0][0],m[0][1],m[0][2],m[1][0],m[1][1],m[1][2],m[2][0],m[2][1],m[2][2]],
+            [m[3][0],m[3][1],m[3][2],m[1][0],m[1][1],m[1][2],m[2][0],m[2][1],m[2][2]],
+            [m[3][0],m[3][1],m[3][2],m[4][0],m[4][1],m[4][2],m[2][0],m[2][1],m[2][2]],
+        ]
+        const specialPositions = [
+            [], // 全体用の配列（後で設定）
+            [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:3,y:0},{x:4,y:0},{x:1,y:1},{x:2,y:1},{x:3,y:1},{x:2,y:2}],
+            [{x:0,y:2},{x:1,y:2},{x:2,y:2},{x:3,y:2},{x:4,y:2},{x:1,y:1},{x:2,y:1},{x:3,y:1},{x:2,y:0}],
+            [{x:0,y:0},{x:0,y:1},{x:0,y:2},{x:1,y:0},{x:1,y:1},{x:1,y:2},{x:2,y:0},{x:2,y:1},{x:2,y:2}],
+            [{x:3,y:0},{x:3,y:1},{x:3,y:2},{x:1,y:0},{x:1,y:1},{x:1,y:2},{x:2,y:0},{x:2,y:1},{x:2,y:2}],
+            [{x:3,y:0},{x:3,y:1},{x:3,y:2},{x:4,y:0},{x:4,y:1},{x:4,y:2},{x:2,y:0},{x:2,y:1},{x:2,y:2}],
+        ]
+        
+        // 全体の座標を設定
+        for(let x = 0 ; x < 5 ; x ++){
+            for(let y = 0 ; y < 3 ; y ++){
+                arr3[0].push(m[x][y])
+                specialPositions[0].push({x: x, y: y})
+            }
+        }
+        
+        arr3.forEach((elm, index) => {
+            const c = this.crossWin(elm)
+            const t = this.tagWin(elm)
+            if(c.reslut){
+                createWin(this.sameScore(c.name,c.len),"same","sp", specialPositions[index])
+            }else if(t.result){
+                createWin(this.tagScore(t.name,t.len),"tag","sp", specialPositions[index])
+            }
+        })
 
+        //初期化とエフェクト
+        this.win(winScore,t1s,t2s,winPositions) // winPositionsを渡す
+
+        this.betCoin = 0 ;
+    }
+        crossWin = (arr) => {
+        const name = arr[0].data.name ;
+        for(let i = 1 ; i < arr.length ; i ++){
+            const elm = arr[i]
+            if(elm.data.name !== name){
+                return {
+                    reslut : false ,
+                    name : name ,
+                    len : arr.length
+                }
+            }
+        }
+        return {
+            reslut : true ,
+            name : name ,
+            len : arr.length
+        }
+    }
+    tagWin = (arr) => {
+        let tag = []
+        function findTag(name){
+            let flag = 0
+            for(let i = 1 ; i <= tag.length ; i ++){
+                if(name==tag[i-1].name){
+                    flag = i ;
+                    break ;
+                }
+            }
+            return flag
+        }
+        
+        for(let i = 0 ; i < arr.length ; i ++){
+            const elm = arr[i]
+            for(let j = 0 ; j < elm.tag.length ; j ++){
+                const c = findTag(elm.tag[j])
+                if(c){
+                    tag[c-1].count ++ 
+                }else{         
+                    tag.push({
+                        name : elm.tag[j] ,
+                        count : 1 ,
+                    })
+                }
+                
+            }
+        }
+        for(let i = 0 ; i < tag.length ; i ++){
+            const elm = tag[i] ;
+            if(elm.count == arr.length){
+                return {
+                    result : true ,
+                    name : elm.name ,
+                    len : arr.length 
+                }
+            }
+        }
+        return {
+            result : false ,
+            name : null ,
+            len : arr.length 
+        } ;
+    }
+
+    //---------------------------------------------------------------------
+    // 当たり処理
+    //---------------------------------------------------------------------
+    win_effect
+    win = (score,type,type2,positions) => {
+        
+        this.win_effect.createEffect(positions)
+        score.forEach((e,index)=>{
+            info.addLogs(`~ % ${type[index]} ${type2[index]} : you can get ${score[index]} coin`)
+            setTimeout(()=>{
+                this.setCoin(e)
+            },1500*index -500 )
+        })
+
+        setTimeout(()=>{
+            this.start_button.onIsButton()
+        },1500*score.length);
+    }
+    //---------------------------------------------------------------------
+    // スタートボタン
+    //---------------------------------------------------------------------
+    betCoin = 0 ;
+    start_button ;
+    //---------------------------------------------------------------------
+    // 確率系
+    //---------------------------------------------------------------------
+    changeFortune (name,turn,fixed,add) {
+        for(let i = 0 ; i < 5 ; i ++ ){
+            const s = this.screen.screen[i] ;
+            this.viewFortune(name,add)
+            s.setFortuneOption(name,turn,fixed,add);
+        }   
+    }
+    // マイナスになることを想定していないことに注意
+    viewFortune (name,add){
+        for(let i = 0 ;i < this.slot_object.length ; i ++ ){
+            const elm = this.slot_object[i]
+            if(elm.name == name){
+                elm.weight += add ;
+            }
+        }
+        score.updata()
+    }
+    //---------------------------------------------------------------------
+    // コイン関係
+    //---------------------------------------------------------------------
+    coin_in = new Coin_In();
+    setCoin = (value) => {
+        while(value >= 10){
+            value -= 10 ;
+            this.coinBox.addChild(new SlotCoin(
+                10,
+                Math.random()*(this.width-100)+50,
+                -Math.random()*2000-200,
+            ));
+        }
+        while(value >= 5){
+            value -= 5 ;
+            this.coinBox.addChild(new SlotCoin(
+                5,
+                Math.random()*(this.width-100)+50,
+                -Math.random()*2000-200,
+            ));
+        }
+        while(value >= 1){
+            value -= 1 ;
+            this.coinBox.addChild(new SlotCoin(
+                1,
+                Math.random()*(this.width-100)+50,
+                -Math.random()*2000-200,
+            ));
+        }
+        
+    }
+    removeCoins = (value) => {
+        let count = 0 ;
+        let p = this.getCoinSum ().sum - value ;
+        if(p<0){
+            return 0
+        }
+        while(this.getCoinSum().sum > p ){
+            const c = this.getCoinSum () ;
+            if(c.coin._10 >= 1 && c.sum-p >= 10){
+                if(this.removeCoin(10)){
+                    count += 10 ;
+                    continue ;
+                }
+            }
+            if(c.coin._5 >= 1 && c.sum-p >= 5){
+                if(this.removeCoin(5)){
+                    count += 5 ;
+                    continue ;
+                }
+            }
+            if(c.coin._1 >= 1 && c.sum-p >= 1){
+                if(this.removeCoin(1)){
+                    count += 1 ;
+                    continue ;
+                }
+            }
+            if(c.sum-p > 0){
+                if(c.coin._10 >= 1){
+                    this.removeCoin(10)
+                    this.setCoin(9);
+                    count += 1
+                    continue
+                }
+                if(c.coin._5 >= 1){
+                    this.removeCoin(5)
+                    this.setCoin(4);
+                    count += 1
+                    continue
+                }
+            }
+            break ;
+        }
+        return count ;
+    }
+    removeCoin = (value) => {
+        // 指定された値のコインを探して削除
+        for(let i = 0; i < this.coinBox.children.length; i++){
+            const coin = this.coinBox.children[i];
+            // SlotCoinクラスのインスタンスで、指定された値と一致するかチェック
+            if(coin instanceof SlotCoin && coin.coin === value){
+                // coinBoxから削除
+                this.coinBox.removeChild(coin);
+                // メモリ解放のためにdestroy
+                coin.destroy();
+                return true;
+            }
+        }
+        
+        // 指定された値のコインが見つからなかった場合
+        return false;
+    }
+    getCoinSum = () => {
+        let count = 0 ;
+        const coin = {
+            _10 : 0 ,
+            _5 : 0 ,
+            _1 : 0 ,
+        }
+        for(let i = 0 ; i < this.coinBox.children.length ; i ++){
+            count += this.coinBox.children[i].coin ;
+            switch(this.coinBox.children[i].coin){
+            case 10 :
+                coin._10 ++ ;
+                break ;
+            case 5 :
+                coin._5 ++ ;
+                break ;
+            case 1 :
+                coin._1 ++ ;
+                break ;
+            }
+        }
+        return {
+            sum : count ,
+            coin : coin ,
+        }
+            
+    }
+    sumCoin = () => {
+        let coinCounter = 0
+        for(let i = 0 ; i < slot.coinBox.children.length ; i ++){
+            const elm = slot.coinBox.children[i] ;
+            coinCounter += elm.coin ;
+        }
+        return coinCounter
+    }
     constructor(w,h,useData){
+        //super()
+        this.width = w
+        this.height = h
         //---------------------------------------------------------------------
         // Pixiアプリケーション生成
         //---------------------------------------------------------------------
         let app = new PIXI.Application({
-            width: 840,                 // スクリーン(ビュー)横幅 
-            height: 900,                // スクリーン(ビュー)縦幅  
+            width: this.width,                 // スクリーン(ビュー)横幅 
+            height: this.height,                // スクリーン(ビュー)縦幅  
             backgroundColor: 0x171D19,  // 背景色 16進 0xRRGGBB
             autoDensity: true,
         });
@@ -128,72 +518,36 @@ class Slot {
         el.appendChild(app.view);
         
         this.app = app
-
+        //---------------------------------------------------------------------
+        // 環境設定
+        //---------------------------------------------------------------------
+        this.setSlotObject(useData)
+        //---------------------------------------------------------------------
+        // スクリーン設定
         //---------------------------------------------------------------------
 
+        this.screen = new SlotGameScreen(app,this.slot_object)
         this.screen.setWidth(w/5) ;
-        this.screen.setHeight(h) ;
-        app.stage.addChild(this.screen)
+        this.screen.setHeight(h/2) ;
+        this.main_container.addChild(this.screen)
 
+        this.win_effect = new WinEffect(w,h/2)
+        this.main_container.addChild(this.win_effect)
         //---------------------------------------------------------------------
+        // new SlotStartButton()
+        //---------------------------------------------------------------------
+        this.start_button = new SlotStartButton(w,h) ;
+        this.screen.addChild(this.start_button)
+        this.main_container.addChild(this.start_button )
+        //---------------------------------------------------------------------
+        // Coin box
+        //---------------------------------------------------------------------
+        this.main_container.addChild(this.coin_in)
+        this.coinBox = new PIXI.Container() ;
+        this.main_container.addChild(this.coinBox)
+        //---------------------------------------------------------------------
+        this.app.stage.addChild(this.main_container)
+
         
-        for (let i = 0 ; i < useData.length ; i ++) {
-            const elm = useData [i] ;
-            this.setSlotObject (
-                elm.name,
-                elm.probability, // Float
-                elm.PATH_TO_IMAGE, // String
-                elm.obj_id, // Int
-            )
-        }
-    }
+    } 
 }
-
-
-//=====================================================================
-// ゲーム開始用初期設定
-//=====================================================================
-
-const slot = new Slot(840,285,[
-    {
-        name : "bell" ,
-        probability : 12, // Float
-        PATH_TO_IMAGE : "../img/bell.png", // String
-        obj_id : 0 , // Int
-        score : function(bet){
-            return 5 * bet  
-        } // Function
-    },{
-        name : "apple" ,
-        probability : 20, // Float
-        PATH_TO_IMAGE : "../img/apple.png", // String
-        obj_id : 1 , // Int
-        score : function(bet){
-            return 3 * bet  
-        } // Function
-    },{
-        name : "lemon" ,
-        probability : 20, // Float
-        PATH_TO_IMAGE : "../img/lemon.png", // String
-        obj_id : 2 , // Int
-        score : function(bet){
-            return 2 * bet  
-        } // Function
-    },{
-        name : "ruby" ,
-        probability : 8, // Float
-        PATH_TO_IMAGE : "../img/ruby.png", // String
-        obj_id : 3 , // Int
-        score : function(bet){
-            return 10 * bet  
-        } // Function
-    },{
-        name : "seven" ,
-        probability : 6, // Float
-        PATH_TO_IMAGE : "../img/seven.png", // String
-        obj_id : 4 , // Int
-        score : function(bet){
-            return 100 * bet  
-        } // Function
-    }
-]) ;
