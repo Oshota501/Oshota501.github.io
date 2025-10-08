@@ -1,0 +1,8 @@
+class DataItem {
+    updata (){
+        
+    }
+    constructor(){
+
+    }
+}
