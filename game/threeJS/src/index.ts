@@ -1,14 +1,18 @@
 import * as THREE from "three";
 import { Block } from "./func/3d_block.js"
-
-class Main {
+import { Floor } from "./func/floor.js"
+import { MoveGUI } from "./listener/mov.js"
+	
+// メインのクラス
+export class Main {
 	public width : number = 960 
 	public height : number = 540
 	public renderer : THREE.WebGLRenderer
 	public canvas = document.querySelector("#myCanvas")
 	public scene : THREE.Scene
-	public camera : THREE.PerspectiveCamera
 	private lights : THREE.DirectionalLight [] = []
+	public size : number = 200 
+	public floor : Floor 
 
 	public addLight () {
 		const light = new THREE.DirectionalLight(0xFFFFFF);
@@ -22,25 +26,53 @@ class Main {
 	//ユーザ定義のclass
 	private blocks : Block[] = []
 	public addBlock (x:number,y:number,z:number) {
-		const block = new Block(new THREE.Vector3(x,y,z),30) ;
+		const block = new Block(new THREE.Vector3(x,y,z),this.size) ;
 		this.blocks.push( block )
 		this.scene.add(block);
 	}
+	// イベントリスナー
+	public mov : MoveGUI = new MoveGUI()
 
+	// アニメーション
 	public tick = () => {
 		window.requestAnimationFrame(this.tick);
 		// 箱を回転させる
 		for(let i = 0 ; i < this.blocks.length ; i ++){
 			this.blocks[i].rotation.x += 0.01;
 			this.blocks[i].rotation.y += 0.01;
-			this.blocks[i].addPosition (
-				Math.sin(this.blocks[i].rotation.x),
-				Math.cos(this.blocks[i].rotation.y),
-				Math.sin(this.blocks[i].rotation.z),
-			)
 		}
+		this.mov.tick(this);
 		// レンダリング
 		this.renderer.render(this.scene, this.camera);
+	}
+
+	// カメラの移動
+	public camera : THREE.PerspectiveCamera
+
+	/**
+	 * カメラ位置を絶対座標で設定します。
+	 * @param x X座標（ワールド座標）
+	 * @param y Y座標
+	 * @param z Z座標
+	 */
+	public setCameraPosition(x: number, y: number, z: number) {
+		this.camera.position.set(x, y, z);
+	}
+
+	/**
+	 * カメラを相対移動します（現在位置に加算）。
+	 */
+	public moveCameraBy(dx: number, dy: number, dz: number) {
+		this.camera.position.x += dx;
+		this.camera.position.y += dy;
+		this.camera.position.z += dz;
+	}
+
+	/**
+	 * カメラを指定座標へ向けます（lookAt）。
+	 */
+	public lookAtCamera(x: number, y: number, z: number) {
+		this.camera.lookAt(new THREE.Vector3(x, y, z));
 	}
 
 	constructor(){
@@ -61,16 +93,22 @@ class Main {
 		// カメラの初期座標を設定（X座標:0, Y座標:0, Z座標:0）
 		this.camera.position.set(0, 0, 1000);
 		// 箱を作成
-		for(let i = 0 ; i < 100 ; i ++ ){
-			this.addBlock(-Math.random()*200,-Math.random()*200,-Math.random()*200)
-		}
+	
+		this.addBlock(0,0,0)
 		// 平行光源
 		this.addLight()
+
+		// 床を追加
+		this.floor = new Floor(0,0,this.size*16)
+		this.scene.add(this.floor)
 		// 初回実行
 
 		this.tick();
 		//# sourceMappingURL=index.js.map
+
+
 	}
 }
 
-const main = new Main()
+export const main = new Main()
+
