@@ -34,6 +34,30 @@ export class Block extends THREE.Mesh {
         this.tick()
     }
 
+    public materialColor : number = 0xFFFF00; // default yellow
+    /**
+    * @param color: hex color for material or geometry
+    * Changes the color of the material or geometry
+    */
+    public setColorMaterial(color:number) {
+        this.materialColor = color;
+        (this.material as THREE.MeshStandardMaterial).color.setHex(color);
+        this.material.needsUpdate = true; // Ensure material updates
+    }
+
+    /**
+     * @param color hex color for geometry vertex colors
+     * Changes the color of the geometry (vertex colors)
+     */
+    // public changeColorGeometry(color:number) {
+    //     (this.geometry as THREE.BoxGeometry).attributes.color = new THREE.Float32BufferAttribute([
+    //         ((color >> 16) & 0xFF) / 255,
+    //         ((color >> 8) & 0xFF) / 255,
+    //         (color & 0xFF) / 255,
+    //     ], 3);
+    //     this.geometry.attributes.color.needsUpdate = true; // Ensure geometry updates
+    // }
+
     // p is logical grid coords (not geometry size). size is used both for geometry and grid scale.
     constructor(p: THREE.Vector3,size: number) {
         // create geometry sized to one grid cell
