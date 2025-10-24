@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>くそUI</title>
+        <meta charset="utf-8"/>
+    </head>
+    <body>
+        <div class="b">
+            <marquee scrollamount="20" id="title">
+                キショいスライドの作り方
+            </marquee>
+            <p>カンタン</p>
+        </div>
+        <style>
+
+body marquee{
+    color:white;
+    font-size: 5rem;
+    font-weight: 900;
+}
+.b{
+    text-align: center;
+    font-size: 4rem;
+    color:white;
+}
+        </style>
+        <script>
+const body = document.body ;
+const elm = document.getElementById("title");
+let x = 0 ;
+setInterval(function(){
+    body.style.background = "linear-gradient(0deg,rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602)),radial-gradient(rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58))" ;
+    setTimeout(function(){
+        body.style.background = "linear-gradient(0deg,rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591),rgba(255, 255, 0, 0.602),rgba(0, 128, 0, 0.591)),radial-gradient(rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488),rgba(0, 0, 255, 0.58),rgba(255, 0, 0, 0.488))" ;
+    },25)
+    elm.style.transform = `rotateX(${x}deg)` ;
+    x += 10 ;
+},50)
+        </script>
+    </body>
+</html>
