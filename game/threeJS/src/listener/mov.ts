@@ -4,12 +4,12 @@ import { Main } from "../index.js";
 
 export class MoveGUI {
     public speed: number = 3;
-    public forward: boolean = false;
-    public backward: boolean = false;
-    public left: boolean = false
-    public right: boolean = false
-    public up: boolean = false
-    public down: boolean = false
+    private forward: boolean = false;
+    private backward: boolean = false;
+    private left: boolean = false
+    private right: boolean = false
+    private up: boolean = false
+    private down: boolean = false
 
     constructor() {
         this.setListener()
@@ -68,6 +68,14 @@ export class MoveGUI {
                     this.down = false;
                     break;
             }
+        });
+        window.addEventListener('mouseleave', (event) => {
+            this.forward = false;
+            this.backward = false;
+            this.left = false;
+            this.right = false;
+            this.up = false;
+            this.down = false;
         });
     }
 }
