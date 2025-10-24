@@ -59,6 +59,14 @@ export class MoveGUI {
                     break;
             }
         });
+        window.addEventListener('mouseleave', (event) => {
+            this.forward = false;
+            this.backward = false;
+            this.left = false;
+            this.right = false;
+            this.up = false;
+            this.down = false;
+        });
     }
 }
 //# sourceMappingURL=mov.js.map
