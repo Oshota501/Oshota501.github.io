@@ -33,8 +33,8 @@ function formatAreas (data,timeDefines) {
         result += `<h3>${area.area.name}</h3>` ;
         for(let j = 0 ; j < timeDefines.length ; j++){
             result += `
-                <p>${timeDefines[j].slice(8,10)}日 : ${weatherColor(area.weathers[i])}<br>
-                ${area.winds[i]}</p>
+                <p>${timeDefines[j].slice(8,10)}日 : ${weatherColor(area.weathers[j])}<br>
+                ${area.winds[j]}</p>
             ` ;
         }
     }
