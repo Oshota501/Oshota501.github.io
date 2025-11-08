@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>oshotaのgithubページ</title>
+    </head>
+    <body>
+        <div class="menue_page">
+            <!-- この要素ないには書かないでください。 -->
+            <div class="menue_in_main"></div>
+        </div>
+        <div id="main">
+            <div class="main_page">
+                <div class="main_page_nomal_format">
+                    <div>
+                        <h1>トピック</h1>
+                        <p>適当にwebAPIを叩いたやつなどを共有しておきます。</p>
+                    </div>
+                    <hr>
+                    <div>
+                        <h2>天気予報</h2>
+                        <p><a href="https://Oshota501.github.io/application/wether/">https://Oshota501.github.io/application/wether/</a></p>
+                        <hr>
+                        <iframe src="./wether/index.html" style="width: 100%;height: 40rem;"></iframe> 
+                    </div>
+                </div>
+            </div>
+            <div class="space_6px"></div>
+            <div class="side_menue">
+                <!-- この要素ないには書かないでください。 -->
+            </div>
+        </div>
+        <div class="footer">
+            <!-- この要素ないには書かないでください。 -->
+        </div>
+
+        <script>
+const tes = [
+    {
+        elm : document.getElementsByClassName('menue_page')[0],
+        url : '/public/menue.html' ,
+    },{
+        elm : document.getElementsByClassName('footer')[0] ,
+        url : '/public/footer.html' ,
+    },{
+        elm : document.getElementsByClassName('side_menue')[0] ,
+        url : '/public/profile.html' ,
+    }
+]
+        </script>
+        <script src="/public/index.js"></script>
+        <link href="/public/public_style.css" rel="stylesheet"/>
+    </body>
+</html>
