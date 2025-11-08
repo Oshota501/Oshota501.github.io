@@ -84,7 +84,7 @@ particleSystem.importFromJson(
     "width": 733,
     "height": 446,
     "emitFrequency": 300,
-    "startX": 367,
+    "startX": 620,
     "startXVariance": "668",
     "startY": 223,
     "startYVariance": "378",
