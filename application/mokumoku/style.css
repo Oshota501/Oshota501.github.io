@@ -1,0 +1,8 @@
+body{
+    text-align: center;
+    font-size: 5rem;
+    background: radial-gradient(rgb(233, 251, 162),rgb(247, 180, 180),rgb(233, 251, 162),rgb(247, 180, 180),rgb(233, 251, 162),rgb(247, 180, 180));
+}
+#moku{
+    position: relative;
+}
