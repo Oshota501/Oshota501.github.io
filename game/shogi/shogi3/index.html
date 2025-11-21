@@ -1,0 +1,136 @@
+<html>
+    <head>
+        <title>Oshoshogi3Bvar</title>
+        <meta charset="utf-8"/>
+    </head>
+    <body>
+        <div class="Nari">
+            <p>
+                成りますか？
+            </p>
+            <button id="yes">YES</button>
+            <button id="no">NO</button>
+        </div>
+        <canvas id="main" width="900" height="660"></canvas>
+        <table>
+            <tr>
+            <td class ="seting1" style="width: 500px;">
+                <div class="set"></div>
+                盤上：
+                <button class="input1">追加</button>
+                <select class="input1">
+                    <option value="歩" >歩兵</option>
+                    <option value="香" >香車</option>
+                    <option value="桂" >桂馬</option>
+                    <option value="銀" >銀将</option>
+                    <option value="金" >金将</option>
+                    <option value="角" >角行</option>
+                    <option value="飛" >飛車</option>
+                    <option value="と" >と金</option>
+                    <option value="成香" >成香</option>
+                    <option value="成桂" >成桂</option>
+                    <option value="成銀" >成銀</option>
+                    <option value="馬" >馬</option>
+                    <option value="龍" >龍</option>
+                    <option value="玉" >玉将</option>
+                    <option value="王" >王将</option>
+                </select>
+                <button class="input1">先手</button>
+                <button class="input1">後手</button>
+                <button class="input1">削除</button>
+
+
+                <br>持ち駒：
+                <button class="input2">先手に追加</button>
+                <button class="input2">後手に追加</button>
+                <select class="input2">
+                    <option value="歩" >歩兵</option>
+                    <option value="香" >香車</option>
+                    <option value="桂" >桂馬</option>
+                    <option value="銀" >銀将</option>
+                    <option value="金" >金将</option>
+                    <option value="角" >角行</option>
+                    <option value="飛" >飛車</option>
+                </select>
+                <button class="input2">リセット</button>
+
+                <br>
+                盤面：
+                <button class="input3">js表示</button>
+                <button class="input3">画像ダウンロード</button>
+            </td>
+            <td class ="seting1" style="width: 230px;">
+                先手<br>
+                戦型：<a class="Senkei">なし</a><br>
+                囲い：<a class="Kakoi">なし</a><br>
+                評価値：<a class="Hyokachi"></a>
+            </td>
+            <td class ="seting1" style="width: 230px;">
+                後手<br>
+                戦型：<a class="Senkei">なし</a><br>
+                囲い：<a class="Kakoi">なし</a><br>
+                評価値：<a class="Hyokachi"></a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <button class="input4">.kif入力</button>
+            <button class="input4">.kif出力</button><br>
+            <button class="input4">＜＜</button>
+            <button class="input4">＜</button>
+            <button class="input4">＞</button>
+            <button class="input4">＞＞</button>
+            </td>
+            
+        </tr>
+        </table>
+
+        <div style="float:none;">
+            入出力用
+            <textarea id="log"></textarea>
+        </div>
+
+        <script src="./main.js"></script>
+
+        <style>
+#log{
+    width:100%;
+    height: 245px;
+}
+#main{
+    width: 900px;
+    height: 660px;
+    border: 1px solid;
+    border-color: #000000;
+}
+.set{
+    width:100px;
+    height: 15px;
+    font-size:12px ;
+    font-family:"system-ui";
+    border:1px solid;
+    border-radius: 10%;
+}
+.seting1 {
+    border:2px solid;
+}
+.Nari{
+    position:absolute;
+    background-color: #ffffff9b;
+    color:black;
+    width:100%;
+    height:100%;
+    text-align:center;
+    font-size:50px;
+    display:none;
+}
+.Nari button{
+    border-radius: 10%;
+    font-size: 60px ;
+}
+
+
+
+        </style>
+    </body>
+</html>
