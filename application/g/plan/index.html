@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>予定</title>
+    </head>
+    <body>
+        <h1><input type="number" max="12" min="1" value="1" 
+            style="font-size: 2rem;"/>月 予定表</h1>
+        <table class="table">
+            <thead>
+                <th>予定</th>
+                <th>日曜日</th>
+                <th>月曜日</th>
+                <th>火曜日</th>
+                <th>水曜日</th>
+                <th>木曜日</th>
+                <th>金曜日</th>
+                <th>土曜日</th>
+            </thead>
+            <tbody id="init">
+
+            </tbody>
+        </table>
+        <div>
+            <ul>
+                <li>O...行けます。</li>
+                <li>△...行けますができれば行きたくないです。</li>
+                <li>X...行けないです。</li>
+            </ul>
+        </div>
+        <textarea></textarea>
+        <div id="input">
+            <select value="0">
+                <option value="0">日曜日</option>
+                <option value="1">月曜日</option>
+                <option value="2">火曜日</option>
+                <option value="3">水曜日</option>
+                <option value="4">木曜日</option>
+                <option value="5">💰曜日</option>
+                <option value="6">土曜日</option>
+            </select>
+            <select value="30">
+                <option value="31">31</option>
+                <option value="30">30</option>
+                <option value="29">29</option>
+                <option value="28">28</option>
+            </select>
+            <button>生成</button>
+        </div>
+        <style>
+.table{
+    border: 1px solid;
+    text-align: center;
+}
+.table th{
+    border: 1px solid ;
+}
+.table td{
+    border: 1px solid ;
+}
+/* range の横に値を表示 */
+.range-value {
+    display: inline-block;
+    min-width: 2ch;
+    text-align: center;
+    margin-left: 8px;
+    font-family: system-ui, sans-serif;
+}
+        </style>
+        <script src="./main.js">
+
+        </script>
+    </body>
+</html>
