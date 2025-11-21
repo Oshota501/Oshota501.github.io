@@ -1,0 +1,372 @@
+<html>
+  <head>
+  </head>
+  <body>
+    <title>おしょ将棋</title>
+    <div id="naricheck" style="display:none;font-size:50px;position: fixed;z-index:100;background:#f9f9f99c;width:100%;height:100%;">
+      <div style="margin:0 auto;">
+      <p>成ますか？</p>
+      <button onclick="nari();" style="width:200px;height:100px;font-size:50px;background:red;color:white;">はい</button>
+      <button onclick="naricheck.style.display='none';ba='b';" style="width:200px;height:100px;font-size:40px;">いいえ</button>
+      </div>
+    </div>
+    <div id="disply1" style="display:none;">
+    
+  <div style="position:absolute;z-index:100;width:100%;pointer-events: none;display:block;" id="Akeikoku"></div>
+      <div style="margin:0 auto;float:left;" id="indisply1">
+        <div style="background:#fffed3;font-size:33px;transform:rotate(180deg);">
+          <div style="float:left;">▽
+            <a class="maru_50" style="background:white;color:red;" onclick="fsfs();">後</a>
+          持ち駒：
+          </div>
+          <table  id="secound" style="font-size:30px;">
+          </table>
+          <div style="clear:both;"></div>
+        </div>
+        <div id="Shougi_t">
+
+        </div>
+        <div style="background:#fffed3;font-size:30px;">
+          <div style="float:left;">▲
+            <a class="maru_50" style="background:red;color:white;" onclick="fsfs();">先</a>
+          持ち駒：
+          </div>
+          <table id="first" style="font-size:33px;">
+          </table>
+          <div style="clear:both;"></div>
+        </div>
+        <div style="background:black;font-size:26px;">
+          <div style="text-align:center;" id="matta">
+            <button>&lt;</button>
+            <button>&lt;</button>
+            <button>&gt;</button>
+            <button>&gt;</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span style="background:black;font-size:20px;color:white;display:block;" id="logwork">
+          <a id="LP1" style="display:block;"></a><br>
+          番:<a id="LP2" class="maru_50" style="color:white;background:red;">先</a><br>
+          通知:<a id="LP3"></a><br>
+          情報:(先)<a id="LP4f"></a><br>(後)<a id="LP4s"></a><br>
+          <a id="LP4"></a><br>
+          <button onclick="ba='t';logwork.style.display='none';isslog.style.display='block';" style="font-size:30px;">投了</button>
+          <button onclick="Shougi.remove();ba='b';logwork.style.display='block';isslog.style.display='none';disply1.style.display ='none';De.style.display='block';haichi=[];wsize=[9,9];ChudanSaikai.style.display='block';" style="font-size:30px;" >中断</button>
+          <button style="font-size:30px;" onclick="pass();" id="passId">パス</button><br>
+          <span id="com" style="display:block;">コマンド↓<br>
+          <input type="text" id="txInput" size="20"></input>
+          <button onclick="
+let value=txInput.value;
+if(value=='th f'){  Now='f';order='f'}if(value=='s'){  Now='th s';order='s'}
+if(value=='add f 歩'){  HaveAdd('歩','f');}if(value=='add s 歩'){  HaveAdd('歩','s');}
+if(value=='add f 金'){  HaveAdd('金','f');}if(value=='add s 金'){  HaveAdd('金','s');}
+if(value=='add f 銀'){  HaveAdd('銀','f');}if(value=='add s 銀'){  HaveAdd('銀','s');}
+if(value=='add f 桂'){  HaveAdd('桂','f');}if(value=='add s 桂'){  HaveAdd('桂','s');}
+if(value=='add f 香'){  HaveAdd('香','f');}if(value=='add s 香'){  HaveAdd('香','s');}
+if(value=='add f 飛'){  HaveAdd('飛','f');}if(value=='add s 飛'){  HaveAdd('飛','s');}
+if(value=='add f 角'){  HaveAdd('角','f');}if(value=='add s 角'){  HaveAdd('角','s');}
+if(value=='add f 玉'){  HaveAdd('玉','f');}if(value=='add s 玉'){  HaveAdd('玉','s');}
+if(value=='add f 王'){  HaveAdd('王','f');}if(value=='add s 王'){  HaveAdd('王','s');}
+if(value=='add f 犬'){  HaveAdd('🐶','f');}if(value=='add s 犬'){  HaveAdd('🐶','s');}
+if(value=='add f 猫'){  HaveAdd('🐱','f');}if(value=='add s 猫'){  HaveAdd('🐱','s');}
+if(value=='add f 熊'){  HaveAdd('🐻','f');}if(value=='add s 熊'){  HaveAdd('🐻','s');}
+if(value=='remove'){  ba='cr';  LP3.innerText='駒消去モード';}
+if(value=='nari'){  ba='cn';  LP3.innerText='駒成モード';}
+">完了</button></span>      
+          <br>
+          <br><a id="LP6"></a>
+<span id="addSc" style="display:none;">
+<table style="background:white;float:left;text-align:center;border-spacing:0;" border="1">
+<tr><td>先手</td>
+<td><button class="addButton" onclick="HaveAdd(&quot;金&quot;,&quot;f&quot;)">金</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;銀&quot;,&quot;f&quot;)">銀</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;桂&quot;,&quot;f&quot;)">桂</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;香&quot;,&quot;f&quot;)">香</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;飛&quot;,&quot;f&quot;)">飛</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;角&quot;,&quot;f&quot;)">角</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;歩&quot;,&quot;f&quot;)">歩</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;王&quot;,&quot;f&quot;)">王</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;麒麟&quot;,&quot;f&quot;)">麒麟</button></td></tr>
+<tr><td>後手</td>
+<td><button class="addButton" onclick="HaveAdd(&quot;金&quot;,&quot;s&quot;)">金</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;銀&quot;,&quot;s&quot;)">銀</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;桂&quot;,&quot;s&quot;)">桂</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;香&quot;,&quot;s&quot;)">香</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;飛&quot;,&quot;s&quot;)">飛</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;角&quot;,&quot;s&quot;)">角</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;歩&quot;,&quot;s&quot;)">歩</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;玉&quot;,&quot;s&quot;)">玉</button></td>
+<td><button class="addButton" onclick="HaveAdd(&quot;麒麟&quot;,&quot;s&quot;)">麒麟</button></td></tr>
+</table>
+</span>
+        </span>
+
+        <div id="isslog" style="display:none;">
+          <button onclick="ba='b';logwork.style.display='block';isslog.style.display='none';disply1.style.display ='none';De.style.display='block';Shougi.remove();Now='f';order='f';" style="font-size:30px;" >終了</button><br>
+          間違えて推したなら→
+          <button onclick="ba='b';logwork.style.display='block';isslog.style.display='none';" style="font-size:30px;">再開</button>
+        </div>
+      </div>
+      <div style="clear:both;">
+      </div>
+      <span style="display:none;background:white;margin:0 auto;width:100%;" id="kifurui">
+        <span style="font-size:30px;">～棋譜類</span><br>
+        <button onclick="ki()" style="font-size:16px;">棋譜</button>
+        <button onclick="if(ate0.innerText==''){  ate0.innerText='ㇾ';LP7.style.display='block';}else{  ate0.innerText='';LP7.style.display='none';}" style="font-size:16px;">配置表示コピペ用</button>
+        <div><a id="ate0"></a></div><br>
+        <div style="background:white;border:1px solid;color:black;"><a id="LP7" style="display:none;"></a></div><br>
+        <div style="background:white;border:1px solid;color:black;"><a id="kiSc" style="background:white;border:1;color:black;font-size:15px;"></a></div><br>
+      </span>
+      <div id="InOp"></div>
+    </div>
+
+
+
+    <div id="De" class="startscreen">
+      <div></div><br>
+      <div style="font-size:60px;background: linear-gradient(yellow,pink);width:70%;text-align:center;margin:0 auto;">おしょ将棋！</div>
+      <div style="font-size:30px;"> 選択してね～</div>
+      <span>～一般　　　　</span>
+      <button onclick="won(0);" class="wb">普通の配置</button>
+      <button onclick="won(3);" class="wb">５マス将棋</button>
+      <button onclick="won(8);" class="wb">摩訶大大将棋（仮）</button>
+      <button onclick="won(9);" class="wb" id="ChudanSaikai" style="display:none;">再開</button>
+<br>
+      <span>～オリジナル　</span>
+      <button onclick="won(1);" class="wb">王玉</button>
+      <button onclick="won(2);" class="wb">怠慢</button>
+      <button onclick="won(4);" class="wb">犬vs人間</button>
+      <button onclick="won(7);" class="wb">川端将棋</button>
+<br>
+      <span>～ランダム　　</span>
+      <button onclick="wsize = [9,9];won(6);" class="wb">ランダム</button>
+      <table style="text-align:center;border-spacing:0;" border="1">
+      <tr><td>縦幅</td><td><input placeholder="2～99" type="number" id="x_op" value="9" style="width:80px;height:30px;"></label></td>
+      <td>横幅</td><td><input placeholder="1～99" type="number" id="y_op" value="9" style="width:80px;height:30px;"></label></td></tr>
+      <tr><td>初期配置先手生成数</td><td><input type="number" id="fRandomH" value="18" style="width:80px;height:30px;"></label></td>
+      <td>初期配置後手生成数</td><td><input type="number" id="sRandomH" value="18" style="width:80px;height:30px;"></label></td></tr>
+      <tr><td>持ち駒先手生成数</td><td><input type="number" id="fRandomM" value="2" style="width:80px;height:30px;"></label></td>
+      <td>持ち駒後手生成数</td><td><input type="number" id="sRandomM" value="2" style="width:80px;height:30px;"></label></td></tr>
+      </table>
+      <button onclick="random_k(0)" id="random_koma">本将棋</button>
+      </table>
+<br>
+      <span>～カスタム　　</span>
+      <button onclick="wsize = [9,9];won(5);" class="wb">カスタム</button>
+      縦幅<input placeholder="2～99" type="number" id="x_op2" value="9" style="width:100px;height:30px;"></label>
+      横幅<input placeholder="1～99" type="number" id="y_op2" value="9" style="width:100px;height:30px;"></label>
+      配置コード<input placeholder="ない場合は未記入で" id="haichi_coad" style="width:300px;height:30px;"></label>
+<br>
+      <div style="font-size:30px;">プレイヤー</div>
+      <button id="pl1" onclick="cpudate[1]='';pl1.style.background='orange';pl2.style.background='';pl3.style.background='';" style="background:orange;font-size:21px;">プレイヤーvsプレイヤー</button><==推奨！！！<br>
+      <button id="pl2" onclick="cpudate[1]='y';cpudate[0]='s';pl1.style.background='';pl2.style.background='orange';pl3.style.background='';" style="font-size:21px;">プレイヤー vs 適当君</button><==めっちゃバグ多いよ～～<br>
+      <button id="pl3" onclick="cpudate[1]='y';cpudate[0]='f';pl1.style.background='';pl2.style.background='';pl3.style.background='orange';" style="font-size:21px;">適当君 vs プレイヤー</button><==めっちゃバグ多いよ～～<br>
+<br>
+      <div style="font-size:30px;">設定</div>
+    <table>
+      <tr><td><div style="float:left;" onclick="if(ate1.innerText==''){  ate1.innerText='ㇾ';Akeikoku.style.display='block';}else{  ate1.innerText='';Akeikoku.style.display='none';}" class="b2">警告画面表示</div></td>
+      <td><div class="ch"><a id="ate1" style="position:relative;bottom:5px;">ㇾ</a></div></td>
+      <td><div style="float:left;" onclick="if(ate5.innerText==''){  ate5.innerText='ㇾ';passId.style.display='block';}else{  ate5.innerText='';passId.style.display='none';}" class="b2">ルール：パスの有無</div></td>
+      <td><div class="ch"><a id="ate5" style="position:relative;bottom:5px;">ㇾ</a></div></td></tr>
+
+      <tr><td><div style="float:left;" onclick="if(ate2.innerText==''){  ate2.innerText='ㇾ';LP1.style.display='block';}else{  ate2.innerText='';LP1.style.display='none';}" class="b2">手表示</div></td>
+      <td><div class="ch"><a id="ate2" style="position:relative;bottom:5px;">ㇾ</a></div></td>
+      <td><div style="float:left;" onclick="if(ate6.innerText==''){  ate6.innerText='ㇾ';matta.style.display='block';}else{  ate6.innerText='';matta.style.display='none';}" class="b2">ルール：待ったの有無</div></td>
+      <td><div class="ch"><a id="ate6" style="position:relative;bottom:5px;">ㇾ</a></div></td></tr>
+
+      <tr><td><div style="float:left;" onclick="if(ate3.innerText==''){  ate3.innerText='ㇾ';com.style.display='block';}else{  ate3.innerText='';com.style.display='none';}" class="b2">コマンド表示</div></td>
+      <td><div class="ch"><a id="ate3" style="position:relative;bottom:5px;">ㇾ</a></div></td>
+      <td><div style="float:left;" onclick="if(ate7.innerText==''){  ate7.innerText='ㇾ';addSc.style.display='block';}else{  ate6.innerText='';addSc.style.display='none';}" class="b2">駒の追加画面の有無</div></td>
+      <td><div class="ch"><a id="ate7" style="position:relative;bottom:5px;"></a></div></td></tr>
+
+      <tr><td><div style="float:left;" onclick="if(ate4.innerText==''){  ate4.innerText='ㇾ';kifurui.style.display='block';}else{  ate4.innerText='';kifurui.style.display='none';}" class="b2">棋譜類の表示</div></td>
+      <td><div class="ch"><a id="ate4" style="position:relative;bottom:5px;"></a></div></td></tr>
+    </table>
+    <span>
+      <div style="float:left;">その他の諸設定用コード→</div>
+      <input type="text" style="width:300px;" id="OptionC"></input>
+      <button onclick="let op=OptionC.value;InOp.innerHTML=op;">〇</button>
+    </span>
+    <br><span>
+      <a style="font-size:20px;clear:both;" href=""C:\Users\垣内彰太\Desktop\　　　\ゴミ系\shoui\7\aaaaaaa.html"">ページリロード</a>
+    </span>
+<br>
+      <div style="font-size:30px;">駒の色選択</div>
+      <ul style="font-size:22px;">
+        <li><button onclick="FSColor=['black','black','black','black'];bgcolor='transparent';">〇</button>全黒</li>
+        <li><button onclick="FSColor=['black','black','red','red'];bgcolor='transparent';">〇</button>通常黒、成ったら<a style="color:red;">赤</a></li>
+        <li><button onclick="FSColor=['black','black','red','red'];bgcolor='white';">〇</button>通常黒、成ったら<a style="color:red;">赤</a>背景白</li>
+        <li><button onclick="FSColor=['blue','green','red','orange'];bgcolor='transparent';">〇</button>先手<a style="color:blue;">青</a>成ったら<a style="color:red;">赤</a>、後手<a style="color:green;">緑</a>成ったら<a style="color:orange;">橙</a></li>
+        <li><button onclick='FSColor=["transparent","transparent","transparent","transparent"];bgcolor="transparent";'>〇</button>ステレス</li>
+        <li><button onclick='FSColor=["#e100ff","#e100ff","#49ef00","#49ef00"];bgcolor="black";'>〇</button>通常<a style="color:#e100ff;background:black;">紫</a>成ったら<a style="color:#49ef00;background:black;">黄緑</a></li>
+        <li><button onclick='FSColor=["white","white","white","white"];bgcolor="black";'>〇</button><a style="color:white;background-color:black;">白</a></li>
+        <li><button onclick='FSColor=["yellow","lightgreen","lightblue","pink"];bgcolor="purple";sssss();'>〇</button><a style="color:white;background-color:black;">????</a></li>
+      </ul>
+<br>
+      <div style="font-size:30px;">駒の見た目</div>
+      <table style="background:var(--main-color);float:left;">
+        <tr>
+          <td id="komanomitame" style="float:left;background:transparent;font-size:34px;width:60px;height:60px;"></td>
+        </tr>
+      </table>
+      <button style="float:left;font-size:20;height:65;" onclick="url_koma='./koma/koma.png';komanomitame();">普<br>通</button>
+      <button style="float:left;font-size:20;height:65;" onclick="url_koma='';komanomitame();">な<br>し</button>
+      <button style="float:left;font-size:20;height:65;" onclick="url_koma='./koma/%EF%BD%8B%EF%BC%92.png';komanomitame();">濃<br>い</button>
+      <button style="float:left;font-size:20;height:65;" onclick="url_koma='./koma/k.png';komanomitame();">き<br>む</button>
+      <button style="float:left;font-size:20;height:65;" onclick="url_koma='./koma/rittai.png';komanomitame();">立<br>体</button>
+      <button style="float:left;font-size:20;" onclick="url_koma=othPhsURL.value;komanomitame();">その他</button>
+      →
+      <input id="othPhsURL" type="text" style="width:300px;height:30px;" placeholder="URL"></input>
+      <div style="clear:both;"></div>
+<br>
+      <div style="font-size:30px;clear:both;">説明</div><br>
+    現在時刻:<a id="time"style="color:orange;background:black;"></a><br>
+    早く寝ましょう。<br>
+
+<div style="width:95%;margin:0 auto;">
+<table style="text-align:center;border-spacing:0;" border="1">
+  <tr><td style="width:200px;">警告画面</td>
+  <td>二歩時に警告を表示します。ゲームに支障、干渉はありません。</td></tr>
+  <tr><td>その他の諸設定用コード</td>
+  <td>HTMLコードを挿入できます。例：&lt;button onclick="LP8.innerText=haichi;" style="font-size:16px;"&gt;shiken&lt;/button&gt;&lt;div style="background:white;border:1px solid;color:black;"&gt;&lt;a id="LP8" style="display:block;"&gt;&lt;/a&gt;&lt;/div&gt;</td></tr>
+  <tr><td>待ったの有無</td><td style="color:red;">現在開発中</td><tr>
+  <tr><td>棋譜類の表示</td><td>開発者用、棋譜は意味の通りです。</td><tr>
+</table>
+
+    コマンド↓<br>
+<table style="text-align:center;border-spacing:0;" border="1">
+    <tr><td style="width:200px;">記入方法</td><td style="width:200px;">可能なこと</td><td style="width:200px;">記入例</td>
+    <tr><td>th + 前か後ろ(先手にするなら「f」後手なら「s」)　</td><td>先手番後手番選択可能です。</td><td>th f</td></tr>
+    <tr><td>add + 前か後ろ(先手にするなら「f」後手なら「s」) + 駒の名前(漢字1字で、成り駒未対応) </td><td>持ち駒追加できます。</td><td>add f 歩</td></tr>
+    <tr><td>remove 実行後に駒をタップ</td><td>駒消去モード、画面の駒タップで消去されます。</td><td>remove</td></tr>
+    <tr><td>nari 実行後に駒をタップ</td><td>駒なりモードになります。</td><td>nari</td></tr>
+</table>
+カスタムコード種類　※＝未収録
+<table style="text-align:center;border-spacing:0;" border="1">
+    <tr><td width="150px">～～名前～～</td><td>概要～</td><td width="30%">収録済みの発展形、（よく使う派生）</td>
+    <tr><td>美濃</td><td>振り飛車戦法で使用されます。早く囲えて強いのがメリットです。前と斜めからの攻撃に少し弱いです。</td><td>高美濃、ダイヤモンド美濃、銀冠、銀冠穴熊、片美濃</td></tr>
+    <tr><td>穴熊</td><td>振り飛車戦法で使用されます。相手が王手を打ちにくいのがメリットです。強度が非常に強いです。</td><td>(銀冠穴熊、矢倉穴熊、居飛車穴熊)</td></tr>
+    <tr><td onclick="window.open('./矢倉.html','subwin','width=600,height=800');">金矢倉</td><td>主に居飛車戦法で相居飛車のときに使われます。金矢倉戦法ともいわれます。前からの攻撃にめっぽう強いです。</td><td>菱矢倉、銀立矢倉、総矢倉、矢倉穴熊</td></tr>
+    <tr><td>舟囲い</td><td>居飛車で使われます。早く囲えてさらに発展形に持っていくことのできるのがメリットです。そのまま戦いを仕掛けることもあります。</td><td>箱入り娘、左美濃</td></tr>
+    <tr><td>左美濃</td><td>居飛車戦法で使用されます。前からの攻撃に少し弱いです。角道を開けなければならないのがデメリットです。</td><td></td></tr>
+    <tr><td>居飛車穴熊</td><td>居飛車で使われます。居飛車で固く囲えるのがメリットです。</td><td>(穴熊)</td></tr>
+    <tr><td>銀矢倉</td><td>相居飛車で使用されます。</td><td></td></tr>
+    <tr><td>ボナンザ囲い</td><td>主に角換わり相居飛車で使用されます。横からの攻撃にも強いです。</td><td>土居矢倉</td></tr>
+    <tr><td>カニ囲い</td><td>金矢倉を組む前に現れる囲いです。</td><td>金矢倉</td></tr>
+    <tr><td>兜矢倉</td><td>主に角換わり相居飛車で使用されます。</td><td></td></tr>
+    <tr><td>へこみ矢倉</td><td>主に角換わり相居飛車で使用されます。横からの攻撃にも強いです。振り飛車でも発生します。</td><td></td></tr>
+    <tr><td>イチゴ囲い</td><td></td><td></td></tr>
+    <tr><td>中住まい</td><td></td><td></td></tr>
+    <tr><td>金無双</td><td>振り飛車でよく使われます。角換わりにも強いです。</td><td>銀多伝、金多伝</td></tr>
+    <tr><td>金多伝</td><td></td><td>銀多伝</td></tr>
+    <tr><td>銀多伝</td><td></td><td>金多伝</td></tr>
+    <tr><td>銀冠</td><td>主に振り飛車で使用されます。高美濃より前からの攻撃に強いです。</td><td></td></tr>
+    <tr><td>銀冠穴熊</td><td>主に振り飛車で使用されます。前からの攻撃に強いです。</td><td></td></tr>
+    <tr><td>片美濃</td><td>美濃より強さは劣りますが、早く囲えて左金を使用できるのがメリットです。</td><td>美濃</td></tr>
+    <tr><td>高美濃</td><td>主に振り飛車で使用されます。美濃より前からの攻撃に強いです。</td><td>銀冠、銀冠穴熊</td></tr>
+    <tr><td>ダイヤモンド美濃</td><td>前からの攻撃に強くなりますが、左銀も守りに回るので、攻めが困難になるデメリットがあります。</td><td></td></tr>
+    <tr><td>ミレニアム囲い</td><td>藤井システム対策の囲いです。穴熊より手数がかかるため、穴熊のほうが強いとされがちです。</td><td></td></tr>
+    <tr><td>エルモ囲い</td><td>コンピューター将棋がよく使う囲いです。</td><td></td></tr>
+    <tr><td>天守閣美濃</td><td>対抗型将棋の居飛車でしばしば使用される囲いです。</td><td>端玉銀冠</td></tr>
+    <tr><td>端玉銀冠</td><td>対抗型将棋の居飛車でしばしば使用される囲いです。玉が逃げれないのがデメリットです。</td><td></td></tr>
+    <tr><td>右矢倉</td><td>相振り飛車で使用されます。</td><td>(金矢倉)</td></tr>
+    <tr><td>雁木囲い</td><td>正面に向かって攻めるときに使われます。</td><td></td></tr>
+    <tr><td>壁囲い</td><td>早く囲えるのがメリットです。別名、早囲い。</td><td></td></tr>
+    <tr><td>土居矢倉</td><td>相居飛車角換わりで使用されます。</td><td></td></tr>
+    <tr><td>四間飛車</td><td>振り飛車戦法です。カウンター攻撃を仕掛ける戦法です。主に対抗型将棋で使用されます。</td><td>※藤井システム</td></tr>
+    <tr><td>※三間飛車</td><td></td><td>※藤井システム、※早石田、※升田式</td></tr>
+    <tr><td>向かい飛車</td><td>振り飛車戦法です。主に対抗型で使用されます。</td><td>※ダイレクト向かい飛車</td></tr>
+    <tr><td>※中飛車</td><td></td><td>※ツノ銀中飛車、ゴキゲン中飛車、※原始中飛車</td></tr>
+    <tr><td>ゴキゲン中飛車</td><td>振り飛車戦法です。振り飛車戦法の数少ない攻めの戦法です。</td><td></td></tr>
+    <tr><td>早操り銀</td><td>居飛車戦法です。</td><td>※角換わり、※矢倉戦法</td></tr>
+    <tr><td>横歩取り</td><td>居飛車戦法です。角道を開けた歩を取ります。</td><td></td></tr>
+    <tr><td>嬉野流</td><td>居飛車戦法です。角を後ろに下げて相手の角頭を狙います。</td><td></td></tr>
+</table>
+<table style="text-align:center;border-spacing:0;width:100%;" border="1">
+    <tr><td width="150px">全金全銀</td><td>金だけvs銀だけ、ネタ</td></tr>
+    <tr><td width="150px">全金全金</td><td>金だけvs金だけ、ネタ</td></tr>
+    <tr><td width="150px">全金全桂</td><td>金だけvs桂馬だけ、ネタki</td></tr>
+    <tr><td>角落ち</td><td>上手の角がない状態でスタートします。</td></tr>
+    <tr><td>二枚落ち</td><td>上手の大駒がない状態でスタートします。</td></tr>
+    <tr><td>その他割り合い手</td><td>上手のなにかがない状態でスタートします。</td></tr>
+</table>
+</div>
+    <div style="font-size:30px;">V6-おしょ将棋</div><br>
+      <ul><li>一度警告画面が表示されると画面から消えないバグが発生しております。</li>
+      <li>たまに駒が消えるバグが発生しています。</li>
+      <li>待った昨日は今のとこと使えません。</li>
+      </ul>
+    <div style="font-size:30px;">This is explain about Shougi!</div><br>
+Made in japan.This is japanase traditional game . That name is "shougi".<br>
+Shougis rule is easy. At first , It is similar to "chess" yet That is different to the amount of the grid , how to movem.<br>
+For example, "Keima"(That is 桂馬 to kanji) is same chess Knight how to move .However "keima" can't move side or back .<br>
+When you open this website by google chrome, please try to translate this website.This is made the HTML ,so You may understand rules.Maybe You should stop.<br>
+<a href='https://google.com'>Google Translate</a>
+<a href='https://translate.google.co.jp/?hl=ja'>Google</a>
+<a href='https://www.yahoo.co.jp/'>yahoo</a>
+
+    </div>
+    <script src="./shougijs.js"></script>
+  </body>
+</html>
+<style>
+.maru_50{
+  border-radius: 50px;
+}
+.wb{
+  background:yellow ;font-size:30px; color :black;
+}
+.startscreen{
+  width:80%;
+  background:white;
+  margin:0 auto;
+}
+body{
+  background: linear-gradient(211deg, rgba(255,253,253,1) 0%, rgba(148,148,148,1) 100%);
+}
+:root{
+  --main-color:
+    linear-gradient(
+      30deg,
+      rgba(208, 147, 82, 0.6),
+      rgba(192, 134, 70, 0.6) 60%,
+      rgba(208, 147, 82, 0.6)
+    ),
+    repeating-radial-gradient(
+      ellipse at 30% 700%,
+      #c08646,
+      #c08646 0.3%,
+      #d09352 0.9%,
+      #d09352 1.5%
+    );
+
+  --kl-color:
+    linear-gradient(
+        30deg,#e3e3e3,#eef1d5
+    );
+}
+.b2{
+  color:black;
+  font-size:18px;
+  background:var(--kl-color);
+}
+.ch{
+  width:15px;
+  height:15px;
+  position:relative;
+  top:5px;
+  border:1px solid;
+  border-radius: 50px;
+  float:left;
+}
+.littFont{
+  font-size:15px;
+}
+.addButton{
+  font-size:15px;
+  border-radius: 50px;
+  width:60px;
+  height:40px;
+}
+</style>

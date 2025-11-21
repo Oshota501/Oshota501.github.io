@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<title>JAVAスクリプトデース</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="./slot.css">
+	</head>
+	<body>
+		<div id="screen">
+			<div class="screen"></div>
+			<div class="screen"></div>
+			<div class="screen"></div>
+		</div>
+		<div class="stopbuttonsc">
+			<button onclick="start();"  class="startbutton" id="startButton"></button>
+		</div>
+		<div style="clear:both;"></div>
+		<div id="button">
+			<div class="stopbuttonsc">
+				<button  class="stopbutton"></button>
+			</div>
+			<div class="stopbuttonsc">
+				<button  class="stopbutton"></button>
+			</div>
+			<div class="stopbuttonsc">
+				<button  class="stopbutton"></button>
+			</div>
+		</div>
+		<div style="clear:both;"></div>
+		<div>
+			<table style="background:black;color:yellow;font-size:40px;border:3px solid;border-color:white;width:1200px;">
+				<tbody>
+					<tr>
+						<td colspan="2">あなたのコイン数</td><td class="info" colspan="4"></td>
+					</tr>
+					<tr>
+						<td colspan="2">掛け金</td>
+						<td class="info" colspan="4"><input type="number" value="5" style="font-size:40px;"></td>
+					</tr>
+					<tr style=" height:260px;">
+						<td colspan="2">当たり</td><td class="info" colspan="2"></td><td colspan="2" class="info"></td>
+					</tr>
+					<tr>
+						<td style="width:400px;color:red;font-size:60px" colspan="2">JackPot<img src="./typePhoto/7.png" style="width:40px;height:40px;"></td>
+						<td class="info" colspan="4" style="width:800px;color:yellow;"></td>
+					</tr>
+					<tr>
+						<td style="width:200px;"><img src="./typePhoto/apple.png" style="width:160px;height:160px;"></td>
+						<td style="width:200px;color:yellow;">×5</td>
+						<td style="width:200px;"><img src="./typePhoto/bar1.png" style="width:160px;height:160px;"></td>
+						<td style="width:200px;color:yellow;">×1</td>
+						<td style="width:200px;"><img src="./typePhoto/bell.png" style="width:160px;height:160px;"></td>
+						<td style="width:200px;color:yellow;">×10</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="op">
+			<p>設定</p><button onclick="option();" style="width:120px;height:40px;font-size:30px;">適応</button>
+			<li>インターバル速度<a id="op1">100</a>ミリ秒毎フレーム</li>
+			<input type="range" class="opi" value="100" max="1000" min="5" style="width:400px;">
+			<li>ストップボタンタイプ</li>
+			<select id="b-s" class="opi">
+				<option value="click">Mouse Click～推奨</option>
+				<option value="mouseenter">Mouse Enter</option>
+				<option value="mousedown">Mouse Down～お勧め</option>
+				<option value="mouseup">Mouse Up</option>
+			</select>
+		</div>
+		<script src="./option.js"></script>
+		<script src="./slot.js"></script>
+	</body>
+</html>
