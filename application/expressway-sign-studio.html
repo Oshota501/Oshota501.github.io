@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>案内標識メーカー — 高速道路サイン生成</title>
+<style>
+  :root{
+    --asphalt:#14171a;
+    --asphalt-2:#1c2126;
+    --line:#2c343b;
+    --sign-green:#0f6b3f;
+    --paint:#f2f4f2;
+    --paint-dim:#98a3a8;
+    --amber:#f5c518;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--asphalt);
+    color:var(--paint);
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP","Helvetica Neue",Arial,sans-serif;
+    -webkit-text-size-adjust:100%;
+  }
+  header{
+    padding:18px 20px 14px;
+    border-bottom:1px solid var(--line);
+    display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  }
+  header h1{
+    font-size:19px;margin:0;letter-spacing:.14em;font-weight:800;
+  }
+  header .sub{
+    font-size:12px;color:var(--paint-dim);letter-spacing:.08em;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  .mark{
+    display:inline-block;background:var(--sign-green);border:2px solid #fff;border-radius:6px;
+    padding:1px 8px;font-weight:800;font-size:15px;letter-spacing:.05em;margin-right:2px;
+  }
+  main{
+    display:grid;grid-template-columns:minmax(320px,420px) 1fr;gap:0;
+    min-height:calc(100vh - 60px);
+  }
+  @media (max-width:900px){ main{grid-template-columns:1fr} }
+  .pane{padding:16px 18px 40px}
+  .pane + .pane{border-left:1px solid var(--line)}
+  @media (max-width:900px){ .pane + .pane{border-left:0;border-top:1px solid var(--line)} }
+  .label{
+    font-size:11px;letter-spacing:.18em;color:var(--paint-dim);
+    font-family:ui-monospace,Menlo,Consolas,monospace;margin:0 0 8px;text-transform:uppercase;
+  }
+  .tools{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  button{
+    font-family:inherit;font-size:13px;color:var(--paint);
+    background:var(--asphalt-2);border:1px solid var(--line);border-radius:7px;
+    padding:7px 10px;cursor:pointer;line-height:1.2;
+  }
+  button:hover{border-color:#4a5760;background:#232a30}
+  button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+  button.primary{background:var(--sign-green);border-color:#178a52;font-weight:700}
+  button.primary:hover{background:#127a48}
+  textarea{
+    width:100%;min-height:300px;resize:vertical;
+    background:#0d1114;color:#dfe7e3;border:1px solid var(--line);border-radius:10px;
+    padding:12px 13px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    font-size:13.5px;line-height:1.75;tab-size:2;
+  }
+  textarea:focus{outline:none;border-color:#3d8f66;box-shadow:0 0 0 3px rgba(23,138,82,.18)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+  select{
+    background:var(--asphalt-2);color:var(--paint);border:1px solid var(--line);
+    border-radius:7px;padding:7px 9px;font-family:inherit;font-size:13px;
+  }
+  .stage{
+    border:1px solid var(--line);border-radius:12px;padding:16px;
+    background:
+      linear-gradient(180deg,#1a2024 0%, #12161a 100%);
+    overflow:auto;display:flex;justify-content:center;align-items:flex-start;min-height:220px;
+  }
+  canvas{max-width:100%;height:auto;display:block}
+  .err{
+    margin-top:10px;font-size:13px;color:#ffb4a2;background:#2a1a19;border:1px solid #5c3230;
+    border-radius:8px;padding:9px 11px;display:none;white-space:pre-wrap;
+  }
+  details{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
+  summary{cursor:pointer;font-size:13px;color:var(--paint-dim);letter-spacing:.06em}
+  details table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px}
+  details td{padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+  details td:first-child{
+    font-family:ui-monospace,Menlo,Consolas,monospace;color:#9fe3bf;white-space:nowrap;padding-right:12px;
+  }
+  .hint{font-size:12px;color:var(--paint-dim);margin-top:8px;line-height:1.7}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="mark">1</span>案内標識メーカー</h1>
+  <span class="sub">code → sign → png</span>
+</header>
+
+<main>
+  <section class="pane">
+    <p class="label">記述コード</p>
+    <div class="tools" id="tools"></div>
+    <textarea id="code" spellcheck="false"></textarea>
+    <div class="err" id="err"></div>
+    <div class="row">
+      <button id="sample1">例：写真の標識</button>
+      <button id="sample2">例：ETC・出口</button>
+      <button id="clear">全部消す</button>
+      <button id="copy">コードをコピー</button>
+    </div>
+
+    <details>
+      <summary>書き方（クリックで開く）</summary>
+      <div class="hint">
+        <b>panel</b> で標識板を1枚追加し、その下の各行が板の中身になります。<code>---</code> で改行して2段目に置けます。<br>
+        1行に部品を並べると横に、行を分けると縦に並びます。
+      </div>
+      <table>
+        <tr><td>panel</td><td>緑の標識板を追加（<code>panel etc</code>＝黄色 / <code>panel blue</code>＝青 / <code>panel white</code>＝白）</td></tr>
+        <tr><td>arrow up</td><td>板の左側に、板の高さいっぱいの矢印を置く（up/down/left/right）</td></tr>
+        <tr><td>text(奈良, Nara)</td><td>地名（上＝日本語、下＝ローマ字）。ローマ字は省略可</td></tr>
+        <tr><td>exit(13)</td><td>出口・入口番号の枠</td></tr>
+        <tr><td>exit(13, 奈良, Nara)</td><td>番号枠＋地名をまとめて</td></tr>
+        <tr><td>shield(1, Loop)</td><td>路線番号の枠（下＝番号、上＝小さい文字）</td></tr>
+        <tr><td>route(E26, 近畿道, KINKI EXP)</td><td>Eナンバー枠＋路線名</td></tr>
+        <tr><td>arrow(down)</td><td>行の中に置く矢印</td></tr>
+        <tr><td>big(JCT)</td><td>大きい文字</td></tr>
+        <tr><td>dist(300m)</td><td>距離などの文字</td></tr>
+        <tr><td>gap(24)</td><td>横方向のすき間</td></tr>
+        <tr><td>西船場 / Nishisemba</td><td>括弧を書かない行は地名として扱われます</td></tr>
+        <tr><td># メモ</td><td>行頭が # の行は無視されます</td></tr>
+      </table>
+    </details>
+  </section>
+
+  <section class="pane">
+    <p class="label">プレビュー</p>
+    <div class="stage"><canvas id="cv"></canvas></div>
+    <div class="row">
+      <label class="sub" for="bg">背景</label>
+      <select id="bg">
+        <option value="transparent">透明</option>
+        <option value="sky" selected>空</option>
+        <option value="dark">濃いグレー</option>
+        <option value="white">白</option>
+      </select>
+      <label class="sub" for="scale">書き出し倍率</label>
+      <select id="scale">
+        <option value="1">1x</option>
+        <option value="2" selected>2x</option>
+        <option value="3">3x</option>
+      </select>
+      <button class="primary" id="save">PNGで保存</button>
+    </div>
+    <div class="hint">保存すると、いま表示されている標識がそのまま画像になります。</div>
+  </section>
+</main>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   1. パース（コード → データ）
+   ============================================================ */
+function parse(src){
+  var groups = [[]];      // 段（---で区切る） → パネルの配列
+  var cur = null;
+  var lines = src.split(/\r?\n/);
+  for(var i=0;i<lines.length;i++){
+    var line = lines[i].trim();
+    if(!line || line.charAt(0)==='#') continue;
+    if(/^-{3,}$/.test(line)){ groups.push([]); cur=null; continue; }
+
+    var mPanel = /^panel\b(.*)$/i.exec(line);
+    if(mPanel){
+      var style = (mPanel[1]||'').trim().toLowerCase() || 'green';
+      cur = {style:style, rows:[], sideArrow:null};
+      groups[groups.length-1].push(cur);
+      continue;
+    }
+    if(!cur){ cur = {style:'green', rows:[], sideArrow:null}; groups[groups.length-1].push(cur); }
+
+    var mArrow = /^arrow\s+(up|down|left|right)$/i.exec(line);
+    if(mArrow){ cur.sideArrow = mArrow[1].toLowerCase(); continue; }
+
+    var body = line;
+    var mRow = /^row\s*:\s*(.*)$/i.exec(line);
+    if(mRow) body = mRow[1];
+    var items = parseItems(body);
+    if(items.length) cur.rows.push(items);
+  }
+  return groups.filter(function(g){ return g.length; });
+}
+
+function parseItems(body){
+  var items=[], re=/([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)/g, m, found=false;
+  while((m=re.exec(body))!==null){
+    found=true;
+    var args = m[2].split(',').map(function(s){return s.trim();}).filter(function(s,i,a){
+      return s.length>0 || i<a.length-1;
+    });
+    items.push({t:m[1].toLowerCase(), args:args});
+  }
+  if(!found){
+    var parts = body.split('/').map(function(s){return s.trim();});
+    items.push({t:'text', args:[parts[0]||'', parts[1]||'']});
+  }
+  return items;
+}
+
+/* ============================================================
+   2. 定数
+   ============================================================ */
+var FF = '"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP","MS PGothic",sans-serif';
+var K = {
+  panelPad:22, panelRadius:12, borderInset:8, borderW:4,
+  rowGap:14, itemGap:18, panelGap:18, groupGap:20, stagePad:26,
+  kanjiSize:46, kanjiH:54, romanSize:20, romanH:25,
+  exitH:56, exitMinW:58, exitNum:34, boxR:12, boxBorder:3,
+  shieldH:70, shieldMinW:62, shieldLabel:15, shieldNum:33,
+  routeH:44, routeNum:26, routeMinW:70, routeKanji:19, routeRoman:12,
+  arrowW:52, arrowH:70, sideArrowW:58,
+  bigSize:44, distSize:36
+};
+var THEME = {
+  green:{bg:'#0f6b3f', fg:'#ffffff'},
+  blue:{bg:'#12569b', fg:'#ffffff'},
+  etc:{bg:'#f5c518', fg:'#17181a'},
+  white:{bg:'#f4f4f2', fg:'#17181a'},
+  brown:{bg:'#6b4a2b', fg:'#ffffff'}
+};
+
+function setFont(ctx, weight, size, ls){
+  ctx.font = weight+' '+size+'px '+FF;
+  try{ ctx.letterSpacing = (ls||0)+'px'; }catch(e){}
+}
+function tw(ctx, s){ return s ? ctx.measureText(s).width : 0; }
+
+/* ============================================================
+   3. 部品の寸法
+   ============================================================ */
+function textSize(ctx, jp, rm){
+  setFont(ctx,'bold',K.kanjiSize,2);
+  var w1 = tw(ctx, jp);
+  setFont(ctx,'bold',K.romanSize,1);
+  var w2 = tw(ctx, rm);
+  return {w:Math.max(w1,w2), h:(jp?K.kanjiH:0)+(rm?K.romanH:0)};
+}
+function boxSize(ctx, txt, size, h, minW){
+  setFont(ctx,'bold',size,1);
+  return {w:Math.max(minW, tw(ctx,txt)+26), h:h};
+}
+function shieldSize(ctx, num, label){
+  setFont(ctx,'bold',K.shieldNum,1);
+  var a = tw(ctx,num);
+  setFont(ctx,'bold',K.shieldLabel,1);
+  var b = tw(ctx,label);
+  return {w:Math.max(K.shieldMinW, Math.max(a,b)+24), h:K.shieldH};
+}
+function routeSize(ctx, code, jp, rm){
+  var box = boxSize(ctx, code, K.routeNum, K.routeH, K.routeMinW);
+  var w = box.w, h = box.h;
+  if(jp || rm){
+    setFont(ctx,'bold',K.routeKanji,1); var a = tw(ctx,jp);
+    setFont(ctx,'bold',K.routeRoman,.6); var b = tw(ctx,rm);
+    w += 10 + Math.max(a,b);
+    h = Math.max(h, (jp?K.routeKanji*1.35:0)+(rm?K.routeRoman*1.5:0));
+  }
+  return {w:w, h:h, boxW:box.w};
+}
+function itemSize(ctx, it){
+  var a = it.args;
+  switch(it.t){
+    case 'text': return textSize(ctx, a[0]||'', a[1]||'');
+    case 'exit': {
+      var b = boxSize(ctx, a[0]||'', K.exitNum, K.exitH, K.exitMinW);
+      if(a[1] || a[2]){
+        var t = textSize(ctx, a[1]||'', a[2]||'');
+        return {w:b.w+12+t.w, h:Math.max(b.h,t.h), boxW:b.w};
+      }
+      return b;
+    }
+    case 'shield': {
+      var s = shieldSize(ctx, a[0]||'', a[1]||'');
+      if(a[2] || a[3]){
+        var t2 = textSize(ctx, a[2]||'', a[3]||'');
+        return {w:s.w+12+t2.w, h:Math.max(s.h,t2.h), boxW:s.w};
+      }
+      return s;
+    }
+    case 'route': return routeSize(ctx, a[0]||'', a[1]||'', a[2]||'');
+    case 'arrow': return {w:K.arrowW, h:K.arrowH};
+    case 'big': setFont(ctx,'bold',K.bigSize,2); return {w:tw(ctx,a[0]||''), h:K.bigSize*1.2};
+    case 'dist': setFont(ctx,'bold',K.distSize,1); return {w:tw(ctx,a[0]||''), h:K.distSize*1.2};
+    case 'gap': return {w:parseFloat(a[0])||16, h:0};
+    default: return textSize(ctx, a[0]||'', a[1]||'');
+  }
+}
+
+/* ============================================================
+   4. 描画プリミティブ
+   ============================================================ */
+function roundRect(ctx,x,y,w,h,r){
+  r = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+function drawArrow(ctx,x,y,w,h,dir,color){
+  ctx.save();
+  ctx.translate(x+w/2, y+h/2);
+  if(dir==='down') ctx.rotate(Math.PI);
+  else if(dir==='left') ctx.rotate(-Math.PI/2);
+  else if(dir==='right') ctx.rotate(Math.PI/2);
+  var W = (dir==='left'||dir==='right') ? h : w;
+  var H = (dir==='left'||dir==='right') ? w : h;
+  var hw = W/2, hh = H/2, sw = W*0.30, head = H*0.46;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(0,-hh);
+  ctx.lineTo(hw, -hh+head);
+  ctx.lineTo(sw/2, -hh+head);
+  ctx.lineTo(sw/2, hh);
+  ctx.lineTo(-sw/2, hh);
+  ctx.lineTo(-sw/2, -hh+head);
+  ctx.lineTo(-hw, -hh+head);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+function drawTextItem(ctx,x,y,w,jp,rm,fg){
+  ctx.fillStyle = fg; ctx.textBaseline='top';
+  var cy = y;
+  if(jp){
+    setFont(ctx,'bold',K.kanjiSize,2);
+    ctx.fillText(jp, x+(w-tw(ctx,jp))/2, cy+2);
+    cy += K.kanjiH;
+  }
+  if(rm){
+    setFont(ctx,'bold',K.romanSize,1);
+    ctx.fillText(rm, x+(w-tw(ctx,rm))/2, cy);
+  }
+}
+function drawBox(ctx,x,y,w,h,txt,size,theme){
+  ctx.fillStyle = theme.bg;
+  roundRect(ctx,x,y,w,h,K.boxR); ctx.fill();
+  ctx.strokeStyle = theme.fg; ctx.lineWidth = K.boxBorder;
+  roundRect(ctx,x+K.boxBorder/2,y+K.boxBorder/2,w-K.boxBorder,h-K.boxBorder,K.boxR-1); ctx.stroke();
+  ctx.fillStyle = theme.fg; ctx.textBaseline='middle';
+  setFont(ctx,'bold',size,1);
+  ctx.fillText(txt, x+(w-tw(ctx,txt))/2, y+h/2+1);
+  ctx.textBaseline='top';
+}
+
+/* ============================================================
+   5. 部品の描画
+   ============================================================ */
+function drawItem(ctx, it, x, y, size, theme){
+  var a = it.args, fg = theme.fg;
+  switch(it.t){
+    case 'text':
+      drawTextItem(ctx,x,y,size.w,a[0]||'',a[1]||'',fg); break;
+
+    case 'exit': {
+      var bw = size.boxW || size.w;
+      var by = y + (size.h - K.exitH)/2;
+      drawBox(ctx,x,by,bw,K.exitH,a[0]||'',K.exitNum,theme);
+      if(a[1]||a[2]){
+        var t = textSize(ctx,a[1]||'',a[2]||'');
+        drawTextItem(ctx, x+bw+12, y+(size.h-t.h)/2, t.w, a[1]||'', a[2]||'', fg);
+      }
+      break;
+    }
+
+    case 'shield': {
+      var sw = size.boxW || size.w;
+      var sy = y + (size.h - K.shieldH)/2;
+      ctx.fillStyle = theme.bg;
+      roundRect(ctx,x,sy,sw,K.shieldH,K.boxR); ctx.fill();
+      ctx.strokeStyle = fg; ctx.lineWidth = K.boxBorder;
+      roundRect(ctx,x+1.5,sy+1.5,sw-3,K.shieldH-3,K.boxR-1); ctx.stroke();
+      ctx.fillStyle = fg; ctx.textBaseline='top';
+      setFont(ctx,'bold',K.shieldLabel,.5);
+      ctx.fillText(a[1]||'', x+(sw-tw(ctx,a[1]||''))/2, sy+9);
+      setFont(ctx,'bold',K.shieldNum,1);
+      ctx.fillText(a[0]||'', x+(sw-tw(ctx,a[0]||''))/2, sy+26);
+      if(a[2]||a[3]){
+        var t2 = textSize(ctx,a[2]||'',a[3]||'');
+        drawTextItem(ctx, x+sw+12, y+(size.h-t2.h)/2, t2.w, a[2]||'', a[3]||'', fg);
+      }
+      break;
+    }
+
+    case 'route': {
+      var rw = size.boxW || size.w;
+      var ry = y + (size.h - K.routeH)/2;
+      drawBox(ctx,x,ry,rw,K.routeH,a[0]||'',K.routeNum,theme);
+      var jp=a[1]||'', rm=a[2]||'';
+      if(jp||rm){
+        var tx = x+rw+10;
+        setFont(ctx,'bold',K.routeKanji,1); var w1=tw(ctx,jp);
+        setFont(ctx,'bold',K.routeRoman,.6); var w2=tw(ctx,rm);
+        var mw = Math.max(w1,w2);
+        var th = (jp?K.routeKanji*1.35:0)+(rm?K.routeRoman*1.5:0);
+        var ty = y + (size.h-th)/2;
+        ctx.fillStyle=fg; ctx.textBaseline='top';
+        if(jp){ setFont(ctx,'bold',K.routeKanji,1); ctx.fillText(jp, tx+(mw-w1)/2, ty); ty += K.routeKanji*1.35; }
+        if(rm){ setFont(ctx,'bold',K.routeRoman,.6); ctx.fillText(rm, tx+(mw-w2)/2, ty); }
+      }
+      break;
+    }
+
+    case 'arrow':
+      drawArrow(ctx,x,y,size.w,size.h,(a[0]||'up').toLowerCase(),fg); break;
+
+    case 'big':
+      ctx.fillStyle=fg; ctx.textBaseline='top';
+      setFont(ctx,'bold',K.bigSize,2);
+      ctx.fillText(a[0]||'', x, y+2); break;
+
+    case 'dist':
+      ctx.fillStyle=fg; ctx.textBaseline='top';
+      setFont(ctx,'bold',K.distSize,1);
+      ctx.fillText(a[0]||'', x, y+2); break;
+
+    case 'gap': break;
+
+    default:
+      drawTextItem(ctx,x,y,size.w,a[0]||'',a[1]||'',fg);
+  }
+}
+
+/* ============================================================
+   6. レイアウト
+   ============================================================ */
+function layoutPanel(ctx, p){
+  var rows = p.rows.map(function(items){
+    var sizes = items.map(function(it){ return itemSize(ctx,it); });
+    var w = 0, h = 0;
+    sizes.forEach(function(s,i){ w += s.w + (i?K.itemGap:0); h = Math.max(h,s.h); });
+    return {items:items, sizes:sizes, w:w, h:h};
+  });
+  var contentW = 0, contentH = 0;
+  rows.forEach(function(r,i){ contentW = Math.max(contentW, r.w); contentH += r.h + (i?K.rowGap:0); });
+  if(!rows.length){ contentW = 40; contentH = 40; }
+  var arrowCol = p.sideArrow ? K.sideArrowW + K.itemGap : 0;
+  return {
+    panel:p, rows:rows, arrowCol:arrowCol,
+    contentW:contentW, contentH:contentH,
+    w:contentW + arrowCol + K.panelPad*2,
+    h:contentH + K.panelPad*2
+  };
+}
+
+function layoutAll(ctx, groups){
+  var G = groups.map(function(g){
+    var panels = g.map(function(p){ return layoutPanel(ctx,p); });
+    var w = 0, h = 0;
+    panels.forEach(function(L,i){ w += L.w + (i?K.panelGap:0); h = Math.max(h,L.h); });
+    return {panels:panels, w:w, h:h};
+  });
+  var W = 0, H = 0;
+  G.forEach(function(g,i){ W = Math.max(W,g.w); H += g.h + (i?K.groupGap:0); });
+  return {groups:G, w:W + K.stagePad*2, h:H + K.stagePad*2};
+}
+
+function drawPanel(ctx, L, x, y, maxH){
+  var p = L.panel;
+  var theme = THEME[p.style] || THEME.green;
+  var h = maxH || L.h;
+  ctx.fillStyle = theme.bg;
+  roundRect(ctx,x,y,L.w,h,K.panelRadius); ctx.fill();
+  ctx.strokeStyle = theme.fg; ctx.lineWidth = K.borderW;
+  roundRect(ctx, x+K.borderInset, y+K.borderInset, L.w-K.borderInset*2, h-K.borderInset*2, K.panelRadius-4);
+  ctx.stroke();
+
+  if(p.sideArrow){
+    drawArrow(ctx, x+K.panelPad, y+K.panelPad, K.sideArrowW, h-K.panelPad*2, p.sideArrow, theme.fg);
+  }
+  var cx = x + K.panelPad + L.arrowCol;
+  var cy = y + (h - L.contentH)/2;
+  L.rows.forEach(function(r){
+    var rx = cx + (L.contentW - r.w)/2;
+    r.items.forEach(function(it,i){
+      var s = r.sizes[i];
+      drawItem(ctx, it, rx, cy + (r.h - s.h)/2, s, theme);
+      rx += s.w + K.itemGap;
+    });
+    cy += r.h + K.rowGap;
+  });
+}
+
+function paintBackground(ctx, w, h, mode){
+  if(mode==='transparent') return;
+  if(mode==='white'){ ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,w,h); return; }
+  if(mode==='dark'){ ctx.fillStyle='#22282d'; ctx.fillRect(0,0,w,h); return; }
+  var g = ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,'#8fb6d6'); g.addColorStop(1,'#cfdce6');
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+}
+
+var measureCanvas = document.createElement('canvas');
+var measureCtx = measureCanvas.getContext('2d');
+
+function render(canvas, groups, scale, bg){
+  var L = layoutAll(measureCtx, groups);
+  canvas.width = Math.max(1, Math.round(L.w*scale));
+  canvas.height = Math.max(1, Math.round(L.h*scale));
+  canvas.style.width = L.w+'px';
+  var ctx = canvas.getContext('2d');
+  ctx.setTransform(scale,0,0,scale,0,0);
+  ctx.clearRect(0,0,L.w,L.h);
+  paintBackground(ctx, L.w, L.h, bg);
+  var y = K.stagePad;
+  L.groups.forEach(function(g){
+    var x = K.stagePad + (L.w - K.stagePad*2 - g.w)/2;
+    g.panels.forEach(function(P){
+      drawPanel(ctx, P, x, y, g.h);
+      x += P.w + K.panelGap;
+    });
+    y += g.h + K.groupGap;
+  });
+  return L;
+}
+
+/* ============================================================
+   7. UI
+   ============================================================ */
+var SAMPLES = {
+  photo:
+'panel\n'+
+'row: shield(1, Loop) text(環状線, Loop)\n'+
+'row: exit(11, 池田, Ikeda) exit(12, 守口, Moriguchi)\n'+
+'row: arrow(down)\n'+
+'\n'+
+'panel\n'+
+'西船場 / Nishisemba\n'+
+'big(JCT)\n'+
+'dist(300m)\n'+
+'\n'+
+'panel\n'+
+'arrow up\n'+
+'row: exit(13, 奈良, Nara) route(E26, 近畿道, KINKI EXP)\n'+
+'row: exit(14, 松原, Matsubara) shield(1, Loop) text(環状線, Loop)\n',
+  etc:
+'panel etc\n'+
+'big(ETC)\n'+
+'dist(専用)\n'+
+'\n'+
+'panel\n'+
+'row: exit(5) text(名古屋南, Nagoya-minami) arrow(right)\n'+
+'row: text(国道23号, Route 23)\n'+
+'---\n'+
+'panel blue\n'+
+'row: route(E1, 東名高速, TOMEI EXP) dist(2km)\n'
+};
+
+var codeEl = document.getElementById('code');
+var errEl  = document.getElementById('err');
+var cv     = document.getElementById('cv');
+var bgEl   = document.getElementById('bg');
+var scaleEl= document.getElementById('scale');
+
+var SNIPPETS = [
+  ['＋ 標識板',       'panel'],
+  ['＋ 地名',         'text(奈良, Nara)'],
+  ['＋ 出口番号',     'exit(13, 奈良, Nara)'],
+  ['＋ 路線番号',     'shield(1, Loop)'],
+  ['＋ Eナンバー',    'route(E26, 近畿道, KINKI EXP)'],
+  ['＋ 矢印（行内）', 'arrow(down)'],
+  ['＋ 矢印（左側）', 'arrow up'],
+  ['＋ 大きい文字',   'big(JCT)'],
+  ['＋ 距離',         'dist(300m)'],
+  ['＋ 段を分ける',   '---']
+];
+var tools = document.getElementById('tools');
+SNIPPETS.forEach(function(s){
+  var b = document.createElement('button');
+  b.textContent = s[0];
+  b.addEventListener('click', function(){ insertLine(s[1]); });
+  tools.appendChild(b);
+});
+
+function insertLine(text){
+  var start = codeEl.selectionStart, val = codeEl.value;
+  var lineEnd = val.indexOf('\n', start);
+  if(lineEnd === -1) lineEnd = val.length;
+  var before = val.slice(0, lineEnd);
+  var after  = val.slice(lineEnd);
+  var needsNL = before.length && before.slice(-1) !== '\n';
+  var ins = (needsNL ? '\n' : '') + text;
+  codeEl.value = before + ins + after;
+  var pos = (before + ins).length;
+  codeEl.focus();
+  codeEl.setSelectionRange(pos, pos);
+  update();
+}
+
+function update(){
+  try{
+    errEl.style.display='none';
+    var groups = parse(codeEl.value);
+    if(!groups.length){
+      cv.width=1; cv.height=1; cv.style.width='1px';
+      return;
+    }
+    render(cv, groups, 2, bgEl.value);
+  }catch(e){
+    errEl.textContent = '描けませんでした：' + e.message;
+    errEl.style.display='block';
+  }
+}
+
+codeEl.addEventListener('input', update);
+bgEl.addEventListener('change', update);
+
+document.getElementById('sample1').addEventListener('click', function(){ codeEl.value = SAMPLES.photo; update(); });
+document.getElementById('sample2').addEventListener('click', function(){ codeEl.value = SAMPLES.etc; update(); });
+document.getElementById('clear').addEventListener('click', function(){ codeEl.value = 'panel\n'; codeEl.focus(); update(); });
+document.getElementById('copy').addEventListener('click', function(){
+  var btn = this, old = btn.textContent;
+  var done = function(){ btn.textContent='コピーしました'; setTimeout(function(){btn.textContent=old;},1400); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(codeEl.value).then(done, function(){ codeEl.select(); });
+  } else { codeEl.select(); document.execCommand('copy'); done(); }
+});
+
+document.getElementById('save').addEventListener('click', function(){
+  var groups = parse(codeEl.value);
+  if(!groups.length){ errEl.textContent='保存する中身がありません。まず標識を書いてください。'; errEl.style.display='block'; return; }
+  var out = document.createElement('canvas');
+  render(out, groups, parseFloat(scaleEl.value), bgEl.value);
+  var a = document.createElement('a');
+  a.download = 'sign.png';
+  a.href = out.toDataURL('image/png');
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+});
+
+codeEl.value = SAMPLES.photo;
+if(document.fonts && document.fonts.ready){ document.fonts.ready.then(update); }
+update();
+})();
+</script>
+</body>
+</html>
