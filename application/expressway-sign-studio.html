@@ -635,8 +635,9 @@ function drawPanel(ctx, L, x, y, forceH){
     drawRow(ctx, r, cx + (L.contentW - r.w)/2, cy, theme);
     cy += r.h + K.rowGap;
   });
-  }
-  function layoutDoc(ctx, doc){
+}
+
+function layoutDoc(ctx, doc){
   var groups = doc.groups.map(function(g){
     var panels = g.map(function(p){ return layoutPanel(ctx,p); });
     var w = 0, h = 0;
