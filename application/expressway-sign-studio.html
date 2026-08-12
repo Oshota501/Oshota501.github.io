@@ -27,9 +27,7 @@
     border-bottom:1px solid var(--line);
     display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
   }
-  header h1{
-    font-size:19px;margin:0;letter-spacing:.14em;font-weight:800;
-  }
+  header h1{font-size:19px;margin:0;letter-spacing:.14em;font-weight:800}
   header .sub{
     font-size:12px;color:var(--paint-dim);letter-spacing:.08em;
     font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
@@ -38,19 +36,17 @@
     display:inline-block;background:var(--sign-green);border:2px solid #fff;border-radius:6px;
     padding:1px 8px;font-weight:800;font-size:15px;letter-spacing:.05em;margin-right:2px;
   }
-  main{
-    display:grid;grid-template-columns:minmax(320px,420px) 1fr;gap:0;
-    min-height:calc(100vh - 60px);
-  }
-  @media (max-width:900px){ main{grid-template-columns:1fr} }
+  main{display:grid;grid-template-columns:minmax(320px,440px) 1fr;min-height:calc(100vh - 60px)}
+  @media (max-width:940px){ main{grid-template-columns:1fr} }
   .pane{padding:16px 18px 40px}
   .pane + .pane{border-left:1px solid var(--line)}
-  @media (max-width:900px){ .pane + .pane{border-left:0;border-top:1px solid var(--line)} }
+  @media (max-width:940px){ .pane + .pane{border-left:0;border-top:1px solid var(--line)} }
   .label{
     font-size:11px;letter-spacing:.18em;color:var(--paint-dim);
     font-family:ui-monospace,Menlo,Consolas,monospace;margin:0 0 8px;text-transform:uppercase;
   }
   .tools{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .tools .sep{width:100%;height:0}
   button{
     font-family:inherit;font-size:13px;color:var(--paint);
     background:var(--asphalt-2);border:1px solid var(--line);border-radius:7px;
@@ -60,8 +56,9 @@
   button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
   button.primary{background:var(--sign-green);border-color:#178a52;font-weight:700}
   button.primary:hover{background:#127a48}
+  button.code{font-family:ui-monospace,Menlo,Consolas,monospace;color:#9fe3bf}
   textarea{
-    width:100%;min-height:300px;resize:vertical;
+    width:100%;min-height:320px;resize:vertical;
     background:#0d1114;color:#dfe7e3;border:1px solid var(--line);border-radius:10px;
     padding:12px 13px;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
     font-size:13.5px;line-height:1.75;tab-size:2;
@@ -74,23 +71,25 @@
   }
   .stage{
     border:1px solid var(--line);border-radius:12px;padding:16px;
-    background:
-      linear-gradient(180deg,#1a2024 0%, #12161a 100%);
+    background:linear-gradient(180deg,#1a2024 0%,#12161a 100%);
     overflow:auto;display:flex;justify-content:center;align-items:flex-start;min-height:220px;
   }
   canvas{max-width:100%;height:auto;display:block}
   .err{
     margin-top:10px;font-size:13px;color:#ffb4a2;background:#2a1a19;border:1px solid #5c3230;
     border-radius:8px;padding:9px 11px;display:none;white-space:pre-wrap;
+    font-family:ui-monospace,Menlo,Consolas,monospace;
   }
   details{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
   summary{cursor:pointer;font-size:13px;color:var(--paint-dim);letter-spacing:.06em}
-  details table{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px}
+  details h4{margin:14px 0 4px;font-size:12px;letter-spacing:.12em;color:var(--amber)}
+  details table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12.5px}
   details td{padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:top}
   details td:first-child{
     font-family:ui-monospace,Menlo,Consolas,monospace;color:#9fe3bf;white-space:nowrap;padding-right:12px;
   }
-  .hint{font-size:12px;color:var(--paint-dim);margin-top:8px;line-height:1.7}
+  .hint{font-size:12px;color:var(--paint-dim);margin-top:8px;line-height:1.75}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;color:#9fe3bf}
 </style>
 </head>
 <body>
@@ -107,32 +106,60 @@
     <div class="err" id="err"></div>
     <div class="row">
       <button id="sample1">例：写真の標識</button>
-      <button id="sample2">例：ETC・出口</button>
+      <button id="sample2">例：くりかえし</button>
+      <button id="sample3">例：自由配置</button>
       <button id="clear">全部消す</button>
       <button id="copy">コードをコピー</button>
     </div>
 
     <details>
       <summary>書き方（クリックで開く）</summary>
+
       <div class="hint">
-        <b>panel</b> で標識板を1枚追加し、その下の各行が板の中身になります。<code>---</code> で改行して2段目に置けます。<br>
-        1行に部品を並べると横に、行を分けると縦に並びます。
+        <b>panel</b> で標識板を1枚追加し、その下の各行が板の中身になります。
+        1行に部品を並べると横に、行を分けると縦に並びます。<code>---</code> で段を分けます。
       </div>
+
+      <h4>部品</h4>
       <table>
-        <tr><td>panel</td><td>緑の標識板を追加（<code>panel etc</code>＝黄色 / <code>panel blue</code>＝青 / <code>panel white</code>＝白）</td></tr>
-        <tr><td>arrow up</td><td>板の左側に、板の高さいっぱいの矢印を置く（up/down/left/right）</td></tr>
         <tr><td>text(奈良, Nara)</td><td>地名（上＝日本語、下＝ローマ字）。ローマ字は省略可</td></tr>
-        <tr><td>exit(13)</td><td>出口・入口番号の枠</td></tr>
-        <tr><td>exit(13, 奈良, Nara)</td><td>番号枠＋地名をまとめて</td></tr>
+        <tr><td>exit(13)<br>exit(13, 奈良, Nara)</td><td>出口・入口番号の枠。地名まで一括でも書けます</td></tr>
         <tr><td>shield(1, Loop)</td><td>路線番号の枠（下＝番号、上＝小さい文字）</td></tr>
         <tr><td>route(E26, 近畿道, KINKI EXP)</td><td>Eナンバー枠＋路線名</td></tr>
-        <tr><td>arrow(down)</td><td>行の中に置く矢印</td></tr>
-        <tr><td>big(JCT)</td><td>大きい文字</td></tr>
-        <tr><td>dist(300m)</td><td>距離などの文字</td></tr>
+        <tr><td>arrow(down)</td><td>行の中に置く矢印（up/down/left/right）</td></tr>
+        <tr><td>big(JCT) / dist(300m)</td><td>大きい文字／距離の文字</td></tr>
+        <tr><td>label(自由文字, 28, #fff)</td><td>好きな大きさ・色の文字</td></tr>
+        <tr><td>rect(120, 8, #fff)<br>circle(40, #fff)</td><td>四角・丸（色は省略可）</td></tr>
         <tr><td>gap(24)</td><td>横方向のすき間</td></tr>
-        <tr><td>西船場 / Nishisemba</td><td>括弧を書かない行は地名として扱われます</td></tr>
-        <tr><td># メモ</td><td>行頭が # の行は無視されます</td></tr>
+        <tr><td>西船場 / Nishisemba</td><td>括弧のない行は地名として扱われます</td></tr>
       </table>
+
+      <h4>板と段</h4>
+      <table>
+        <tr><td>panel</td><td>緑の板。<code>panel etc</code>=黄 / <code>blue</code> / <code>white</code> / <code>brown</code> / <code>black</code></td></tr>
+        <tr><td>arrow up</td><td>板の左側に、高さいっぱいの矢印</td></tr>
+        <tr><td>---</td><td>ここから下を次の段に置く</td></tr>
+      </table>
+
+      <h4>変数とくりかえし（整数のみ）</h4>
+      <table>
+        <tr><td>$n = 11</td><td>変数に代入。<code>$n = $n + 1</code> のように計算も可（+ - * / % と括弧）</td></tr>
+        <tr><td>$n$ / $n</td><td>文字の中で値に置き換わる。例 <code>text(出口$n$番)</code></td></tr>
+        <tr><td>{$n * 2 + 1}</td><td>波括弧の中は式として計算されます</td></tr>
+        <tr><td>for $i = 1 to 4<br>&nbsp;&nbsp;…<br>end</td><td>くりかえし。<code>step 2</code> を末尾に付けると増分を変更（マイナスも可）</td></tr>
+        <tr><td>repeat 3<br>&nbsp;&nbsp;…<br>end</td><td>回数だけくりかえし</td></tr>
+        <tr><td>if $i == 2<br>&nbsp;&nbsp;…<br>else<br>&nbsp;&nbsp;…<br>end</td><td>条件分岐（== != &lt; &gt; &lt;= &gt;=）</td></tr>
+      </table>
+
+      <h4>自由配置（座標）</h4>
+      <table>
+        <tr><td>canvas 700, 320</td><td>画像の最低サイズを指定</td></tr>
+        <tr><td>at 40, 60: exit(13) text(奈良, Nara)</td><td>座標(x,y)に部品を置く。左上が原点</td></tr>
+        <tr><td>at 350, 60, center, white:<br>&nbsp;&nbsp;big(ETC)</td><td>x,yのあとに <code>center</code>/<code>right</code>（横基準）と色を追加できます</td></tr>
+        <tr><td>panel at 40, 120</td><td>板そのものを座標に置く（並びから外れます）</td></tr>
+        <tr><td>origin 100, 50</td><td>以降の座標の原点をずらす（座標系の移動）</td></tr>
+      </table>
+      <div class="hint">座標の値にも式が使えます。例：<code>at {40 + $i * 150}, 60: exit({11 + $i})</code></div>
     </details>
   </section>
 
@@ -164,56 +191,275 @@
 'use strict';
 
 /* ============================================================
-   1. パース（コード → データ）
+   0. 式の評価（整数のみ）
    ============================================================ */
-function parse(src){
-  var groups = [[]];      // 段（---で区切る） → パネルの配列
-  var cur = null;
-  var lines = src.split(/\r?\n/);
-  for(var i=0;i<lines.length;i++){
-    var line = lines[i].trim();
-    if(!line || line.charAt(0)==='#') continue;
-    if(/^-{3,}$/.test(line)){ groups.push([]); cur=null; continue; }
-
-    var mPanel = /^panel\b(.*)$/i.exec(line);
-    if(mPanel){
-      var style = (mPanel[1]||'').trim().toLowerCase() || 'green';
-      cur = {style:style, rows:[], sideArrow:null};
-      groups[groups.length-1].push(cur);
+function tokenize(s){
+  var t=[], i=0;
+  while(i<s.length){
+    var c=s.charAt(i);
+    if(/\s/.test(c)){ i++; continue; }
+    if(/[0-9]/.test(c)){
+      var j=i; while(j<s.length && /[0-9]/.test(s.charAt(j))) j++;
+      t.push({k:'num', v:parseInt(s.slice(i,j),10)}); i=j; continue;
+    }
+    if(c==='$'){
+      var k=i+1; while(k<s.length && /[A-Za-z0-9_]/.test(s.charAt(k))) k++;
+      if(k===i+1) throw new Error('変数名がありません');
+      t.push({k:'var', v:s.slice(i+1,k)}); i=k;
+      if(s.charAt(i)==='$') i++;
       continue;
     }
-    if(!cur){ cur = {style:'green', rows:[], sideArrow:null}; groups[groups.length-1].push(cur); }
+    var two = s.substr(i,2);
+    if(two==='=='||two==='!='||two==='<='||two==='>='){ t.push({k:'op',v:two}); i+=2; continue; }
+    if('+-*/%()<>'.indexOf(c)>=0){ t.push({k:'op',v:c}); i++; continue; }
+    throw new Error('式に使えない文字です: '+c);
+  }
+  return t;
+}
+function evalExpr(src, env){
+  var t = tokenize(src), p = 0;
+  function peek(){ return t[p]; }
+  function eat(v){ if(t[p] && t[p].k==='op' && t[p].v===v){ p++; return true; } return false; }
+  function primary(){
+    var tk = t[p];
+    if(!tk) throw new Error('式が途中で終わっています: '+src);
+    if(tk.k==='num'){ p++; return tk.v; }
+    if(tk.k==='var'){
+      p++;
+      if(!(tk.v in env.vars)) throw new Error('変数 $'+tk.v+' はまだ決まっていません');
+      return env.vars[tk.v];
+    }
+    if(eat('(')){ var v = cmp(); if(!eat(')')) throw new Error('括弧が閉じていません'); return v; }
+    throw new Error('式が読めません: '+src);
+  }
+  function unary(){ if(eat('-')) return -unary(); if(eat('+')) return unary(); return primary(); }
+  function mul(){
+    var v = unary();
+    for(;;){
+      if(eat('*')) v = Math.trunc(v * unary());
+      else if(eat('/')){ var d = unary(); if(d===0) throw new Error('0では割れません'); v = Math.trunc(v/d); }
+      else if(eat('%')){ var m = unary(); if(m===0) throw new Error('0では割れません'); v = v % m; }
+      else return v;
+    }
+  }
+  function add(){
+    var v = mul();
+    for(;;){
+      if(eat('+')) v += mul();
+      else if(eat('-')) v -= mul();
+      else return v;
+    }
+  }
+  function cmp(){
+    var v = add();
+    for(;;){
+      var tk = peek();
+      if(tk && tk.k==='op' && ['==','!=','<','>','<=','>='].indexOf(tk.v)>=0){
+        p++; var r = add();
+        v = ({'==':v===r,'!=':v!==r,'<':v<r,'>':v>r,'<=':v<=r,'>=':v>=r})[tk.v] ? 1 : 0;
+      } else return v;
+    }
+  }
+  var out = cmp();
+  if(p < t.length) throw new Error('式が読めません: '+src);
+  return Math.trunc(out);
+}
+function subst(s, env){
+  s = s.replace(/\{([^}]*)\}/g, function(_, e){ return String(evalExpr(e, env)); });
+  s = s.replace(/\$([A-Za-z_][A-Za-z0-9_]*)\$?/g, function(_, n){
+    if(!(n in env.vars)) throw new Error('変数 $'+n+' はまだ決まっていません');
+    return String(env.vars[n]);
+  });
+  return s;
+}
+
+/* ============================================================
+   1. ブロック分解（for / repeat / if）
+   ============================================================ */
+function buildBlock(lines, i, stopAt, depth){
+  var out = [];
+  while(i.v < lines.length){
+    var raw = lines[i.v], line = raw.trim();
+    i.v++;
+    if(!line || line.charAt(0)==='#') continue;
+    var head = line.split(/\s+/)[0].toLowerCase();
+
+    if(head==='end'||head==='endfor'||head==='endif'||head==='next'){
+      if(!stopAt) throw new Error('対応する for / if がない end があります');
+      return {stmts:out, closer:'end'};
+    }
+    if(head==='else'){
+      if(stopAt!=='if') throw new Error('if の外に else があります');
+      return {stmts:out, closer:'else'};
+    }
+    if(head==='for'||head==='repeat'||head==='if'){
+      if(depth>12) throw new Error('入れ子が深すぎます');
+      var node = {type:head, header:line, line:i.v};
+      if(head==='if'){
+        var a = buildBlock(lines, i, 'if', depth+1);
+        node.then = a.stmts;
+        node.els = [];
+        if(a.closer==='else'){
+          var b = buildBlock(lines, i, 'ifelse', depth+1);
+          node.els = b.stmts;
+        }
+      } else {
+        var body = buildBlock(lines, i, head, depth+1);
+        node.body = body.stmts;
+      }
+      out.push(node);
+      continue;
+    }
+    out.push({type:'line', text:line, line:i.v});
+  }
+  if(stopAt) throw new Error('end が足りません（'+stopAt+'）');
+  return {stmts:out, closer:null};
+}
+
+/* ============================================================
+   2. 実行（コード → ドキュメント）
+   ============================================================ */
+var MAX_STEPS = 6000;
+
+function run(src){
+  var lines = src.split(/\r?\n/);
+  var tree = buildBlock(lines, {v:0}, null, 0).stmts;
+  var doc = {groups:[[]], free:[], minW:0, minH:0};
+  var env = {vars:{}, origin:{x:0,y:0}, cur:null, doc:doc, steps:0};
+  exec(tree, env);
+  doc.groups = doc.groups.filter(function(g){ return g.length; });
+  return doc;
+}
+
+function tick(env){
+  if(++env.steps > MAX_STEPS) throw new Error('処理が多すぎます（くりかえしの回数を減らしてください）');
+}
+
+function exec(stmts, env){
+  for(var i=0;i<stmts.length;i++){
+    var s = stmts[i];
+    tick(env);
+    if(s.type==='line'){ execLine(s.text, env, s.line); continue; }
+
+    if(s.type==='for'){
+      var m = /^for\s+\$([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+?)\s+to\s+(.+?)(?:\s+step\s+(.+))?$/i.exec(s.header);
+      if(!m) throw new Error((s.line)+'行目: for の書き方は「for $i = 1 to 5」です');
+      var from = evalExpr(m[2], env), to = evalExpr(m[3], env);
+      var step = m[4] ? evalExpr(m[4], env) : (from<=to ? 1 : -1);
+      if(step===0) throw new Error('step は 0 にできません');
+      for(var v=from; step>0 ? v<=to : v>=to; v+=step){
+        env.vars[m[1]] = v;
+        tick(env);
+        exec(s.body, env);
+      }
+      continue;
+    }
+    if(s.type==='repeat'){
+      var mr = /^repeat\s+(.+)$/i.exec(s.header);
+      if(!mr) throw new Error((s.line)+'行目: repeat の書き方は「repeat 3」です');
+      var n = evalExpr(mr[1], env);
+      for(var r=0;r<n;r++){ tick(env); exec(s.body, env); }
+      continue;
+    }
+    if(s.type==='if'){
+      var mi = /^if\s+(.+)$/i.exec(s.header);
+      if(!mi) throw new Error((s.line)+'行目: if の書き方は「if $i == 2」です');
+      if(evalExpr(mi[1], env)) exec(s.then, env);
+      else exec(s.els, env);
+      continue;
+    }
+  }
+}
+
+function execLine(line, env, lineNo){
+  try{
+    // 代入
+    var mAssign = /^\$([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+)$/.exec(line);
+    if(mAssign){ env.vars[mAssign[1]] = evalExpr(mAssign[2], env); return; }
+
+    if(/^-{3,}$/.test(line)){ env.doc.groups.push([]); env.cur = null; return; }
+
+    var mCanvas = /^canvas\s+(.+?)\s*,\s*(.+)$/i.exec(line);
+    if(mCanvas){
+      env.doc.minW = evalExpr(mCanvas[1], env);
+      env.doc.minH = evalExpr(mCanvas[2], env);
+      return;
+    }
+    var mOrigin = /^origin\s+(.+?)\s*,\s*(.+)$/i.exec(line);
+    if(mOrigin){
+      env.origin = {x:evalExpr(mOrigin[1], env), y:evalExpr(mOrigin[2], env)};
+      return;
+    }
+
+    // at x, y[, flags]: items
+    var mAt = /^at\s*\(?\s*(.*?)\s*\)?\s*:\s*(.*)$/i.exec(line);
+    if(mAt){
+      var head = mAt[1].split(',').map(function(s){ return s.trim(); });
+      if(head.length < 2) throw new Error('at は「at x, y: 部品」の形で書きます');
+      var x = evalExpr(head[0], env) + env.origin.x;
+      var y = evalExpr(head[1], env) + env.origin.y;
+      var anchor = 'left', style = 'green';
+      for(var f=2; f<head.length; f++){
+        var w = head[f].toLowerCase();
+        if(w==='center'||w==='right'||w==='left') anchor = w;
+        else if(THEME[w]) style = w;
+        else if(w) throw new Error('at のオプションが読めません: '+head[f]);
+      }
+      env.doc.free.push({kind:'items', x:x, y:y, anchor:anchor, style:style, items:parseItems(subst(mAt[2], env))});
+      return;
+    }
+
+    // panel [style] [at x, y]
+    var mPanel = /^panel\b\s*(.*)$/i.exec(line);
+    if(mPanel){
+      var rest = mPanel[1].trim(), pos = null;
+      var mPos = /\bat\s*\(?\s*([^,]+?)\s*,\s*([^),]+?)\s*\)?\s*$/i.exec(rest);
+      if(mPos){
+        pos = {x:evalExpr(mPos[1], env)+env.origin.x, y:evalExpr(mPos[2], env)+env.origin.y};
+        rest = rest.slice(0, mPos.index).trim();
+      }
+      var style = rest.toLowerCase() || 'green';
+      if(!THEME[style]) throw new Error('知らない色です: '+rest);
+      var panel = {style:style, rows:[], sideArrow:null, at:pos};
+      env.cur = panel;
+      if(pos) env.doc.free.push({kind:'panel', x:pos.x, y:pos.y, panel:panel});
+      else env.doc.groups[env.doc.groups.length-1].push(panel);
+      return;
+    }
+
+    if(!env.cur){
+      env.cur = {style:'green', rows:[], sideArrow:null, at:null};
+      env.doc.groups[env.doc.groups.length-1].push(env.cur);
+    }
 
     var mArrow = /^arrow\s+(up|down|left|right)$/i.exec(line);
-    if(mArrow){ cur.sideArrow = mArrow[1].toLowerCase(); continue; }
+    if(mArrow){ env.cur.sideArrow = mArrow[1].toLowerCase(); return; }
 
     var body = line;
     var mRow = /^row\s*:\s*(.*)$/i.exec(line);
     if(mRow) body = mRow[1];
-    var items = parseItems(body);
-    if(items.length) cur.rows.push(items);
+    var items = parseItems(subst(body, env));
+    if(items.length) env.cur.rows.push(items);
+  }catch(e){
+    throw new Error(lineNo+'行目: '+e.message);
   }
-  return groups.filter(function(g){ return g.length; });
 }
 
 function parseItems(body){
   var items=[], re=/([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)/g, m, found=false;
   while((m=re.exec(body))!==null){
     found=true;
-    var args = m[2].split(',').map(function(s){return s.trim();}).filter(function(s,i,a){
-      return s.length>0 || i<a.length-1;
-    });
-    items.push({t:m[1].toLowerCase(), args:args});
+    items.push({t:m[1].toLowerCase(), args:m[2].split(',').map(function(s){return s.trim();})});
   }
   if(!found){
-    var parts = body.split('/').map(function(s){return s.trim();});
+    var parts = body.split('/').map(function(s){ return s.trim(); });
     items.push({t:'text', args:[parts[0]||'', parts[1]||'']});
   }
   return items;
 }
 
 /* ============================================================
-   2. 定数
+   3. 定数
    ============================================================ */
 var FF = '"Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP","MS PGothic",sans-serif';
 var K = {
@@ -231,7 +477,8 @@ var THEME = {
   blue:{bg:'#12569b', fg:'#ffffff'},
   etc:{bg:'#f5c518', fg:'#17181a'},
   white:{bg:'#f4f4f2', fg:'#17181a'},
-  brown:{bg:'#6b4a2b', fg:'#ffffff'}
+  brown:{bg:'#6b4a2b', fg:'#ffffff'},
+  black:{bg:'#1a1c1e', fg:'#ffffff'}
 };
 
 function setFont(ctx, weight, size, ls){
@@ -241,13 +488,11 @@ function setFont(ctx, weight, size, ls){
 function tw(ctx, s){ return s ? ctx.measureText(s).width : 0; }
 
 /* ============================================================
-   3. 部品の寸法
+   4. 部品の寸法
    ============================================================ */
 function textSize(ctx, jp, rm){
-  setFont(ctx,'bold',K.kanjiSize,2);
-  var w1 = tw(ctx, jp);
-  setFont(ctx,'bold',K.romanSize,1);
-  var w2 = tw(ctx, rm);
+  setFont(ctx,'bold',K.kanjiSize,2); var w1 = tw(ctx, jp);
+  setFont(ctx,'bold',K.romanSize,1);  var w2 = tw(ctx, rm);
   return {w:Math.max(w1,w2), h:(jp?K.kanjiH:0)+(rm?K.romanH:0)};
 }
 function boxSize(ctx, txt, size, h, minW){
@@ -255,10 +500,8 @@ function boxSize(ctx, txt, size, h, minW){
   return {w:Math.max(minW, tw(ctx,txt)+26), h:h};
 }
 function shieldSize(ctx, num, label){
-  setFont(ctx,'bold',K.shieldNum,1);
-  var a = tw(ctx,num);
-  setFont(ctx,'bold',K.shieldLabel,1);
-  var b = tw(ctx,label);
+  setFont(ctx,'bold',K.shieldNum,1); var a = tw(ctx,num);
+  setFont(ctx,'bold',K.shieldLabel,1); var b = tw(ctx,label);
   return {w:Math.max(K.shieldMinW, Math.max(a,b)+24), h:K.shieldH};
 }
 function routeSize(ctx, code, jp, rm){
@@ -285,104 +528,7 @@ function itemSize(ctx, it){
       return b;
     }
     case 'shield': {
-      var s = shieldSize(ctx, a[0]||'', a[1]||'');
-      if(a[2] || a[3]){
-        var t2 = textSize(ctx, a[2]||'', a[3]||'');
-        return {w:s.w+12+t2.w, h:Math.max(s.h,t2.h), boxW:s.w};
-      }
-      return s;
-    }
-    case 'route': return routeSize(ctx, a[0]||'', a[1]||'', a[2]||'');
-    case 'arrow': return {w:K.arrowW, h:K.arrowH};
-    case 'big': setFont(ctx,'bold',K.bigSize,2); return {w:tw(ctx,a[0]||''), h:K.bigSize*1.2};
-    case 'dist': setFont(ctx,'bold',K.distSize,1); return {w:tw(ctx,a[0]||''), h:K.distSize*1.2};
-    case 'gap': return {w:parseFloat(a[0])||16, h:0};
-    default: return textSize(ctx, a[0]||'', a[1]||'');
-  }
-}
-
-/* ============================================================
-   4. 描画プリミティブ
-   ============================================================ */
-function roundRect(ctx,x,y,w,h,r){
-  r = Math.min(r, w/2, h/2);
-  ctx.beginPath();
-  ctx.moveTo(x+r,y);
-  ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
-  ctx.closePath();
-}
-function drawArrow(ctx,x,y,w,h,dir,color){
-  ctx.save();
-  ctx.translate(x+w/2, y+h/2);
-  if(dir==='down') ctx.rotate(Math.PI);
-  else if(dir==='left') ctx.rotate(-Math.PI/2);
-  else if(dir==='right') ctx.rotate(Math.PI/2);
-  var W = (dir==='left'||dir==='right') ? h : w;
-  var H = (dir==='left'||dir==='right') ? w : h;
-  var hw = W/2, hh = H/2, sw = W*0.30, head = H*0.46;
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.moveTo(0,-hh);
-  ctx.lineTo(hw, -hh+head);
-  ctx.lineTo(sw/2, -hh+head);
-  ctx.lineTo(sw/2, hh);
-  ctx.lineTo(-sw/2, hh);
-  ctx.lineTo(-sw/2, -hh+head);
-  ctx.lineTo(-hw, -hh+head);
-  ctx.closePath();
-  ctx.fill();
-  ctx.restore();
-}
-function drawTextItem(ctx,x,y,w,jp,rm,fg){
-  ctx.fillStyle = fg; ctx.textBaseline='top';
-  var cy = y;
-  if(jp){
-    setFont(ctx,'bold',K.kanjiSize,2);
-    ctx.fillText(jp, x+(w-tw(ctx,jp))/2, cy+2);
-    cy += K.kanjiH;
-  }
-  if(rm){
-    setFont(ctx,'bold',K.romanSize,1);
-    ctx.fillText(rm, x+(w-tw(ctx,rm))/2, cy);
-  }
-}
-function drawBox(ctx,x,y,w,h,txt,size,theme){
-  ctx.fillStyle = theme.bg;
-  roundRect(ctx,x,y,w,h,K.boxR); ctx.fill();
-  ctx.strokeStyle = theme.fg; ctx.lineWidth = K.boxBorder;
-  roundRect(ctx,x+K.boxBorder/2,y+K.boxBorder/2,w-K.boxBorder,h-K.boxBorder,K.boxR-1); ctx.stroke();
-  ctx.fillStyle = theme.fg; ctx.textBaseline='middle';
-  setFont(ctx,'bold',size,1);
-  ctx.fillText(txt, x+(w-tw(ctx,txt))/2, y+h/2+1);
-  ctx.textBaseline='top';
-}
-
-/* ============================================================
-   5. 部品の描画
-   ============================================================ */
-function drawItem(ctx, it, x, y, size, theme){
-  var a = it.args, fg = theme.fg;
-  switch(it.t){
-    case 'text':
-      drawTextItem(ctx,x,y,size.w,a[0]||'',a[1]||'',fg); break;
-
-    case 'exit': {
-      var bw = size.boxW || size.w;
-      var by = y + (size.h - K.exitH)/2;
-      drawBox(ctx,x,by,bw,K.exitH,a[0]||'',K.exitNum,theme);
-      if(a[1]||a[2]){
-        var t = textSize(ctx,a[1]||'',a[2]||'');
-        drawTextItem(ctx, x+bw+12, y+(size.h-t.h)/2, t.w, a[1]||'', a[2]||'', fg);
-      }
-      break;
-    }
-
-    case 'shield': {
-      var sw = size.boxW || size.w;
-      var sy = y + (size.h - K.shieldH)/2;
+      var sw = size.boxW || size.w, sy = y + (size.h - K.shieldH)/2;
       ctx.fillStyle = theme.bg;
       roundRect(ctx,x,sy,sw,K.shieldH,K.boxR); ctx.fill();
       ctx.strokeStyle = fg; ctx.lineWidth = K.boxBorder;
@@ -401,8 +547,7 @@ function drawItem(ctx, it, x, y, size, theme){
 
     case 'route': {
       var rw = size.boxW || size.w;
-      var ry = y + (size.h - K.routeH)/2;
-      drawBox(ctx,x,ry,rw,K.routeH,a[0]||'',K.routeNum,theme);
+      drawBox(ctx,x,y+(size.h-K.routeH)/2,rw,K.routeH,a[0]||'',K.routeNum,theme);
       var jp=a[1]||'', rm=a[2]||'';
       if(jp||rm){
         var tx = x+rw+10;
@@ -418,84 +563,108 @@ function drawItem(ctx, it, x, y, size, theme){
       break;
     }
 
-    case 'arrow':
-      drawArrow(ctx,x,y,size.w,size.h,(a[0]||'up').toLowerCase(),fg); break;
+    case 'arrow': drawArrow(ctx,x,y,size.w,size.h,(a[0]||'up').toLowerCase(),fg); break;
 
     case 'big':
-      ctx.fillStyle=fg; ctx.textBaseline='top';
-      setFont(ctx,'bold',K.bigSize,2);
+      ctx.fillStyle=fg; ctx.textBaseline='top'; setFont(ctx,'bold',K.bigSize,2);
       ctx.fillText(a[0]||'', x, y+2); break;
 
     case 'dist':
-      ctx.fillStyle=fg; ctx.textBaseline='top';
-      setFont(ctx,'bold',K.distSize,1);
+      ctx.fillStyle=fg; ctx.textBaseline='top'; setFont(ctx,'bold',K.distSize,1);
       ctx.fillText(a[0]||'', x, y+2); break;
+
+    case 'label':
+      ctx.fillStyle = a[2] || fg; ctx.textBaseline='top';
+      setFont(ctx,'bold',parseFloat(a[1])||28,1);
+      ctx.fillText(a[0]||'', x, y); break;
+
+    case 'rect':
+      ctx.fillStyle = a[2] || fg;
+      ctx.fillRect(x, y, size.w, size.h); break;
+
+    case 'circle':
+      ctx.fillStyle = a[1] || fg;
+      ctx.beginPath(); ctx.arc(x+size.w/2, y+size.h/2, size.w/2, 0, Math.PI*2); ctx.fill(); break;
 
     case 'gap': break;
 
-    default:
-      drawTextItem(ctx,x,y,size.w,a[0]||'',a[1]||'',fg);
+    default: drawTextItem(ctx,x,y,size.w,a[0]||'',a[1]||'',fg);
   }
 }
 
 /* ============================================================
-   6. レイアウト
+   7. レイアウト
    ============================================================ */
+function layoutRow(ctx, items){
+  var sizes = items.map(function(it){ return itemSize(ctx,it); });
+  var w = 0, h = 0;
+  sizes.forEach(function(s,i){ w += s.w + (i?K.itemGap:0); h = Math.max(h,s.h); });
+  return {items:items, sizes:sizes, w:w, h:h};
+}
 function layoutPanel(ctx, p){
-  var rows = p.rows.map(function(items){
-    var sizes = items.map(function(it){ return itemSize(ctx,it); });
-    var w = 0, h = 0;
-    sizes.forEach(function(s,i){ w += s.w + (i?K.itemGap:0); h = Math.max(h,s.h); });
-    return {items:items, sizes:sizes, w:w, h:h};
-  });
+  var rows = p.rows.map(function(items){ return layoutRow(ctx, items); });
   var contentW = 0, contentH = 0;
   rows.forEach(function(r,i){ contentW = Math.max(contentW, r.w); contentH += r.h + (i?K.rowGap:0); });
   if(!rows.length){ contentW = 40; contentH = 40; }
   var arrowCol = p.sideArrow ? K.sideArrowW + K.itemGap : 0;
   return {
-    panel:p, rows:rows, arrowCol:arrowCol,
-    contentW:contentW, contentH:contentH,
-    w:contentW + arrowCol + K.panelPad*2,
-    h:contentH + K.panelPad*2
+    panel:p, rows:rows, arrowCol:arrowCol, contentW:contentW, contentH:contentH,
+    w:contentW + arrowCol + K.panelPad*2, h:contentH + K.panelPad*2
   };
 }
-
-function layoutAll(ctx, groups){
-  var G = groups.map(function(g){
-    var panels = g.map(function(p){ return layoutPanel(ctx,p); });
-    var w = 0, h = 0;
-    panels.forEach(function(L,i){ w += L.w + (i?K.panelGap:0); h = Math.max(h,L.h); });
-    return {panels:panels, w:w, h:h};
+function drawRow(ctx, r, x, y, theme){
+  var rx = x;
+  r.items.forEach(function(it,i){
+    var s = r.sizes[i];
+    drawItem(ctx, it, rx, y + (r.h - s.h)/2, s, theme);
+    rx += s.w + K.itemGap;
   });
-  var W = 0, H = 0;
-  G.forEach(function(g,i){ W = Math.max(W,g.w); H += g.h + (i?K.groupGap:0); });
-  return {groups:G, w:W + K.stagePad*2, h:H + K.stagePad*2};
 }
-
-function drawPanel(ctx, L, x, y, maxH){
-  var p = L.panel;
-  var theme = THEME[p.style] || THEME.green;
-  var h = maxH || L.h;
+function drawPanel(ctx, L, x, y, forceH){
+  var p = L.panel, theme = THEME[p.style] || THEME.green;
+  var h = forceH || L.h;
   ctx.fillStyle = theme.bg;
   roundRect(ctx,x,y,L.w,h,K.panelRadius); ctx.fill();
   ctx.strokeStyle = theme.fg; ctx.lineWidth = K.borderW;
   roundRect(ctx, x+K.borderInset, y+K.borderInset, L.w-K.borderInset*2, h-K.borderInset*2, K.panelRadius-4);
   ctx.stroke();
-
-  if(p.sideArrow){
-    drawArrow(ctx, x+K.panelPad, y+K.panelPad, K.sideArrowW, h-K.panelPad*2, p.sideArrow, theme.fg);
-  }
+  if(p.sideArrow) drawArrow(ctx, x+K.panelPad, y+K.panelPad, K.sideArrowW, h-K.panelPad*2, p.sideArrow, theme.fg);
   var cx = x + K.panelPad + L.arrowCol;
   var cy = y + (h - L.contentH)/2;
   L.rows.forEach(function(r){
-    var rx = cx + (L.contentW - r.w)/2;
-    r.items.forEach(function(it,i){
-      var s = r.sizes[i];
-      drawItem(ctx, it, rx, cy + (r.h - s.h)/2, s, theme);
-      rx += s.w + K.itemGap;
-    });
+    drawRow(ctx, r, cx + (L.contentW - r.w)/2, cy, theme);
     cy += r.h + K.rowGap;
   });
+  }
+  function layoutDoc(ctx, doc){
+  var groups = doc.groups.map(function(g){
+    var panels = g.map(function(p){ return layoutPanel(ctx,p); });
+    var w = 0, h = 0;
+    panels.forEach(function(L,i){ w += L.w + (i?K.panelGap:0); h = Math.max(h,L.h); });
+    return {panels:panels, w:w, h:h};
+  });
+  var flowW = 0, flowH = 0;
+  groups.forEach(function(g,i){ flowW = Math.max(flowW,g.w); flowH += g.h + (i?K.groupGap:0); });
+
+  var free = doc.free.map(function(f){
+    var L, w, h;
+    if(f.kind==='panel'){ L = layoutPanel(ctx, f.panel); w = L.w; h = L.h; }
+    else { L = layoutRow(ctx, f.items); w = L.w; h = L.h; }
+    var x = f.x;
+    if(f.anchor==='center') x -= w/2;
+    else if(f.anchor==='right') x -= w;
+    return {def:f, L:L, x:x, y:f.y, w:w, h:h};
+  });
+
+  var W = flowW ? flowW + K.stagePad*2 : 0;
+  var H = flowH ? flowH + K.stagePad*2 : 0;
+  free.forEach(function(f){
+    W = Math.max(W, f.x + f.w + K.stagePad);
+    H = Math.max(H, f.y + f.h + K.stagePad);
+  });
+  W = Math.max(W, doc.minW, 1);
+  H = Math.max(H, doc.minH, 1);
+  return {groups:groups, free:free, flowW:flowW, flowH:flowH, w:W, h:H};
 }
 
 function paintBackground(ctx, w, h, mode){
@@ -507,11 +676,10 @@ function paintBackground(ctx, w, h, mode){
   ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
 }
 
-var measureCanvas = document.createElement('canvas');
-var measureCtx = measureCanvas.getContext('2d');
+var measureCtx = document.createElement('canvas').getContext('2d');
 
-function render(canvas, groups, scale, bg){
-  var L = layoutAll(measureCtx, groups);
+function render(canvas, doc, scale, bg){
+  var L = layoutDoc(measureCtx, doc);
   canvas.width = Math.max(1, Math.round(L.w*scale));
   canvas.height = Math.max(1, Math.round(L.h*scale));
   canvas.style.width = L.w+'px';
@@ -519,20 +687,22 @@ function render(canvas, groups, scale, bg){
   ctx.setTransform(scale,0,0,scale,0,0);
   ctx.clearRect(0,0,L.w,L.h);
   paintBackground(ctx, L.w, L.h, bg);
+
   var y = K.stagePad;
   L.groups.forEach(function(g){
-    var x = K.stagePad + (L.w - K.stagePad*2 - g.w)/2;
-    g.panels.forEach(function(P){
-      drawPanel(ctx, P, x, y, g.h);
-      x += P.w + K.panelGap;
-    });
+    var x = K.stagePad + (L.flowW - g.w)/2;
+    g.panels.forEach(function(P){ drawPanel(ctx, P, x, y, g.h); x += P.w + K.panelGap; });
     y += g.h + K.groupGap;
+  });
+  L.free.forEach(function(f){
+    if(f.def.kind==='panel') drawPanel(ctx, f.L, f.x, f.y);
+    else drawRow(ctx, f.L, f.x, f.y, THEME[f.def.style] || THEME.green);
   });
   return L;
 }
 
 /* ============================================================
-   7. UI
+   8. UI
    ============================================================ */
 var SAMPLES = {
   photo:
@@ -550,17 +720,44 @@ var SAMPLES = {
 'arrow up\n'+
 'row: exit(13, 奈良, Nara) route(E26, 近畿道, KINKI EXP)\n'+
 'row: exit(14, 松原, Matsubara) shield(1, Loop) text(環状線, Loop)\n',
-  etc:
-'panel etc\n'+
-'big(ETC)\n'+
-'dist(専用)\n'+
+
+  loop:
+'# 変数とくりかえし\n'+
+'$first = 11\n'+
+'$km = 3\n'+
 '\n'+
 'panel\n'+
-'row: exit(5) text(名古屋南, Nagoya-minami) arrow(right)\n'+
-'row: text(国道23号, Route 23)\n'+
-'---\n'+
+'for $i = 0 to 2\n'+
+'  row: exit({$first + $i}) text(第$i$出口, Exit {$i + 1})\n'+
+'end\n'+
+'row: arrow(down)\n'+
+'\n'+
 'panel blue\n'+
-'row: route(E1, 東名高速, TOMEI EXP) dist(2km)\n'
+'for $i = 1 to 3\n'+
+'  if $i == 2\n'+
+'    row: route(E{$i}, 高速{$i}号, EXP {$i}) dist({$km * $i}km)\n'+
+'  else\n'+
+'    row: shield($i, Route) text(路線$i$, Line $i)\n'+
+'  end\n'+
+'end\n',
+
+  free:
+'# 座標を自分で決める\n'+
+'canvas 760, 300\n'+
+'\n'+
+'repeat 1\n'+
+'  at 40, 40: label(自由配置レイヤー, 26, #ffffff)\n'+
+'end\n'+
+'\n'+
+'for $i = 0 to 3\n'+
+'  at {40 + $i * 170}, 90: exit({11 + $i}) text(出口$i$, Exit $i$)\n'+
+'end\n'+
+'\n'+
+'at 40, 200: rect(680, 6, #ffffff)\n'+
+'at 380, 225, center, etc: big(ETC) dist(専用)\n'+
+'\n'+
+'panel at 560, 20\n'+
+'shield(1, Loop)\n'
 };
 
 var codeEl = document.getElementById('code');
@@ -579,12 +776,25 @@ var SNIPPETS = [
   ['＋ 矢印（左側）', 'arrow up'],
   ['＋ 大きい文字',   'big(JCT)'],
   ['＋ 距離',         'dist(300m)'],
-  ['＋ 段を分ける',   '---']
+  ['＋ 段を分ける',   '---'],
+  ['SEP',''],
+  ['$ 変数',          '$n = 1'],
+  ['for くりかえし',  'for $i = 1 to 3\n  row: exit({10 + $i})\nend'],
+  ['repeat',          'repeat 3\n  row: text(奈良, Nara)\nend'],
+  ['if 条件',         'if $i == 2\n  row: big(JCT)\nend'],
+  ['SEP',''],
+  ['at 座標に置く',   'at 40, 60: exit(13) text(奈良, Nara)'],
+  ['板を座標に置く',  'panel at 40, 60'],
+  ['origin 原点',     'origin 0, 0'],
+  ['canvas サイズ',   'canvas 760, 320'],
+  ['図形',            'rect(200, 6, #ffffff)']
 ];
 var tools = document.getElementById('tools');
 SNIPPETS.forEach(function(s){
+  if(s[0]==='SEP'){ var d=document.createElement('div'); d.className='sep'; tools.appendChild(d); return; }
   var b = document.createElement('button');
   b.textContent = s[0];
+  if(s[1].indexOf('$')===0 || /^(for|repeat|if|at|origin|canvas|rect|panel at)/.test(s[1])) b.className='code';
   b.addEventListener('click', function(){ insertLine(s[1]); });
   tools.appendChild(b);
 });
@@ -593,10 +803,8 @@ function insertLine(text){
   var start = codeEl.selectionStart, val = codeEl.value;
   var lineEnd = val.indexOf('\n', start);
   if(lineEnd === -1) lineEnd = val.length;
-  var before = val.slice(0, lineEnd);
-  var after  = val.slice(lineEnd);
-  var needsNL = before.length && before.slice(-1) !== '\n';
-  var ins = (needsNL ? '\n' : '') + text;
+  var before = val.slice(0, lineEnd), after = val.slice(lineEnd);
+  var ins = (before.length && before.slice(-1) !== '\n' ? '\n' : '') + text;
   codeEl.value = before + ins + after;
   var pos = (before + ins).length;
   codeEl.focus();
@@ -606,15 +814,16 @@ function insertLine(text){
 
 function update(){
   try{
-    errEl.style.display='none';
-    var groups = parse(codeEl.value);
-    if(!groups.length){
+    var doc = run(codeEl.value);
+    if(!doc.groups.length && !doc.free.length && !doc.minW){
+      errEl.style.display='none';
       cv.width=1; cv.height=1; cv.style.width='1px';
       return;
     }
-    render(cv, groups, 2, bgEl.value);
+    render(cv, doc, 2, bgEl.value);
+    errEl.style.display='none';
   }catch(e){
-    errEl.textContent = '描けませんでした：' + e.message;
+    errEl.textContent = e.message;
     errEl.style.display='block';
   }
 }
@@ -623,25 +832,33 @@ codeEl.addEventListener('input', update);
 bgEl.addEventListener('change', update);
 
 document.getElementById('sample1').addEventListener('click', function(){ codeEl.value = SAMPLES.photo; update(); });
-document.getElementById('sample2').addEventListener('click', function(){ codeEl.value = SAMPLES.etc; update(); });
+document.getElementById('sample2').addEventListener('click', function(){ codeEl.value = SAMPLES.loop; update(); });
+document.getElementById('sample3').addEventListener('click', function(){ codeEl.value = SAMPLES.free; update(); });
 document.getElementById('clear').addEventListener('click', function(){ codeEl.value = 'panel\n'; codeEl.focus(); update(); });
 document.getElementById('copy').addEventListener('click', function(){
   var btn = this, old = btn.textContent;
-  var done = function(){ btn.textContent='コピーしました'; setTimeout(function(){btn.textContent=old;},1400); };
+  var done = function(){ btn.textContent='コピーしました'; setTimeout(function(){ btn.textContent=old; },1400); };
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(codeEl.value).then(done, function(){ codeEl.select(); });
   } else { codeEl.select(); document.execCommand('copy'); done(); }
 });
 
 document.getElementById('save').addEventListener('click', function(){
-  var groups = parse(codeEl.value);
-  if(!groups.length){ errEl.textContent='保存する中身がありません。まず標識を書いてください。'; errEl.style.display='block'; return; }
-  var out = document.createElement('canvas');
-  render(out, groups, parseFloat(scaleEl.value), bgEl.value);
-  var a = document.createElement('a');
-  a.download = 'sign.png';
-  a.href = out.toDataURL('image/png');
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  try{
+    var doc = run(codeEl.value);
+    if(!doc.groups.length && !doc.free.length){
+      errEl.textContent='保存する中身がありません。まず標識を書いてください。';
+      errEl.style.display='block'; return;
+    }
+    var out = document.createElement('canvas');
+    render(out, doc, parseFloat(scaleEl.value), bgEl.value);
+    var a = document.createElement('a');
+    a.download = 'sign.png';
+    a.href = out.toDataURL('image/png');
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }catch(e){
+    errEl.textContent = e.message; errEl.style.display='block';
+  }
 });
 
 codeEl.value = SAMPLES.photo;
