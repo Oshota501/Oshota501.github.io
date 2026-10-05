@@ -6,13 +6,22 @@
         <title>LaTeXグラフ</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
         <link rel="stylesheet" href="./style.css">
+        <!-- 3D 表示用（奥行き軸を選んだときだけ読み込まれる） -->
+        <script type="importmap">
+            {
+                "imports": {
+                    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+                }
+            }
+        </script>
     </head>
     <body>
         <div class="app">
             <aside class="panel">
                 <header class="panel_head">
                     <h1>LaTeXグラフ</h1>
-                    <p>数式を貼り付けると、x 以外の文字がパラメータ（スライダー）になります。</p>
+                    <p>数式を貼り付けると、文字がスライダーになります。好きな文字を横軸・奥行き軸(3D)にできます。</p>
                 </header>
 
                 <section class="block">
@@ -34,33 +43,42 @@
                 </section>
 
                 <section class="block">
-                    <h2>パラメータ</h2>
+                    <h2>変数</h2>
                     <div id="params" class="params"></div>
-                    <p id="no_params" class="muted">x 以外の文字を式に入れると、ここにスライダーが出ます。</p>
                 </section>
 
                 <section class="block">
                     <h2>表示範囲</h2>
                     <div class="view_inputs">
-                        <label>x <input type="number" id="xmin" step="any"></label>
-                        <span>〜</span>
-                        <input type="number" id="xmax" step="any" aria-label="x 最大">
-                        <label>y <input type="number" id="ymin" step="any"></label>
+                        <label class="only2d"><span id="xlabel">x</span> <input type="number" id="xmin" step="any"></label>
+                        <span class="only2d">〜</span>
+                        <input class="only2d" type="number" id="xmax" step="any" aria-label="横軸 最大">
+                        <label><span class="only2d">y</span><span class="only3d">高さ y</span> <input type="number" id="ymin" step="any"></label>
                         <span>〜</span>
                         <input type="number" id="ymax" step="any" aria-label="y 最大">
                     </div>
+                    <label class="only3d auto_row"><input type="checkbox" id="auto_h" checked> 高さを自動で合わせる</label>
+                    <label class="only3d auto_row">面の細かさ
+                        <select id="res">
+                            <option value="50">粗い（軽い）</option>
+                            <option value="100" selected>ふつう</option>
+                            <option value="200">細かい（重い）</option>
+                        </select>
+                    </label>
                     <div class="buttons">
-                        <button type="button" id="zoom_in" title="拡大">＋</button>
-                        <button type="button" id="zoom_out" title="縮小">−</button>
+                        <button type="button" class="only2d" id="zoom_in" title="拡大">＋</button>
+                        <button type="button" class="only2d" id="zoom_out" title="縮小">−</button>
                         <button type="button" id="reset_view">原点に戻す</button>
                         <button type="button" id="share">URLをコピー</button>
                     </div>
-                    <p class="muted">ドラッグで移動、ホイール／ピンチで拡大縮小。</p>
+                    <p class="muted only2d">ドラッグで移動、ホイール／ピンチで拡大縮小。</p>
+                    <p class="muted only3d">ドラッグで回転、右ドラッグで移動、ホイール／ピンチで拡大縮小。横軸・奥行き軸の範囲は各変数の最小・最大で決まります。</p>
                 </section>
             </aside>
 
             <main class="stage">
                 <canvas id="graph"></canvas>
+                <div id="three" class="three" hidden></div>
                 <div id="coord" class="coord"></div>
                 <div id="toast" class="toast" role="status"></div>
             </main>
