@@ -4,29 +4,36 @@
     const COLORS = ['#ffffff', '#ff6b6b', '#4dabf7', '#ffd43b', '#69db7c', '#da77f2', '#ffa94d', '#66d9e8'];
     const DEFAULT_SRC = 'y = a\\sin\\left(bx + c\\right)\nf(x) = \\frac{1}{1 + e^{-k(x - x_0)}}';
     const DEFAULT_PARAM = { value: 1, min: -10, max: 10, step: 0.1 };
+    const DEFAULT_X = { value: 0, min: -10, max: 10, step: 0.1 };
     const DEFAULT_X_HALF = 10;
 
     const $ = id => document.getElementById(id);
     const srcEl = $('src');
     const exprsEl = $('exprs');
     const paramsEl = $('params');
-    const noParamsEl = $('no_params');
     const canvas = $('graph');
     const ctx = canvas.getContext('2d');
+    const threeEl = $('three');
     const coordEl = $('coord');
+    const autoHEl = $('auto_h');
+    const resEl = $('res');
     const viewInputs = { xmin: $('xmin'), xmax: $('xmax'), ymin: $('ymin'), ymax: $('ymax') };
 
     // ---------- 状態 ----------
     const state = {
         lines: [],          // parseProgram の結果 + fn, color
-        paramOrder: [],     // 表示中のパラメータ名
+        varOrder: [],       // 表示中の変数（x が先頭）
         params: {},         // 名前 → {value,min,max,step}（消えた名前も設定を覚えておく）
-        view: null,         // {xmin,xmax,ymin,ymax}
+        view: null,         // {xmin,xmax,ymin,ymax}  2D の表示範囲。3D では ymin/ymax が高さの範囲
+        axisH: 'x',         // 横軸にする変数
+        axisZ: null,        // 奥行き軸にする変数（null なら 2D）
+        autoH: true,        // 3D で高さを自動で合わせるか
+        res: 100,           // 3D の分割数（1辺）
     };
     const paramRows = {};   // 名前 → DOM 参照
     const playing = {};     // 名前 → {dir, last}
 
-    // ---------- KaTeX ----------
+    // ---------- 表示用の文字列 ----------
     function renderTex(el, tex) {
         if (window.katex) {
             try {
@@ -35,6 +42,31 @@
             } catch (e) { /* 下でテキスト表示 */ }
         }
         el.textContent = tex.replace(/^\\displaystyle /, ''); // KaTeX が読めないときはそのまま表示
+    }
+
+    const GREEK_CHARS = {
+        alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', zeta: 'ζ', eta: 'η', theta: 'θ',
+        iota: 'ι', kappa: 'κ', lambda: 'λ', mu: 'μ', nu: 'ν', xi: 'ξ', rho: 'ρ', sigma: 'σ', tau: 'τ',
+        upsilon: 'υ', phi: 'φ', chi: 'χ', psi: 'ψ', omega: 'ω', Gamma: 'Γ', Delta: 'Δ', Theta: 'Θ',
+        Lambda: 'Λ', Xi: 'Ξ', Sigma: 'Σ', Upsilon: 'Υ', Phi: 'Φ', Psi: 'Ψ', Omega: 'Ω'
+    };
+    // canvas に書くための変数名 (\alpha → α, x_{0} → x₀)
+    function plainName(name) {
+        return name
+            .replace(/\\([a-zA-Z]+)/g, (m, g) => GREEK_CHARS[g] || g)
+            .replace(/_\{([^}]*)\}/g, (m, sub) => /^[0-9]+$/.test(sub)
+                ? [...sub].map(d => '₀₁₂₃₄₅₆₇₈₉'[d]).join('')
+                : '_' + sub);
+    }
+
+    function fmt(v) {
+        if (!isFinite(v)) return String(v);
+        return String(parseFloat(v.toPrecision(10)));
+    }
+    // 範囲の 1/1000 程度の精度に丸める
+    function roundBySpan(v, span) {
+        const d = Math.max(0, Math.min(20, Math.ceil(-Math.log10(span / 1000))));
+        return parseFloat(v.toFixed(d));
     }
 
     // ---------- 数式の解析 ----------
@@ -60,20 +92,24 @@
             return out;
         });
 
-        // パラメータ（登場順）
-        const order = [];
+        // 変数（x を先頭に、あとは登場順）
+        const order = ['x'];
         state.lines.forEach(l => {
             if (!l.error) l.vars.forEach(v => { if (!order.includes(v)) order.push(v); });
         });
-        state.paramOrder = order;
+        state.varOrder = order;
         order.forEach(name => {
-            if (!state.params[name]) state.params[name] = Object.assign({}, DEFAULT_PARAM);
+            if (!state.params[name]) state.params[name] = Object.assign({}, name === 'x' ? DEFAULT_X : DEFAULT_PARAM);
         });
+
+        // 軸に選んでいた変数が式から消えたら元に戻す
+        if (state.axisZ && (!order.includes(state.axisZ) || state.axisZ === state.axisH)) setAxisZ(null, true);
+        if (!order.includes(state.axisH)) setAxisH('x', true);
 
         renderExprList();
         syncParamRows();
-        scheduleDraw();
-        scheduleHash();
+        applyMode();
+        changed();
     }
 
     function renderExprList() {
@@ -99,19 +135,15 @@
         });
     }
 
-    // ---------- パラメータ UI ----------
-    function fmt(v) {
-        if (!isFinite(v)) return String(v);
-        return String(parseFloat(v.toPrecision(10)));
-    }
-
+    // ---------- 変数 UI ----------
     function makeParamRow(name) {
         const row = document.createElement('div');
         row.className = 'param';
         row.innerHTML =
             '<div class="param_head">' +
-            '<span class="param_name"></span><span>=</span>' +
+            '<span class="param_name"></span><span class="eq">=</span>' +
             '<input type="number" class="param_val" step="any" aria-label="値">' +
+            '<span class="axis_badge"></span>' +
             '<button type="button" class="play" title="自動で動かす">▶</button>' +
             '</div>' +
             '<input type="range" class="param_range">' +
@@ -119,16 +151,18 @@
             '<label>最小 <input type="number" class="param_min" step="any"></label>' +
             '<label>最大 <input type="number" class="param_max" step="any"></label>' +
             '<label>刻み <input type="number" class="param_step" step="any" min="0"></label>' +
+            '</div>' +
+            '<p class="axis_note"></p>' +
+            '<div class="axis_opts">' +
+            '<label><input type="checkbox" class="axis_h"> 横軸にする</label>' +
+            '<label><input type="checkbox" class="axis_z"> 奥行き軸にする (3D)</label>' +
             '</div>';
+        const q = sel => row.querySelector(sel);
         const refs = {
             row,
-            name: row.querySelector('.param_name'),
-            val: row.querySelector('.param_val'),
-            play: row.querySelector('.play'),
-            range: row.querySelector('.param_range'),
-            min: row.querySelector('.param_min'),
-            max: row.querySelector('.param_max'),
-            step: row.querySelector('.param_step'),
+            name: q('.param_name'), val: q('.param_val'), play: q('.play'), range: q('.param_range'),
+            min: q('.param_min'), max: q('.param_max'), step: q('.param_step'),
+            badge: q('.axis_badge'), note: q('.axis_note'), axisH: q('.axis_h'), axisZ: q('.axis_z'),
         };
         renderTex(refs.name, name);
         const p = () => state.params[name];
@@ -171,6 +205,15 @@
         refs.max.addEventListener('change', onBounds);
         refs.step.addEventListener('change', onBounds);
         refs.play.addEventListener('click', () => togglePlay(name));
+
+        refs.axisH.addEventListener('change', () => {
+            // 横軸は常にどれか1つ。チェックを外す操作は無効にする
+            if (!refs.axisH.checked) { refs.axisH.checked = true; return; }
+            setAxisH(name);
+        });
+        refs.axisZ.addEventListener('change', () => {
+            setAxisZ(refs.axisZ.checked ? name : null);
+        });
         return refs;
     }
 
@@ -186,32 +229,106 @@
 
     function fillParamRow(name) {
         const p = state.params[name], r = paramRows[name];
+        if (!r) return;
         r.val.value = fmt(p.value);
         r.min.value = fmt(p.min);
         r.max.value = fmt(p.max);
         r.step.value = fmt(p.step);
+        [r.min, r.max, r.step].forEach(el => el.classList.remove('invalid'));
         applyRangeAttrs(name);
     }
 
     function syncParamRows() {
         Object.keys(paramRows).forEach(name => {
-            if (!state.paramOrder.includes(name)) {
+            if (!state.varOrder.includes(name)) {
                 stopPlay(name);
                 paramRows[name].row.remove();
                 delete paramRows[name];
             }
         });
-        state.paramOrder.forEach(name => {
+        state.varOrder.forEach(name => {
             if (!paramRows[name]) {
                 paramRows[name] = makeParamRow(name);
                 fillParamRow(name);
             }
             paramsEl.appendChild(paramRows[name].row); // 並び順を揃える
         });
-        noParamsEl.hidden = state.paramOrder.length > 0;
     }
 
-    // ▶: 最小〜最大を往復させる（全範囲を約4秒で）
+    // ---------- 軸の切り替え ----------
+    function clampValue(name) {
+        const p = state.params[name];
+        p.value = Math.min(p.max, Math.max(p.min, p.value));
+    }
+
+    // 2D の横軸 → 変数の範囲（いま見えている範囲をそのままスライダーの範囲にする）
+    function viewToParam(name) {
+        const v = state.view, p = state.params[name];
+        if (!v || !p) return;
+        const span = v.xmax - v.xmin;
+        p.min = roundBySpan(v.xmin, span);
+        p.max = roundBySpan(v.xmax, span);
+        if (!(p.max > p.min)) { p.min = v.xmin; p.max = v.xmax; }
+        clampValue(name);
+        fillParamRow(name);
+    }
+    // 変数の範囲 → 2D の横軸
+    function paramToView(name) {
+        const p = state.params[name];
+        if (!state.view || !p) return;
+        state.view = Object.assign({}, state.view, { xmin: p.min, xmax: p.max });
+    }
+
+    function setAxisH(name, silent) {
+        const prev = state.axisH;
+        if (name === prev) { applyMode(); return; }
+        if (state.axisZ) {
+            // 3D: 奥行き軸と入れ替える場合
+            if (name === state.axisZ) state.axisZ = prev;
+        } else {
+            viewToParam(prev);
+            paramToView(name);
+        }
+        state.axisH = name;
+        stopPlay(name);
+        if (!silent) { applyMode(); changed(); }
+    }
+
+    function setAxisZ(name, silent) {
+        if (name && name === state.axisH) { applyMode(); return; }
+        if (name && !state.axisZ) viewToParam(state.axisH);      // 3D に入る
+        if (!name && state.axisZ) paramToView(state.axisH);      // 2D に戻る
+        state.axisZ = name;
+        if (name) stopPlay(name);
+        if (!silent) { applyMode(); changed(); }
+    }
+
+    function applyMode() {
+        const is3d = !!state.axisZ;
+        document.body.classList.toggle('mode3d', is3d);
+        canvas.hidden = is3d;
+        threeEl.hidden = !is3d;
+        coordEl.textContent = '';
+        Object.keys(paramRows).forEach(name => {
+            const r = paramRows[name];
+            const isH = name === state.axisH, isZ = name === state.axisZ;
+            r.row.classList.toggle('is_axis', isH || isZ);
+            r.row.classList.toggle('axis_view', isH && !is3d);
+            r.badge.textContent = isH ? '横軸' : isZ ? '奥行き軸' : '';
+            r.axisH.checked = isH;
+            r.axisZ.checked = isZ;
+            r.axisZ.disabled = isH;
+            r.note.textContent = isH && !is3d
+                ? '範囲は下の「表示範囲」やドラッグで調整します'
+                : (isH || isZ) ? '最小〜最大がグラフの範囲になります' : '';
+            if (isH || isZ) stopPlay(name);
+        });
+        $('reset_view').textContent = is3d ? '視点を戻す' : '原点に戻す';
+        if (state.view) updateViewInputs();
+        if (is3d) ensureThree();
+    }
+
+    // ---------- ▶: 最小〜最大を往復させる（全範囲を約4秒で） ----------
     function togglePlay(name) {
         if (playing[name]) stopPlay(name);
         else {
@@ -267,13 +384,14 @@
 
     function updateViewInputs() {
         const v = state.view;
-        // 範囲の 1/1000 程度の精度で丸めて表示
-        const digits = span => Math.max(0, Math.ceil(-Math.log10(span / 1000)));
-        const dx = digits(v.xmax - v.xmin), dy = digits(v.ymax - v.ymin);
         Object.keys(viewInputs).forEach(k => {
             if (document.activeElement === viewInputs[k]) return;
-            viewInputs[k].value = fmt(parseFloat(v[k].toFixed(Math.min(20, k[0] === 'x' ? dx : dy))));
+            const span = k[0] === 'x' ? v.xmax - v.xmin : v.ymax - v.ymin;
+            viewInputs[k].value = fmt(roundBySpan(v[k], span));
         });
+        $('xlabel').textContent = plainName(state.axisH);
+        autoHEl.checked = state.autoH;
+        resEl.value = String(state.res);
     }
 
     Object.keys(viewInputs).forEach(k => {
@@ -282,8 +400,18 @@
             const next = Object.assign({}, state.view, { [k]: n });
             const ok = isFinite(n) && next.xmax > next.xmin && next.ymax > next.ymin;
             viewInputs[k].classList.toggle('invalid', !ok);
-            if (ok) setView(next);
+            if (!ok) return;
+            if (k[0] === 'y' && state.axisZ) state.autoH = false; // 高さを手で決めたら自動をやめる
+            setView(next);
         });
+    });
+    resEl.addEventListener('change', () => {
+        state.res = parseInt(resEl.value, 10) || 100;
+        changed();
+    });
+    autoHEl.addEventListener('change', () => {
+        state.autoH = autoHEl.checked;
+        changed();
     });
 
     function zoomAt(px, py, fx, fy) {
@@ -300,20 +428,18 @@
 
     $('zoom_in').addEventListener('click', () => zoomAt(cssW / 2, cssH / 2, 0.8, 0.8));
     $('zoom_out').addEventListener('click', () => zoomAt(cssW / 2, cssH / 2, 1.25, 1.25));
-    $('reset_view').addEventListener('click', () => setView(defaultView()));
+    $('reset_view').addEventListener('click', () => {
+        if (state.axisZ) { if (threeView) threeView.resetCamera(); }
+        else setView(defaultView());
+    });
 
     // ---------- 操作（ドラッグ・ピンチ・ホイール） ----------
     const pointers = new Map();
-    let pinchStart = null;
 
     canvas.addEventListener('pointerdown', e => {
         canvas.setPointerCapture(e.pointerId);
         pointers.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
         canvas.classList.add('dragging');
-        if (pointers.size === 2) {
-            const [a, b] = [...pointers.values()];
-            pinchStart = { dist: Math.hypot(a.x - b.x, a.y - b.y) || 1 };
-        }
     });
     canvas.addEventListener('pointermove', e => {
         showCoord(e.offsetX, e.offsetY);
@@ -325,7 +451,7 @@
             const sx = (v.xmax - v.xmin) / cssW, sy = (v.ymax - v.ymin) / cssH;
             const mx = (cur.x - prev.x) * sx, my = (cur.y - prev.y) * sy;
             setView({ xmin: v.xmin - mx, xmax: v.xmax - mx, ymin: v.ymin + my, ymax: v.ymax + my });
-        } else if (pointers.size === 2 && pinchStart) {
+        } else if (pointers.size === 2) {
             const other = [...pointers.entries()].find(([id]) => id !== e.pointerId)[1];
             const before = Math.hypot(prev.x - other.x, prev.y - other.y) || 1;
             const after = Math.hypot(cur.x - other.x, cur.y - other.y) || 1;
@@ -336,7 +462,6 @@
     });
     const endPointer = e => {
         pointers.delete(e.pointerId);
-        if (pointers.size < 2) pinchStart = null;
         if (pointers.size === 0) canvas.classList.remove('dragging');
     };
     canvas.addEventListener('pointerup', endPointer);
@@ -353,7 +478,7 @@
         const x = v.xmin + (px / cssW) * (v.xmax - v.xmin);
         const y = v.ymax - (py / cssH) * (v.ymax - v.ymin);
         const d = Math.max(0, Math.ceil(-Math.log10((v.xmax - v.xmin) / cssW)));
-        coordEl.textContent = '(' + x.toFixed(d) + ', ' + y.toFixed(d) + ')';
+        coordEl.textContent = plainName(state.axisH) + ' = ' + x.toFixed(d) + ',  y = ' + y.toFixed(d);
     }
 
     // ---------- 描画 ----------
@@ -361,11 +486,18 @@
     function scheduleDraw() {
         if (drawQueued) return;
         drawQueued = true;
-        requestAnimationFrame(() => { drawQueued = false; draw(); });
+        requestAnimationFrame(() => {
+            drawQueued = false;
+            if (state.axisZ) draw3D(); else draw2D();
+        });
     }
 
     function resize() {
         const rect = canvas.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) { // 3D 表示中で canvas が隠れているとき
+            if (!state.view) state.view = defaultView();
+            return;
+        }
         const oldW = cssW, oldH = cssH;
         cssW = rect.width;
         cssH = rect.height;
@@ -373,7 +505,7 @@
         canvas.width = Math.round(cssW * dpr);
         canvas.height = Math.round(cssH * dpr);
         if (!state.view) state.view = defaultView();
-        else if (oldW > 0 && oldH > 0) {
+        else if (oldW > 0 && oldH > 0 && (oldW !== cssW || oldH !== cssH)) {
             // 縦横比を保ったまま、画面サイズの変化に合わせて表示範囲を伸縮
             const v = state.view;
             const cx = (v.xmin + v.xmax) / 2, cy = (v.ymin + v.ymax) / 2;
@@ -381,7 +513,18 @@
             state.view = { xmin: cx - hx, xmax: cx + hx, ymin: cy - hy, ymax: cy + hy };
         }
         updateViewInputs();
-        draw();
+        if (!state.axisZ) draw2D();
+    }
+
+    // 変数の値をまとめた環境（軸の変数は描画中に上書きする）
+    function makeEnv() {
+        const env = { p: {}, fns: {} };
+        state.varOrder.forEach(n => { env.p[n] = state.params[n].value; });
+        state.lines.forEach(l => { if (l.fn && l.name) env.fns[l.name] = l.fn; });
+        return env;
+    }
+    function evalLine(l, env) {
+        try { return l.fn(env.p.x, env); } catch (e) { return NaN; }
     }
 
     function niceStep(range, pixels, target) {
@@ -398,7 +541,7 @@
         return v.toFixed(Math.max(0, -Math.floor(Math.log10(step) + 1e-9)));
     }
 
-    function draw() {
+    function draw2D() {
         if (!state.view || cssW === 0 || cssH === 0) return;
         const v = state.view;
         const W = cssW, H = cssH;
@@ -409,11 +552,10 @@
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, W, H);
 
-        // グリッド
+        // グリッド（細かい補助線 → 主線）
         const sx = niceStep(v.xmax - v.xmin, W, 90);
         const sy = niceStep(v.ymax - v.ymin, H, 90);
         ctx.lineWidth = 1;
-        // 細かい補助線 → 主線（x, y で刻みが違うので個別に）
         const gridXY = (stepX, stepY, color) => {
             ctx.strokeStyle = color;
             ctx.beginPath();
@@ -446,15 +588,16 @@
         ctx.textBaseline = 'top';
         for (let i = Math.ceil(v.xmin / sx); i * sx <= v.xmax; i++) {
             const px = toPx(i * sx);
-            if (i === 0 || px < 16 || px > W - 16) continue; // 端で切れるラベルは出さない
+            if (i === 0 || px < 16 || px > W - 36) continue; // 端で切れるラベルは出さない
             ctx.fillText(tickLabel(i * sx, sx), px, labelY);
         }
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
         const labelX = Math.min(W - 3, Math.max(40, ay - 4));
         for (let i = Math.ceil(v.ymin / sy); i * sy <= v.ymax; i++) {
-            if (i === 0) continue;
-            ctx.fillText(tickLabel(i * sy, sy), labelX, toPy(i * sy));
+            const py = toPy(i * sy);
+            if (i === 0 || py < 24) continue;
+            ctx.fillText(tickLabel(i * sy, sy), labelX, py);
         }
         if (ax >= 0 && ax <= H && ay >= 0 && ay <= W) {
             ctx.textAlign = 'right';
@@ -462,11 +605,19 @@
             ctx.fillText('0', ay - 4, ax + 3);
         }
 
-        // 曲線
-        const env = { p: {}, fns: {} };
-        state.paramOrder.forEach(n => { env.p[n] = state.params[n].value; });
-        state.lines.forEach(l => { if (l.fn && l.name) env.fns[l.name] = l.fn; });
+        // 軸の名前（横軸は選んだ変数）
+        ctx.font = 'italic 15px serif';
+        ctx.fillStyle = '#dddddd';
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(plainName(state.axisH), W - 8, Math.min(H - 4, Math.max(20, ax - 4)));
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText('y', Math.min(W - 16, Math.max(4, ay + 6)), 6);
 
+        // 曲線
+        const env = makeEnv();
+        const axis = state.axisH;
         const samples = Math.ceil(W * 2);
         const yRange = v.ymax - v.ymin;
         const clampPy = py => Math.max(-H * 4, Math.min(H * 5, py));
@@ -478,9 +629,8 @@
             ctx.beginPath();
             let prevY = NaN, penDown = false;
             for (let i = 0; i <= samples; i++) {
-                const x = v.xmin + (i / samples) * (v.xmax - v.xmin);
-                let y;
-                try { y = l.fn(x, env); } catch (e) { y = NaN; }
+                env.p[axis] = v.xmin + (i / samples) * (v.xmax - v.xmin);
+                const y = evalLine(l, env);
                 if (!isFinite(y)) { penDown = false; prevY = NaN; continue; }
                 const px = (i / samples) * W;
                 // 漸近線（tan など）: 画面外の上下をまたぐ大ジャンプは線を切る
@@ -497,6 +647,67 @@
         });
     }
 
+    // ---------- 3D（Three.js は必要になったときだけ読み込む） ----------
+    let threeView = null, threeLoading = null;
+    function ensureThree() {
+        if (threeLoading) return threeLoading;
+        threeLoading = import('./three-view.js')
+            .then(m => {
+                threeView = m.create(threeEl);
+                scheduleDraw();
+            })
+            .catch(err => {
+                console.error(err);
+                threeLoading = null;
+                toast('Three.js を読み込めませんでした');
+                setAxisZ(null);
+            });
+        return threeLoading;
+    }
+
+    function draw3D() {
+        if (!threeView) { ensureThree(); return; }
+        const N = state.res;
+        const hName = state.axisH, zName = state.axisZ;
+        const ph = state.params[hName], pz = state.params[zName];
+        const env = makeEnv();
+        const surfaces = [];
+        const finite = [];
+        state.lines.forEach(l => {
+            if (!l.fn) return;
+            const values = new Float64Array((N + 1) * (N + 1));
+            for (let i = 0; i <= N; i++) {
+                env.p[zName] = pz.min + (i / N) * (pz.max - pz.min);
+                for (let j = 0; j <= N; j++) {
+                    env.p[hName] = ph.min + (j / N) * (ph.max - ph.min);
+                    const w = evalLine(l, env);
+                    values[i * (N + 1) + j] = w;
+                    if (isFinite(w)) finite.push(w);
+                }
+            }
+            surfaces.push({ color: l.color, values });
+        });
+
+        if (state.autoH && finite.length) {
+            // 極端な値（漸近線など）に引っ張られないよう 2%〜98% の範囲で合わせる
+            finite.sort((a, b) => a - b);
+            let lo = finite[Math.floor(finite.length * 0.02)];
+            let hi = finite[Math.max(0, Math.ceil(finite.length * 0.98) - 1)];
+            if (!(hi - lo > 1e-9)) { lo -= 1; hi += 1; }
+            const pad = (hi - lo) * 0.05;
+            state.view = Object.assign({}, state.view, { ymin: lo - pad, ymax: hi + pad });
+            updateViewInputs();
+        }
+
+        threeView.update({
+            n: N,
+            surfaces,
+            u: { name: plainName(hName), min: ph.min, max: ph.max },
+            v: { name: plainName(zName), min: pz.min, max: pz.max },
+            w: { name: 'y', min: state.view.ymin, max: state.view.ymax },
+        });
+    }
+
     // ---------- URL での共有 ----------
     let hashTimer = null;
     function scheduleHash() {
@@ -505,7 +716,7 @@
     }
     function snapshot() {
         const p = {};
-        state.paramOrder.forEach(n => {
+        state.varOrder.forEach(n => {
             const q = state.params[n];
             p[n] = [q.value, q.min, q.max, q.step].map(x => parseFloat(x.toPrecision(8)));
         });
@@ -514,6 +725,10 @@
             s: srcEl.value,
             p,
             v: v ? [v.xmin, v.xmax, v.ymin, v.ymax].map(x => parseFloat(x.toPrecision(8))) : null,
+            h: state.axisH,
+            z: state.axisZ,
+            a: state.autoH ? 1 : 0,
+            r: state.res,
         };
     }
     function writeHash() {
@@ -538,6 +753,10 @@
                 const [xmin, xmax, ymin, ymax] = d.v.map(Number);
                 if (xmax > xmin && ymax > ymin) state.view = { xmin, xmax, ymin, ymax };
             }
+            if (typeof d.h === 'string') state.axisH = d.h;
+            if (typeof d.z === 'string' && d.z !== state.axisH) state.axisZ = d.z;
+            if (d.a === 0) state.autoH = false;
+            if ([50, 100, 200].includes(d.r)) state.res = d.r;
             return typeof d.s === 'string';
         } catch (e) {
             return false;
@@ -550,7 +769,7 @@
         toastEl.textContent = msg;
         toastEl.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1600);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2000);
     }
     $('share').addEventListener('click', () => {
         writeHash();
@@ -568,9 +787,9 @@
         inputTimer = setTimeout(rebuild, 150);
     });
 
-    if (!readHash()) srcEl.value = DEFAULT_SRC;
-    // 初期サンプル用に見やすい値を入れておく
-    if (!location.hash) {
+    if (!readHash()) {
+        srcEl.value = DEFAULT_SRC;
+        // 初期サンプル用に見やすい値を入れておく
         state.params.k = { value: 2, min: 0, max: 10, step: 0.1 };
         state.params['x_{0}'] = { value: 0, min: -5, max: 5, step: 0.1 };
     }

@@ -11,6 +11,8 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body.mode3d .only2d, body:not(.mode3d) .only3d { display: none !important; }
 
 html, body {
     margin: 0;
@@ -53,7 +55,7 @@ html, body {
 .hint { font-size: 0.75rem; color: var(--muted); margin-left: 0.4rem; }
 .muted { color: var(--muted); font-size: 0.8rem; margin: 0.4rem 0 0; }
 
-textarea, input, button {
+textarea, input, button, select {
     font: inherit;
     color: var(--text);
     background: #000;
@@ -128,6 +130,37 @@ button:hover { background: var(--hover); }
 .param_bounds input { width: 100%; padding: 0.1rem 0.25rem; font-size: 0.8rem; }
 input.invalid { border-color: var(--error); }
 
+/* 軸に選ばれた変数: スライダーは隠して範囲だけ見せる */
+.axis_badge {
+    display: none;
+    font-size: 0.75rem;
+    border: 1px solid #fff;
+    padding: 0 0.4rem;
+}
+.param.is_axis { border-color: #fff; }
+.param.is_axis .axis_badge { display: inline-block; }
+.param.is_axis .eq,
+.param.is_axis .param_val,
+.param.is_axis .play,
+.param.is_axis .param_range { display: none; }
+.param.is_axis .param_bounds { margin-top: 0.5rem; }
+.param.axis_view .param_bounds { display: none; }
+.axis_note { display: none; margin: 0.4rem 0 0; font-size: 0.75rem; color: var(--muted); }
+.param.is_axis .axis_note { display: block; }
+.axis_opts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0.9rem;
+    margin-top: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+.axis_opts label { display: flex; align-items: center; gap: 0.25rem; cursor: pointer; }
+.axis_opts input { accent-color: #fff; margin: 0; }
+.axis_opts input:disabled + * , .axis_opts label:has(input:disabled) { opacity: 0.4; cursor: default; }
+.auto_row { display: flex; align-items: center; gap: 0.3rem; margin-top: 0.5rem; font-size: 0.85rem; }
+.auto_row input { accent-color: #fff; }
+
 /* 表示範囲 */
 .view_inputs {
     display: grid;
@@ -155,6 +188,8 @@ input.invalid { border-color: var(--error); }
     cursor: grab;
 }
 #graph.dragging { cursor: grabbing; }
+.three { position: absolute; inset: 0; }
+.three canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 .coord {
     position: absolute;
     right: 0.5rem;
