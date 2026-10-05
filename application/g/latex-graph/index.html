@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LaTeXグラフ</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+        <div class="app">
+            <aside class="panel">
+                <header class="panel_head">
+                    <h1>LaTeXグラフ</h1>
+                    <p>数式を貼り付けると、x 以外の文字がパラメータ（スライダー）になります。</p>
+                </header>
+
+                <section class="block">
+                    <h2>数式 <span class="hint">1行に1つ</span></h2>
+                    <textarea id="src" spellcheck="false" autocomplete="off" rows="4"
+                        placeholder="y = a\sin\left(bx + c\right)"></textarea>
+                    <ul id="exprs" class="exprs"></ul>
+                    <details class="help">
+                        <summary>使える書き方</summary>
+                        <ul>
+                            <li><code>y = …</code> / <code>f(x) = …</code> / 式だけ（どれでも可）</li>
+                            <li><code>\frac{}{}</code> <code>\sqrt{}</code> <code>\sqrt[n]{}</code> <code>^{}</code> <code>|x|</code> <code>\lfloor x \rfloor</code> <code>n!</code></li>
+                            <li><code>\sin \cos \tan \ln \log_2 \exp \sinh \arctan \max \min</code> など</li>
+                            <li><code>\pi</code> と <code>e</code> は定数。<code>a_1</code> や <code>\alpha</code> はパラメータ</li>
+                            <li><code>f(x) = …</code> と定義した関数は別の行から <code>f(x+1)</code> のように呼べます</li>
+                            <li><code>$…$</code> や <code>\[ … \]</code> ごと貼り付けてもOK</li>
+                        </ul>
+                    </details>
+                </section>
+
+                <section class="block">
+                    <h2>パラメータ</h2>
+                    <div id="params" class="params"></div>
+                    <p id="no_params" class="muted">x 以外の文字を式に入れると、ここにスライダーが出ます。</p>
+                </section>
+
+                <section class="block">
+                    <h2>表示範囲</h2>
+                    <div class="view_inputs">
+                        <label>x <input type="number" id="xmin" step="any"></label>
+                        <span>〜</span>
+                        <input type="number" id="xmax" step="any" aria-label="x 最大">
+                        <label>y <input type="number" id="ymin" step="any"></label>
+                        <span>〜</span>
+                        <input type="number" id="ymax" step="any" aria-label="y 最大">
+                    </div>
+                    <div class="buttons">
+                        <button type="button" id="zoom_in" title="拡大">＋</button>
+                        <button type="button" id="zoom_out" title="縮小">−</button>
+                        <button type="button" id="reset_view">原点に戻す</button>
+                        <button type="button" id="share">URLをコピー</button>
+                    </div>
+                    <p class="muted">ドラッグで移動、ホイール／ピンチで拡大縮小。</p>
+                </section>
+            </aside>
+
+            <main class="stage">
+                <canvas id="graph"></canvas>
+                <div id="coord" class="coord"></div>
+                <div id="toast" class="toast" role="status"></div>
+            </main>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" defer></script>
+        <script src="./parser.js" defer></script>
+        <script src="./main.js" defer></script>
+    </body>
+</html>
