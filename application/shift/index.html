@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>シフト入力</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<style>
+/* Layout: one column, spreadsheet-like grid (label col + 7 days), sticky share bar at bottom */
+:root{
+  --bg:#f6f7f5; --surface:#ffffff; --fg:#1f2421; --muted:#6b736e; --line:#c9cfcb;
+  --ng:#f6d3c9; --ng-fg:#9a3b26; --ok:#d2f3cf; --ok-fg:#1f6b2a;
+  --sun:#f6ddd6; --sat:#d9e4f3; --accent:#2f6b4f; --accent-fg:#ffffff;
+  --font-body:"Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", sans-serif;
+  --font-display:"Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Zen Kaku Gothic New", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141715; --surface:#1d2120; --fg:#e8ece9; --muted:#9aa49e; --line:#3a413d;
+  --ng:#4a2a23; --ng-fg:#ffb8a6; --ok:#21402a; --ok-fg:#9fe3a8;
+  --sun:#3d2a26; --sat:#243142; --accent:#6fc79a; --accent-fg:#0e1a14; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141715; --surface:#1d2120; --fg:#e8ece9; --muted:#9aa49e; --line:#3a413d;
+  --ng:#4a2a23; --ng-fg:#ffb8a6; --ok:#21402a; --ok-fg:#9fe3a8;
+  --sun:#3d2a26; --sat:#243142; --accent:#6fc79a; --accent-fg:#0e1a14; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;
+  padding-left:max(12px, env(safe-area-inset-left,0px));padding-right:max(12px, env(safe-area-inset-right,0px));
+  padding-block:16px 96px;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+h1{font-family:var(--font-display);font-size:1.35rem;margin:0;font-weight:700}
+.sub{color:var(--muted);font-size:.85rem;margin:2px 0 0}
+.controls{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+.field{display:flex;flex-direction:column;gap:4px;font-size:.78rem;color:var(--muted);letter-spacing:.04em}
+.field input,.field select{font:inherit;font-size:1rem;color:var(--fg);background:var(--surface);
+  border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:42px}
+#year{width:6.2em} #month{width:5.2em} #name{width:100%}
+.field.grow{flex:1 1 9em;min-width:0}
+.legend{display:flex;gap:12px;font-size:.8rem;color:var(--muted);align-items:center;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:4px;font-weight:700;margin-right:4px}
+.chip.ok{background:var(--ok);color:var(--ok-fg)} .chip.ng{background:var(--ng);color:var(--ng-fg)}
+.cal{display:grid;grid-template-columns:2.9em repeat(7,minmax(0,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:6px;overflow:hidden;font-variant-numeric:tabular-nums}
+.cal > *{background:var(--surface);display:flex;align-items:center;justify-content:center;min-height:30px}
+.cal .lbl{font-size:.68rem;color:var(--muted);justify-content:flex-start;padding-left:4px;white-space:nowrap}
+.cal .wd{font-family:var(--font-display);font-weight:700;min-height:36px;font-size:1.05rem}
+.cal .wd.sun,.cal .date.sun{background:var(--sun)} .cal .wd.sat,.cal .date.sat{background:var(--sat)}
+.cal .date{font-size:.9rem;font-weight:500;border-top:2px solid var(--line)}
+.cal .lbl.dl{border-top:2px solid var(--line)}
+.cal .closed{background:linear-gradient(to bottom right, var(--surface) calc(50% - .8px), var(--muted) 50%, var(--surface) calc(50% + .8px))}
+.slot{appearance:none;border:0;margin:0;font:inherit;font-family:var(--font-display);font-weight:700;font-size:1.15rem;
+  min-height:44px;cursor:pointer;transition:background-color .12s}
+.slot.ng{background:var(--ng);color:var(--ng-fg)} .slot.ok{background:var(--ok);color:var(--ok-fg)}
+.slot:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+.slot:active{filter:brightness(.94)}
+.summary{font-size:.85rem;color:var(--muted)}
+.summary b{color:var(--fg)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);
+  padding:10px max(12px, env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px, env(safe-area-inset-left,0px))}
+.bar .in{max-width:560px;margin:0 auto;display:flex;gap:8px}
+button.share{flex:1;font:inherit;font-weight:700;font-size:1.02rem;border:0;border-radius:10px;min-height:50px;
+  background:var(--accent);color:var(--accent-fg);cursor:pointer}
+button.ghost{font:inherit;font-size:.85rem;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--fg);padding:0 12px;cursor:pointer}
+button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sheet .panel{background:var(--surface);width:100%;max-width:560px;border-radius:16px 16px 0 0;max-height:92%;overflow:auto;
+  padding:16px max(16px, env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px));
+  display:flex;flex-direction:column;gap:12px}
+.sheet img{width:100%;border:1px solid var(--line);border-radius:6px;-webkit-touch-callout:default;user-select:auto}
+.sheet p{margin:0;font-size:.9rem}
+.sheet .row{display:flex;gap:8px}
+.confirm{display:flex;gap:8px;align-items:center;font-size:.85rem;flex-wrap:wrap}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px)} body{margin:0} [hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>シフト入力</h1>
+    <p class="sub">マスをタップすると ×(出勤不可)と ○(出勤可)が切り替わります。月曜は定休日です。</p>
+  </header>
+
+  <div class="controls">
+    <label class="field">年<input id="year" type="number" inputmode="numeric" min="2000" max="2100"></label>
+    <label class="field">月<select id="month"></select></label>
+    <label class="field grow">名前(画像に入ります)<input id="name" type="text" placeholder="例:山田"></label>
+  </div>
+
+  <div class="legend"><span><span class="chip ng">×</span>出勤不可</span><span><span class="chip ok">○</span>出勤可</span></div>
+
+  <div class="cal" id="cal" aria-label="シフトカレンダー"></div>
+  <div class="summary" id="summary"></div>
+  <div class="confirm" id="resetArea">
+    <button class="ghost" id="resetBtn" type="button" style="min-height:38px">この月をすべて×に戻す</button>
+  </div>
+</div>
+
+<div class="bar"><div class="in"><button class="share" id="shareBtn" type="button">カレンダーを共有</button></div></div>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="panel" role="dialog" aria-label="共有用の画像">
+    <p id="sheetMsg"><b>画像を長押し</b>して「共有」または「画像を保存」を選ぶと、LINEやDiscordに送れます。</p>
+    <img id="shot" alt="シフト表の画像">
+    <div class="row"><button class="ghost" id="closeSheet" type="button" style="flex:1;min-height:46px">閉じる</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const WD=["日","月","火","水","木","金","土"];
+  const SLOTS=[["17","17時~"],["19","19時~"]];
+  const $=id=>document.getElementById(id);
+  const yearEl=$("year"), monthEl=$("month"), nameEl=$("name"), cal=$("cal");
+  for(let m=1;m<=12;m++){const o=document.createElement("option");o.value=m;o.textContent=m+"月";monthEl.appendChild(o);}
+  const now=new Date(); const def=new Date(now.getFullYear(), now.getMonth()+1, 1);
+  const load=k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}};
+  const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+  const last=load("shift-last");
+  yearEl.value=last?.y||def.getFullYear(); monthEl.value=last?.m||(def.getMonth()+1);
+  nameEl.value=load("shift-name")||"";
+  let state={};
+  const key=()=>`shift-${yearEl.value}-${monthEl.value}`;
+
+  function ym(){const y=parseInt(yearEl.value,10), m=parseInt(monthEl.value,10);return (y>=1900&&y<=2200)?{y,m}:null;}
+  function weeks(y,m){
+    const first=new Date(y,m-1,1).getDay(), days=new Date(y,m,0).getDate(), out=[];
+    let w=new Array(7).fill(0), d=1;
+    for(let i=first;d<=days;i++){w[i%7]=d++; if(i%7===6||d>days){out.push(w);w=new Array(7).fill(0);}}
+    return out;
+  }
+  function cell(cls,txt){const e=document.createElement("div");e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+
+  function render(){
+    cal.innerHTML="";
+    const v=ym(); if(!v){cal.appendChild(cell("lbl","年を入力してください"));return;}
+    state=load(key())||{};
+    save("shift-last",{y:v.y,m:v.m});
+    cal.appendChild(cell("lbl",""));
+    WD.forEach((w,i)=>cal.appendChild(cell("wd"+(i===0?" sun":i===6?" sat":""),w)));
+    weeks(v.y,v.m).forEach(w=>{
+      cal.appendChild(cell("lbl dl","日"));
+      w.forEach((d,i)=>cal.appendChild(cell("date"+(i===0&&d?" sun":i===6&&d?" sat":""),d||"")));
+      SLOTS.forEach(([s,label])=>{
+        cal.appendChild(cell("lbl",label));
+        w.forEach((d,i)=>{
+          if(!d){cal.appendChild(cell("",""));return;}
+          if(i===1){cal.appendChild(cell("closed",""));return;}
+          const b=document.createElement("button"); b.type="button"; b.id=`s-${d}-${s}`;
+          paint(b,!!state[`${d}-${s}`]);
+          b.addEventListener("click",()=>{const k=`${d}-${s}`;state[k]=!state[k];if(!state[k])delete state[k];paint(b,!!state[k]);save(key(),state);summary();});
+          b.setAttribute("aria-label",`${v.m}月${d}日 ${label}`);
+          cal.appendChild(b);
+        });
+      });
+    });
+    summary();
+  }
+  function paint(b,ok){b.className="slot "+(ok?"ok":"ng");b.textContent=ok?"○":"×";b.setAttribute("aria-pressed",ok);}
+  function summary(){
+    const n=Object.keys(state).length, days=new Set(Object.keys(state).map(k=>k.split("-")[0])).size;
+    $("summary").innerHTML=`○の数:<b>${n}</b> コマ(<b>${days}</b> 日)`;
+  }
+
+  // reset with in-page confirm
+  $("resetBtn").addEventListener("click",function(){
+    const area=$("resetArea");
+    area.innerHTML='<span>すべて×に戻しますか?</span><button class="ghost" id="rYes" type="button" style="min-height:38px">戻す</button><button class="ghost" id="rNo" type="button" style="min-height:38px">やめる</button>';
+    const restore=()=>{area.innerHTML="";area.appendChild(this);};
+    $("rYes").onclick=()=>{state={};save(key(),state);render();restore();};
+    $("rNo").onclick=restore;
+  });
+
+  yearEl.addEventListener("change",render); monthEl.addEventListener("change",render);
+  nameEl.addEventListener("input",()=>save("shift-name",nameEl.value));
+
+  // ---- image ----
+  async function drawImage(){
+    const v=ym(); if(!v) return null;
+    try{await document.fonts.ready;}catch(e){}
+    const ws=weeks(v.y,v.m);
+    const LW=150, CW=108, TH=62, RH=40, S=2;
+    const W=LW+CW*7, H=TH+RH*1.5+ws.length*RH*3;
+    const c=document.createElement("canvas"); c.width=W*S; c.height=H*S;
+    const g=c.getContext("2d"); g.scale(S,S);
+    const F='"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif';
+    const C={line:"#555",ng:"#f8d5cb",ok:"#d3f8d1",sun:"#f8e2db",sat:"#dbe5f3",fg:"#111"};
+    g.fillStyle="#fff";g.fillRect(0,0,W,H);
+    const text=(t,x,y,size,align="center",weight=400)=>{g.fillStyle=C.fg;g.font=`${weight} ${size}px ${F}`;g.textAlign=align;g.textBaseline="middle";g.fillText(t,x,y);};
+    const box=(x,y,w,h,fill)=>{if(fill){g.fillStyle=fill;g.fillRect(x,y,w,h);}g.strokeStyle=C.line;g.lineWidth=1;g.strokeRect(x+.5,y+.5,w,h);};
+    // title row
+    box(0,0,LW,TH); text(String(v.y),LW/2,TH/2,30);
+    box(LW,0,CW*6,TH); text(String(v.m),LW+CW*3,TH/2,30);
+    box(LW+CW*6,0,CW,TH); text("月",LW+CW*6.5,TH/2,30);
+    const name=nameEl.value.trim(); if(name) text(name,LW+12,TH/2,22,"left",700);
+    // weekday header
+    const HH=RH*1.5; let y=TH;
+    box(0,y,LW,HH);
+    WD.forEach((w,i)=>{const x=LW+CW*i;box(x,y,CW,HH,i===0?C.sun:i===6?C.sat:null);text(w,x+CW/2,y+HH/2,30);});
+    y+=HH;
+    ws.forEach(w=>{
+      box(0,y,LW,RH); text("日",10,y+RH/2,20,"left");
+      w.forEach((d,i)=>{const x=LW+CW*i;box(x,y,CW,RH,d&&i===0?C.sun:d&&i===6?C.sat:null);if(d)text(String(d),x+CW/2,y+RH/2,20);});
+      y+=RH;
+      SLOTS.forEach(([s,label])=>{
+        box(0,y,LW,RH); text(label,8,y+RH/2,20,"left");
+        w.forEach((d,i)=>{
+          const x=LW+CW*i;
+          if(!d){box(x,y,CW,RH);return;}
+          if(i===1){box(x,y,CW,RH);g.beginPath();g.moveTo(x,y);g.lineTo(x+CW,y+RH);g.strokeStyle="#222";g.lineWidth=1.2;g.stroke();return;}
+          const ok=!!state[`${d}-${s}`];
+          box(x,y,CW,RH,ok?C.ok:C.ng); text(ok?"O":"X",x+CW/2,y+RH/2,20);
+        });
+        y+=RH;
+      });
+    });
+    g.lineWidth=2;g.strokeStyle="#222";g.strokeRect(1,1,W-2,H-2);
+    return c;
+  }
+
+  $("shareBtn").addEventListener("click",async()=>{
+    const c=await drawImage(); if(!c) return;
+    const v=ym(); const fname=`shift_${v.y}_${String(v.m).padStart(2,"0")}.png`;
+    const url=c.toDataURL("image/png");
+    try{
+      const blob=await new Promise(r=>c.toBlob(r,"image/png"));
+      const file=new File([blob],fname,{type:"image/png"});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:`${v.y}年${v.m}月 シフト`});
+        return;
+      }
+    }catch(e){ if(e&&e.name==="AbortError") return; }
+    $("shot").src=url; $("sheet").hidden=false;
+  });
+  $("closeSheet").addEventListener("click",()=>$("sheet").hidden=true);
+  $("sheet").addEventListener("click",e=>{if(e.target.id==="sheet")$("sheet").hidden=true;});
+
+  render();
+})();
+</script>
+</body>
+</html>
