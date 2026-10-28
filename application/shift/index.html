@@ -53,6 +53,7 @@ h1{font-family:var(--font-display);font-size:1.35rem;margin:0;font-weight:700}
 .slot:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
 .slot:active{filter:brightness(.94)}
 .summary{font-size:.85rem;color:var(--muted)}
+.note textarea{font:inherit;font-size:1rem;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:5.5em;resize:vertical;width:100%;box-sizing:border-box}
 .summary b{color:var(--fg)}
 .bar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);
   padding:10px max(12px, env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(12px, env(safe-area-inset-left,0px))}
@@ -90,8 +91,9 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 
   <div class="cal" id="cal" aria-label="シフトカレンダー"></div>
   <div class="summary" id="summary"></div>
+  <label class="field note">備考(画像の一番下に入ります)<textarea id="note" placeholder="例:11/14は20時まで、テスト期間は入れません"></textarea></label>
   <div class="confirm" id="resetArea">
-    <button class="ghost" id="resetBtn" type="button" style="min-height:38px">この月をすべて×に戻す</button>
+    <button class="ghost" id="resetBtn" type="button" style="min-height:38px">この月をすべて×に戻す(備考も消去)</button>
   </div>
 </div>
 
@@ -110,7 +112,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
   const WD=["日","月","火","水","木","金","土"];
   const SLOTS=[["17","17時~"],["19","19時~"]];
   const $=id=>document.getElementById(id);
-  const yearEl=$("year"), monthEl=$("month"), nameEl=$("name"), cal=$("cal");
+  const yearEl=$("year"), monthEl=$("month"), nameEl=$("name"), noteEl=$("note"), cal=$("cal");
   for(let m=1;m<=12;m++){const o=document.createElement("option");o.value=m;o.textContent=m+"月";monthEl.appendChild(o);}
   const now=new Date(); const def=new Date(now.getFullYear(), now.getMonth()+1, 1);
   const load=k=>{try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}};
@@ -134,6 +136,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
     cal.innerHTML="";
     const v=ym(); if(!v){cal.appendChild(cell("lbl","年を入力してください"));return;}
     state=load(key())||{};
+    noteEl.value=load(key()+"-note")||"";
     save("shift-last",{y:v.y,m:v.m});
     cal.appendChild(cell("lbl",""));
     WD.forEach((w,i)=>cal.appendChild(cell("wd"+(i===0?" sun":i===6?" sat":""),w)));
@@ -166,12 +169,13 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
     const area=$("resetArea");
     area.innerHTML='<span>すべて×に戻しますか?</span><button class="ghost" id="rYes" type="button" style="min-height:38px">戻す</button><button class="ghost" id="rNo" type="button" style="min-height:38px">やめる</button>';
     const restore=()=>{area.innerHTML="";area.appendChild(this);};
-    $("rYes").onclick=()=>{state={};save(key(),state);render();restore();};
+    $("rYes").onclick=()=>{state={};save(key(),state);save(key()+"-note","");render();restore();};
     $("rNo").onclick=restore;
   });
 
   yearEl.addEventListener("change",render); monthEl.addEventListener("change",render);
   nameEl.addEventListener("input",()=>save("shift-name",nameEl.value));
+  noteEl.addEventListener("input",()=>{if(ym())save(key()+"-note",noteEl.value);});
 
   // ---- image ----
   async function drawImage(){
@@ -179,7 +183,16 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
     try{await document.fonts.ready;}catch(e){}
     const ws=weeks(v.y,v.m);
     const LW=150, CW=108, TH=62, RH=40, S=2;
-    const W=LW+CW*7, H=TH+RH*1.5+ws.length*RH*3;
+    const W=LW+CW*7, gridH=TH+RH*1.5+ws.length*RH*3;
+    const F0='"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif';
+    const note=noteEl.value.trim(), NL=30, NPAD=14, noteLines=[];
+    if(note){
+      const m=document.createElement("canvas").getContext("2d"); m.font=`400 20px ${F0}`;
+      const maxW=W-LW-NPAD*2;
+      note.split(/\r?\n/).forEach(par=>{let line="";for(const ch of par){if(m.measureText(line+ch).width>maxW&&line){noteLines.push(line);line=ch;}else line+=ch;}noteLines.push(line);});
+    }
+    const noteH=note?Math.max(RH*1.5,noteLines.length*NL+NPAD*2):0;
+    const H=gridH+noteH;
     const c=document.createElement("canvas"); c.width=W*S; c.height=H*S;
     const g=c.getContext("2d"); g.scale(S,S);
     const F='"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",sans-serif';
@@ -213,6 +226,11 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
         y+=RH;
       });
     });
+    if(note){
+      box(0,y,LW,noteH); text("備考",LW/2,y+noteH/2,20);
+      box(LW,y,CW*7,noteH);
+      noteLines.forEach((l,i)=>text(l,LW+NPAD,y+NPAD+NL*i+NL/2,20,"left"));
+    }
     g.lineWidth=2;g.strokeStyle="#222";g.strokeRect(1,1,W-2,H-2);
     return c;
   }
