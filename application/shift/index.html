@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>シフト入力</title>
+<script>
+// LINEのアプリ内ブラウザで開かれたら、外部ブラウザで開き直す
+(function(){
+  if(!/\bLine\//i.test(navigator.userAgent)) return;
+  var u=new URL(location.href);
+  if(u.searchParams.has("openExternalBrowser")) return;
+  u.searchParams.set("openExternalBrowser","1");
+  location.replace(u.toString());
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap">
 <style>
